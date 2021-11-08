@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,92 +24,96 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.ScriptDefinition;
-using OSRSCache.io.InputStream;
-using OSRSCache.script.Opcodes.SCONST;
-using OSRSCache.script.Opcodes.POP_INT;
-using OSRSCache.script.Opcodes.POP_string;
-using OSRSCache.script.Opcodes.RETURN;
-
-public class ScriptLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public ScriptDefinition load(int id, byte[] b)
+	using ScriptDefinition = net.runelite.cache.definitions.ScriptDefinition;
+	using InputStream = net.runelite.cache.io.InputStream;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.script.Opcodes.SCONST;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.script.Opcodes.POP_INT;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.script.Opcodes.POP_STRING;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.script.Opcodes.RETURN;
+
+	public class ScriptLoader
 	{
-		ScriptDefinition def = new ScriptDefinition();
-		def.setId(id);
-		InputStream in = new InputStream(b);
-
-		in.setOffset(in.getLength() - 2);
-		int switchLength = in.readUnsignedShort();
-
-		// 2 for switchLength + the switch data + 12 for the param/vars/stack data
-		int endIdx = in.getLength() - 2 - switchLength - 12;
-		in.setOffset(endIdx);
-		int numOpcodes = in.readInt();
-		int localIntCount = in.readUnsignedShort();
-		int localstringCount = in.readUnsignedShort();
-		int intStackCount = in.readUnsignedShort();
-		int stringStackCount = in.readUnsignedShort();
-
-		int numSwitches = in.readUnsignedByte();
-		if (numSwitches > 0)
+		public virtual ScriptDefinition load(int id, sbyte[] b)
 		{
-			Map<Integer, Integer>[] switches = new Map[numSwitches];
-			def.setSwitches(switches);
+			ScriptDefinition def = new ScriptDefinition();
+			def.setId(id);
+			InputStream @in = new InputStream(b);
 
-			for (int i = 0; i < numSwitches; ++i)
+			@in.Offset = @in.Length - 2;
+			int switchLength = @in.readUnsignedShort();
+
+			// 2 for switchLength + the switch data + 12 for the param/vars/stack data
+			int endIdx = @in.Length - 2 - switchLength - 12;
+			@in.Offset = endIdx;
+			int numOpcodes = @in.readInt();
+			int localIntCount = @in.readUnsignedShort();
+			int localStringCount = @in.readUnsignedShort();
+			int intStackCount = @in.readUnsignedShort();
+			int stringStackCount = @in.readUnsignedShort();
+
+			int numSwitches = @in.readUnsignedByte();
+			if (numSwitches > 0)
 			{
-				switches[i] = new HashMap<>();
+				IDictionary<int, int>[] switches = new System.Collections.IDictionary[numSwitches];
+				def.setSwitches(switches);
 
-				int count = in.readUnsignedShort();
-				while (count-- > 0)
+				for (int i = 0; i < numSwitches; ++i)
 				{
-					int key = in.readInt(); // int from stack is compared to this
-					int pcOffset = in.readInt(); // pc jumps by this
+					switches[i] = new Dictionary<int, int>();
 
-					switches[i].put(key, pcOffset);
+					int count = @in.readUnsignedShort();
+					while (count-- > 0)
+					{
+						int key = @in.readInt(); // int from stack is compared to this
+						int pcOffset = @in.readInt(); // pc jumps by this
+
+						switches[i][key] = pcOffset;
+					}
 				}
 			}
+
+			def.setLocalIntCount(localIntCount);
+			def.setLocalStringCount(localStringCount);
+			def.setIntStackCount(intStackCount);
+			def.setStringStackCount(stringStackCount);
+
+			@in.Offset = 0;
+			@in.readStringOrNull();
+
+			int[] instructions = new int[numOpcodes];
+			int[] intOperands = new int[numOpcodes];
+			string[] stringOperands = new string[numOpcodes];
+
+			def.setInstructions(instructions);
+			def.setIntOperands(intOperands);
+			def.setStringOperands(stringOperands);
+
+			int opcode;
+			for (int i = 0; @in.Offset < endIdx; instructions[i++] = opcode)
+			{
+				opcode = @in.readUnsignedShort();
+				if (opcode == SCONST)
+				{
+					stringOperands[i] = @in.readString();
+				}
+				else if (opcode < 100 && opcode != RETURN && opcode != POP_INT && opcode != POP_STRING)
+				{
+					intOperands[i] = @in.readInt();
+				}
+				else
+				{
+					intOperands[i] = @in.readUnsignedByte();
+				}
+			}
+
+			return def;
 		}
-
-		def.setLocalIntCount(localIntCount);
-		def.setLocalstringCount(localstringCount);
-		def.setIntStackCount(intStackCount);
-		def.setstringStackCount(stringStackCount);
-
-		in.setOffset(0);
-		in.readstringOrNull();
-
-		int[] instructions = new int[numOpcodes];
-		int[] intOperands = new int[numOpcodes];
-		string[] stringOperands = new string[numOpcodes];
-
-		def.setInstructions(instructions);
-		def.setIntOperands(intOperands);
-		def.setstringOperands(stringOperands);
-
-		int opcode;
-		for (int i = 0; in.getOffset() < endIdx; instructions[i++] = opcode)
-		{
-			opcode = in.readUnsignedShort();
-			if (opcode == SCONST)
-			{
-				stringOperands[i] = in.readstring();
-			}
-			else if (opcode < 100 && opcode != RETURN && opcode != POP_INT && opcode != POP_string)
-			{
-				intOperands[i] = in.readInt();
-			}
-			else
-			{
-				intOperands[i] = in.readUnsignedByte();
-			}
-		}
-
-		return def;
 	}
+
 }

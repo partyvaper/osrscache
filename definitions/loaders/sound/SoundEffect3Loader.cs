@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,74 +22,76 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders.sound;
-
-using OSRSCache.definitions.sound.SoundEffect2Definition;
-using OSRSCache.definitions.sound.SoundEffect3Definition;
-using OSRSCache.io.InputStream;
-
-public class SoundEffect3Loader
+namespace net.runelite.cache.definitions.loaders.sound
 {
-	private readonly SoundEffect2Loader se2Loader = new SoundEffect2Loader();
+	using SoundEffect2Definition = net.runelite.cache.definitions.sound.SoundEffect2Definition;
+	using SoundEffect3Definition = net.runelite.cache.definitions.sound.SoundEffect3Definition;
+	using InputStream = net.runelite.cache.io.InputStream;
 
-	public SoundEffect3Definition load(InputStream in, SoundEffect2Definition var2)
+	public class SoundEffect3Loader
 	{
-		SoundEffect3Definition se = new SoundEffect3Definition();
+		private readonly SoundEffect2Loader se2Loader = new SoundEffect2Loader();
 
-		load(se, in, var2);
-
-		return se;
-	}
-
-	private void load(SoundEffect3Definition se, InputStream var1, SoundEffect2Definition var2)
-	{
-		int var3 = var1.readUnsignedByte();
-		se.field1155[0] = var3 >> 4;
-		se.field1155[1] = var3 & 15;
-		if (var3 != 0)
+		public virtual SoundEffect3Definition load(InputStream @in, SoundEffect2Definition var2)
 		{
-			se.field1156[0] = var1.readUnsignedShort();
-			se.field1156[1] = var1.readUnsignedShort();
-			int var4 = var1.readUnsignedByte();
+			SoundEffect3Definition se = new SoundEffect3Definition();
 
-			int var5;
-			int var6;
-			for (var5 = 0; var5 < 2; ++var5)
-			{
-				for (var6 = 0; var6 < se.field1155[var5]; ++var6)
-				{
-					se.field1154[var5][0][var6] = var1.readUnsignedShort();
-					se.field1159[var5][0][var6] = var1.readUnsignedShort();
-				}
-			}
+			load(se, @in, var2);
 
-			for (var5 = 0; var5 < 2; ++var5)
+			return se;
+		}
+
+		private void load(SoundEffect3Definition se, InputStream var1, SoundEffect2Definition var2)
+		{
+			int var3 = var1.readUnsignedByte();
+			se.field1155[0] = var3 >> 4;
+			se.field1155[1] = var3 & 15;
+			if (var3 != 0)
 			{
-				for (var6 = 0; var6 < se.field1155[var5]; ++var6)
+				se.field1156[0] = var1.readUnsignedShort();
+				se.field1156[1] = var1.readUnsignedShort();
+				int var4 = var1.readUnsignedByte();
+
+				int var5;
+				int var6;
+				for (var5 = 0; var5 < 2; ++var5)
 				{
-					if ((var4 & 1 << var5 * 4 << var6) != 0)
+					for (var6 = 0; var6 < se.field1155[var5]; ++var6)
 					{
-						se.field1154[var5][1][var6] = var1.readUnsignedShort();
-						se.field1159[var5][1][var6] = var1.readUnsignedShort();
-					}
-					else
-					{
-						se.field1154[var5][1][var6] = se.field1154[var5][0][var6];
-						se.field1159[var5][1][var6] = se.field1159[var5][0][var6];
+						se.field1154[var5][0][var6] = var1.readUnsignedShort();
+						se.field1159[var5][0][var6] = var1.readUnsignedShort();
 					}
 				}
-			}
 
-			if (var4 != 0 || se.field1156[1] != se.field1156[0])
-			{
-				se2Loader.method1144(var2, var1);
+				for (var5 = 0; var5 < 2; ++var5)
+				{
+					for (var6 = 0; var6 < se.field1155[var5]; ++var6)
+					{
+						if ((var4 & 1 << var5 * 4 << var6) != 0)
+						{
+							se.field1154[var5][1][var6] = var1.readUnsignedShort();
+							se.field1159[var5][1][var6] = var1.readUnsignedShort();
+						}
+						else
+						{
+							se.field1154[var5][1][var6] = se.field1154[var5][0][var6];
+							se.field1159[var5][1][var6] = se.field1159[var5][0][var6];
+						}
+					}
+				}
+
+				if (var4 != 0 || se.field1156[1] != se.field1156[0])
+				{
+					se2Loader.method1144(var2, var1);
+				}
 			}
-		}
-		else
-		{
-			int[] var7 = se.field1156;
-			se.field1156[1] = 0;
-			var7[0] = 0;
+			else
+			{
+				int[] var7 = se.field1156;
+				se.field1156[1] = 0;
+				var7[0] = 0;
+			}
 		}
 	}
+
 }

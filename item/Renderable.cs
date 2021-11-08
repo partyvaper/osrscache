@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,14 +22,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.item;
-
-abstract class Renderable
+namespace net.runelite.cache.item
 {
-	public int modelHeight;
-
-	protected Renderable()
+	internal abstract class Renderable
 	{
-		this.modelHeight = 1000;
+		public int modelHeight;
+
+		protected internal Renderable()
+		{
+			this.modelHeight = 1000;
+		}
 	}
+
 }

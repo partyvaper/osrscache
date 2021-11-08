@@ -1,3 +1,5 @@
+﻿using System.IO;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -23,41 +25,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.util;
-
-// import java.io.ByteArrayInputStream;
-// import java.io.ByteArrayOutputStream;
-// import java.io.IOException;
-// import java.io.InputStream;
-// import java.io.OutputStream;
-// import java.util.zip.GZIPInputStream;
-// import java.util.zip.GZIPOutputStream;
-// import org.apache.commons.compress.utils.IOUtils;
-
-public class GZip
+namespace net.runelite.cache.util
 {
-	public static byte[] compress(byte[] bytes) // throws IOException
-	{
-		InputStream is = new ByteArrayInputStream(bytes);
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+	using IOUtils = org.apache.commons.compress.utils.IOUtils;
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
 
-		try (OutputStream os = new GZIPOutputStream(bout))
+	public class GZip
+	{
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(GZip));
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public static byte[] compress(byte[] bytes) throws java.io.IOException
+		public static sbyte[] compress(sbyte[] bytes)
 		{
-			IOUtils.copy(is, os);
+			Stream @is = new MemoryStream(bytes);
+			MemoryStream bout = new MemoryStream();
+
+			using (Stream os = new GZIPOutputStream(bout))
+			{
+				IOUtils.copy(@is, os);
+			}
+
+			return bout.toByteArray();
 		}
-		
-		return bout.toByteArray();
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public static byte[] decompress(byte[] bytes, int len) throws java.io.IOException
+		public static sbyte[] decompress(sbyte[] bytes, int len)
+		{
+			MemoryStream os = new MemoryStream();
+
+			using (Stream @is = new GZIPInputStream(new MemoryStream(bytes, 0, len)))
+			{
+				IOUtils.copy(@is, os);
+			}
+
+			return os.toByteArray();
+		}
 	}
 
-	public static byte[] decompress(byte[] bytes, int len) // throws IOException
-	{
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		
-		try (InputStream is = new GZIPInputStream(new ByteArrayInputStream(bytes, 0, len)))
-		{
-			IOUtils.copy(is, os);
-		}
-
-		return os.toByteArray();
-	}
 }

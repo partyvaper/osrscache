@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,21 +23,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-using OSRSCache.util.ScriptVarType;
-
-@Data
-public class EnumDefinition
+namespace net.runelite.cache.definitions
 {
-	private int id;
-	private int[] intVals;
-	private ScriptVarType keyType;
-	private ScriptVarType valType;
-	private string defaultstring = "null";
-	private int defaultInt;
-	private int size;
-	private int[] keys;
-	private string[] stringVals;
+	using Data = lombok.Data;
+	using ScriptVarType = net.runelite.cache.util.ScriptVarType;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class EnumDefinition
+	public class EnumDefinition
+	{
+		private int id;
+		private int[] intVals;
+		private ScriptVarType keyType;
+		private ScriptVarType valType;
+		private string defaultString = "null";
+		private int defaultInt;
+		private int size;
+		private int[] keys;
+		private string[] stringVals;
+	}
+
 }

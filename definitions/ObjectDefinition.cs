@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -23,61 +25,61 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-
-namespace OSRSCache.definitions;
-
-// import java.util.Map;
-// import lombok.Data;
-
-@Data
-public class ObjectDefinition
+namespace net.runelite.cache.definitions
 {
-	private int id;
-	private short[] retextureToFind;
-	private int decorDisplacement = 16;
-	private bool isHollow = false;
-	private string name = "null";
-	private int[] objectModels;
-	private int[] objectTypes;
-	private short[] recolorToFind;
-	private int mapAreaId = -1;
-	private short[] textureToReplace;
-	private int sizeX = 1;
-	private int sizeY = 1;
-	private int anInt2083 = 0;
-	private int[] ambientSoundIds;
-	private int offsetX = 0;
-	private bool mergeNormals = false;
-	private int wallOrDoor = -1;
-	private int animationID = -1;
-	private int varbitID = -1;
-	private int ambient = 0;
-	private int contrast = 0;
-	private string[] actions = new string[5];
-	private int interactType = 2;
-	private int mapSceneID = -1;
-	private int blockingMask = 0;
-	private short[] recolorToReplace;
-	private bool shadow = true;
-	private int modelSizeX = 128;
-	private int modelSizeHeight = 128;
-	private int modelSizeY = 128;
-	private int objectID;
-	private int offsetHeight = 0;
-	private int offsetY = 0;
-	private bool obstructsGround = false;
-	private int contouredGround = -1;
-	private int supportsItems = -1;
-	private int[] configChangeDest;
-	private int category;
-	private bool isRotated = false;
-	private int varpID = -1;
-	private int ambientSoundId = -1;
-	private bool aBool2111 = false;
-	private int anInt2112 = 0;
-	private int anInt2113 = 0;
-	private bool blocksProjectile = true;
-	private bool randomizeAnimStart;
-	private Map<Integer, Object> params = null;
+	using Data = lombok.Data;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class ObjectDefinition
+	public class ObjectDefinition
+	{
+		private int id;
+		private short[] retextureToFind;
+		private int decorDisplacement = 16;
+		private bool isHollow = false;
+		private string name = "null";
+		private int[] objectModels;
+		private int[] objectTypes;
+		private short[] recolorToFind;
+		private int mapAreaId = -1;
+		private short[] textureToReplace;
+		private int sizeX = 1;
+		private int sizeY = 1;
+		private int anInt2083 = 0;
+		private int[] ambientSoundIds;
+		private int offsetX = 0;
+		private bool mergeNormals = false;
+		private int wallOrDoor = -1;
+		private int animationID = -1;
+		private int varbitID = -1;
+		private int ambient = 0;
+		private int contrast = 0;
+		private string[] actions = new string[5];
+		private int interactType = 2;
+		private int mapSceneID = -1;
+		private int blockingMask = 0;
+		private short[] recolorToReplace;
+		private bool shadow = true;
+		private int modelSizeX = 128;
+		private int modelSizeHeight = 128;
+		private int modelSizeY = 128;
+		private int objectID;
+		private int offsetHeight = 0;
+		private int offsetY = 0;
+		private bool obstructsGround = false;
+		private int contouredGround = -1;
+		private int supportsItems = -1;
+		private int[] configChangeDest;
+		private int category;
+		private bool isRotated = false;
+		private int varpID = -1;
+		private int ambientSoundId = -1;
+		private bool aBool2111 = false;
+		private int anInt2112 = 0;
+		private int anInt2113 = 0;
+		private bool blocksProjectile = true;
+		private bool randomizeAnimStart;
+		private IDictionary<int, object> @params = null;
+	}
+
 }

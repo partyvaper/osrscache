@@ -1,3 +1,7 @@
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * Copyright (c) 2018, Joshua Filby <joshua@filby.me>
@@ -23,81 +27,75 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.Generic;
-
-namespace OSRSCache.util;
-
-// import java.util.HashSet;
-// import java.util.Set;
-
-public class Namer
+namespace net.runelite.cache.util
 {
-	private readonly Set<string> used = new HashSet<>();
 
-	public string name(string name, int id)
+	public class Namer
 	{
-		name = sanitize(name);
+		private readonly ISet<string> used = new HashSet<string>();
 
-		if (name == null)
+		public virtual string name(string name, int id)
 		{
-			return null;
-		}
+			name = sanitize(name);
 
-		if (used.contains(name))
-		{
-			name = name + "_" + id;
-			assert !used.contains(name);
-		}
-
-		used.add(name);
-
-		return name;
-	}
-
-	private static string sanitize(string in)
-	{
-		string s = removeTags(in)
-			.toUpperCase()
-			.replace(' ', '_')
-			.replaceAll("[^a-zA-Z0-9_]", "");
-		if (s.isEmpty())
-		{
-			return null;
-		}
-		if (Character.isDigit(s.charAt(0)))
-		{
-			return "_" + s;
-		}
-		else
-		{
-			return s;
-		}
-	}
-
-	public static string removeTags(string str)
-	{
-		stringBuilder builder = new stringBuilder(str.length());
-		boolean inTag = false;
-
-		for (int i = 0; i < str.length(); i++)
-		{
-			char currentChar = str.charAt(i);
-
-			if (currentChar == '<')
+			if (string.ReferenceEquals(name, null))
 			{
-				inTag = true;
+				return null;
 			}
-			else if (currentChar == '>')
+
+			if (used.Contains(name))
 			{
-				inTag = false;
+				name = name + "_" + id;
+				Debug.Assert(!used.Contains(name));
 			}
-			else if (!inTag)
+
+			used.Add(name);
+
+			return name;
+		}
+
+		private static string sanitize(string @in)
+		{
+			string s = removeTags(@in).ToUpper().Replace(' ', '_').replaceAll("[^a-zA-Z0-9_]", "");
+			if (s.Length == 0)
 			{
-				builder.append(currentChar);
+				return null;
+			}
+			if (char.IsDigit(s[0]))
+			{
+				return "_" + s;
+			}
+			else
+			{
+				return s;
 			}
 		}
 
-		return builder.tostring();
+		public static string removeTags(string str)
+		{
+			StringBuilder builder = new StringBuilder(str.Length);
+			bool inTag = false;
+
+			for (int i = 0; i < str.Length; i++)
+			{
+				char currentChar = str[i];
+
+				if (currentChar == '<')
+				{
+					inTag = true;
+				}
+				else if (currentChar == '>')
+				{
+					inTag = false;
+				}
+				else if (!inTag)
+				{
+					builder.Append(currentChar);
+				}
+			}
+
+			return builder.ToString();
+		}
 	}
+
 }

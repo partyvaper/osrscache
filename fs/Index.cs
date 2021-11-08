@@ -1,19 +1,42 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.Objects;
-using OSRSCache.index.ArchiveData;
-using OSRSCache.index.FileData;
-using OSRSCache.index.IndexData;
-using OSRSCache.util.Djb2;
-
-namespace OSRSCache.fs
+/*
+ * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+namespace net.runelite.cache.fs
 {
+	using ArchiveData = net.runelite.cache.index.ArchiveData;
+	using FileData = net.runelite.cache.index.FileData;
+	using IndexData = net.runelite.cache.index.IndexData;
+	using Djb2 = net.runelite.cache.util.Djb2;
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
 
 	public class Index
 	{
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(Index));
+
 		private readonly int id;
 
 		private int protocol = 6;
@@ -22,16 +45,14 @@ namespace OSRSCache.fs
 		private int crc;
 		private int compression; // compression method of this index's data in 255
 
-		private readonly List<Archive> archives = new ArrayList<>();
+		private readonly IList<Archive> archives = new List<Archive>();
 
 		public Index(int id)
 		{
 			this.id = id;
 		}
 
-		// @Override
-
-		public int hashCode()
+		public override int GetHashCode()
 		{
 			int hash = 3;
 			hash = 97 * hash + this.id;
@@ -40,112 +61,127 @@ namespace OSRSCache.fs
 			return hash;
 		}
 
-		// @Override
-
-		public bool equals(Object obj)
+		public override bool Equals(object obj)
 		{
 			if (obj == null)
 			{
 				return false;
 			}
-
-			if (getClass() != obj.getClass())
+			if (this.GetType() != obj.GetType())
 			{
 				return false;
 			}
-
-			final Index other = (Index) obj;
+//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+//ORIGINAL LINE: final Index other = (Index) obj;
+			Index other = (Index) obj;
 			if (this.id != other.id)
 			{
 				return false;
 			}
-
 			if (this.revision != other.revision)
 			{
 				return false;
 			}
-
 			if (!Objects.equals(this.archives, other.archives))
 			{
 				return false;
 			}
-
 			return true;
 		}
 
-		public int getId()
+		public virtual int Id
 		{
-			return id;
+			get
+			{
+				return id;
+			}
 		}
 
-		public int getProtocol()
+		public virtual int Protocol
 		{
-			return protocol;
+			get
+			{
+				return protocol;
+			}
+			set
+			{
+				this.protocol = value;
+			}
 		}
 
-		public void setProtocol(int protocol)
+
+		public virtual bool Named
 		{
-			this.protocol = protocol;
+			get
+			{
+				return named;
+			}
+			set
+			{
+				this.named = value;
+			}
 		}
 
-		public bool isNamed()
+
+		public virtual int Revision
 		{
-			return named;
+			get
+			{
+				return revision;
+			}
+			set
+			{
+				this.revision = value;
+			}
 		}
 
-		public void setNamed(boolean named)
+
+		public virtual int Crc
 		{
-			this.named = named;
+			get
+			{
+				return crc;
+			}
+			set
+			{
+				this.crc = value;
+			}
 		}
 
-		public int getRevision()
+
+		public virtual int Compression
 		{
-			return revision;
+			get
+			{
+				return compression;
+			}
+			set
+			{
+				this.compression = value;
+			}
 		}
 
-		public void setRevision(int revision)
+
+		public virtual IList<Archive> Archives
 		{
-			this.revision = revision;
+			get
+			{
+				return archives;
+			}
 		}
 
-		public int getCrc()
-		{
-			return crc;
-		}
-
-		public void setCrc(int crc)
-		{
-			this.crc = crc;
-		}
-
-		public int getCompression()
-		{
-			return compression;
-		}
-
-		public void setCompression(int compression)
-		{
-			this.compression = compression;
-		}
-
-		public List<Archive> getArchives()
-		{
-			return archives;
-		}
-
-		public Archive addArchive(int id)
+		public virtual Archive addArchive(int id)
 		{
 			Archive archive = new Archive(this, id);
-			this.archives.add(archive);
+			this.archives.Add(archive);
 			return archive;
 		}
 
-		public Archive getArchive(int id)
+		public virtual Archive getArchive(int id)
 		{
-			for (Archive a :
-			archives)
+			foreach (Archive a in archives)
 			{
-				if (a.getArchiveId() == id)
+				if (a.ArchiveId == id)
 				{
 					return a;
 				}
@@ -153,13 +189,12 @@ namespace OSRSCache.fs
 			return null;
 		}
 
-		public Archive findArchiveByName(string name)
+		public virtual Archive findArchiveByName(string name)
 		{
 			int hash = Djb2.hash(name);
-			for (Archive a :
-			archives)
+			foreach (Archive a in archives)
 			{
-				if (a.getNameHash() == hash)
+				if (a.NameHash == hash)
 				{
 					return a;
 				}
@@ -167,30 +202,30 @@ namespace OSRSCache.fs
 			return null;
 		}
 
-		public IndexData toIndexData()
+		public virtual IndexData toIndexData()
 		{
 			IndexData data = new IndexData();
-			data.setProtocol(protocol);
-			data.setRevision(revision);
-			data.setNamed(named);
+			data.Protocol = protocol;
+			data.Revision = revision;
+			data.Named = named;
 
-			ArchiveData[] archiveDatas = new ArchiveData[archives.size()];
-			data.setArchives(archiveDatas);
+			ArchiveData[] archiveDatas = new ArchiveData[archives.Count];
+			data.Archives = archiveDatas;
 
 			int idx = 0;
-			for (Archive archive :
-			archives)
+			foreach (Archive archive in archives)
 			{
 				ArchiveData ad = archiveDatas[idx++] = new ArchiveData();
-				ad.setId(archive.getArchiveId());
-				ad.setNameHash(archive.getNameHash());
-				ad.setCrc(archive.getCrc());
-				ad.setRevision(archive.getRevision());
+				ad.Id = archive.ArchiveId;
+				ad.NameHash = archive.NameHash;
+				ad.Crc = archive.Crc;
+				ad.Revision = archive.Revision;
 
-				FileData[] files = archive.getFileData();
-				ad.setFiles(files);
+				FileData[] files = archive.FileData;
+				ad.Files = files;
 			}
 			return data;
 		}
 	}
+
 }

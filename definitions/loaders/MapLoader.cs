@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,70 +22,75 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.MapDefinition;
-using OSRSCache.definitions.MapDefinition.Tile;
-using OSRSCache.io.InputStream;
-using OSRSCache.region.Region.X;
-using OSRSCache.region.Region.Y;
-using OSRSCache.region.Region.Z;
-
-public class MapLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public MapDefinition load(int regionX, int regionY, byte[] b)
+	using MapDefinition = net.runelite.cache.definitions.MapDefinition;
+	using Tile = net.runelite.cache.definitions.MapDefinition.Tile;
+	using InputStream = net.runelite.cache.io.InputStream;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.region.Region.X;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.region.Region.Y;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.region.Region.Z;
+
+	public class MapLoader
 	{
-		MapDefinition map = new MapDefinition();
-		map.setRegionX(regionX);
-		map.setRegionY(regionY);
-		loadTerrain(map, b);
-		return map;
-	}
-
-	private void loadTerrain(MapDefinition map, byte[] buf)
-	{
-		MapDefinition.Tile[][][] tiles = map.getTiles();
-
-		InputStream in = new InputStream(buf);
-
-		for (int z = 0; z < Z; z++)
+		public virtual MapDefinition load(int regionX, int regionY, sbyte[] b)
 		{
-			for (int x = 0; x < X; x++)
+			MapDefinition map = new MapDefinition();
+			map.setRegionX(regionX);
+			map.setRegionY(regionY);
+			loadTerrain(map, b);
+			return map;
+		}
+
+		private void loadTerrain(MapDefinition map, sbyte[] buf)
+		{
+			MapDefinition.Tile[][][] tiles = map.getTiles();
+
+			InputStream @in = new InputStream(buf);
+
+			for (int z = 0; z < Z; z++)
 			{
-				for (int y = 0; y < Y; y++)
+				for (int x = 0; x < X; x++)
 				{
-					MapDefinition.Tile tile = tiles[z][x][y] = new MapDefinition.Tile();
-					while (true)
+					for (int y = 0; y < Y; y++)
 					{
-						int attribute = in.readUnsignedByte();
-						if (attribute == 0)
+						MapDefinition.Tile tile = tiles[z][x][y] = new MapDefinition.Tile();
+						while (true)
 						{
-							break;
-						}
-						else if (attribute == 1)
-						{
-							int height = in.readUnsignedByte();
-							tile.height = height;
-							break;
-						}
-						else if (attribute <= 49)
-						{
-							tile.attrOpcode = attribute;
-							tile.overlayId = in.readByte();
-							tile.overlayPath = (byte) ((attribute - 2) / 4);
-							tile.overlayRotation = (byte) (attribute - 2 & 3);
-						}
-						else if (attribute <= 81)
-						{
-							tile.settings = (byte) (attribute - 49);
-						}
-						else
-						{
-							tile.underlayId = (byte) (attribute - 81);
+							int attribute = @in.readUnsignedByte();
+							if (attribute == 0)
+							{
+								break;
+							}
+							else if (attribute == 1)
+							{
+								int height = @in.readUnsignedByte();
+								tile.height = height;
+								break;
+							}
+							else if (attribute <= 49)
+							{
+								tile.attrOpcode = attribute;
+								tile.overlayId = @in.readByte();
+								tile.overlayPath = (sbyte)((attribute - 2) / 4);
+								tile.overlayRotation = (sbyte)(attribute - 2 & 3);
+							}
+							else if (attribute <= 81)
+							{
+								tile.settings = (sbyte)(attribute - 49);
+							}
+							else
+							{
+								tile.underlayId = (sbyte)(attribute - 81);
+							}
 						}
 					}
 				}
 			}
 		}
 	}
+
 }

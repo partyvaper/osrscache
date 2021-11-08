@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,63 +22,80 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.index;
-
-public class ArchiveData
+namespace net.runelite.cache.index
 {
-	int id;
-	int nameHash;
-	int crc;
-	int revision;
-	FileData[] files;
-
-	public int getId()
+	public class ArchiveData
 	{
-		return id;
+		internal int id;
+		internal int nameHash;
+		internal int crc;
+		internal int revision;
+		internal FileData[] files;
+
+		public virtual int Id
+		{
+			get
+			{
+				return id;
+			}
+			set
+			{
+				this.id = value;
+			}
+		}
+
+
+		public virtual int NameHash
+		{
+			get
+			{
+				return nameHash;
+			}
+			set
+			{
+				this.nameHash = value;
+			}
+		}
+
+
+		public virtual int Crc
+		{
+			get
+			{
+				return crc;
+			}
+			set
+			{
+				this.crc = value;
+			}
+		}
+
+
+		public virtual int Revision
+		{
+			get
+			{
+				return revision;
+			}
+			set
+			{
+				this.revision = value;
+			}
+		}
+
+
+		public virtual FileData[] Files
+		{
+			get
+			{
+				return files;
+			}
+			set
+			{
+				this.files = value;
+			}
+		}
+
 	}
 
-	public void setId(int id)
-	{
-		this.id = id;
-	}
-
-	public int getNameHash()
-	{
-		return nameHash;
-	}
-
-	public void setNameHash(int nameHash)
-	{
-		this.nameHash = nameHash;
-	}
-
-	public int getCrc()
-	{
-		return crc;
-	}
-
-	public void setCrc(int crc)
-	{
-		this.crc = crc;
-	}
-
-	public int getRevision()
-	{
-		return revision;
-	}
-
-	public void setRevision(int revision)
-	{
-		this.revision = revision;
-	}
-
-	public FileData[] getFiles()
-	{
-		return files;
-	}
-
-	public void setFiles(FileData[] files)
-	{
-		this.files = files;
-	}
 }

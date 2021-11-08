@@ -1,3 +1,6 @@
+﻿using System;
+using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,98 +25,97 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.ObjectModel;
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.io.File;
-// import java.io.IOException;
-// import java.util.Collection;
-// import java.util.Collections;
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.NpcDefinition;
-using OSRSCache.definitions.exporters.NpcExporter;
-using OSRSCache.definitions.loaders.NpcLoader;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.util.IDClass;
-
-public class NpcManager
+namespace net.runelite.cache
 {
-	private readonly Store store;
-	private readonly Map<Integer, NpcDefinition> npcs = new HashMap<>();
+	using NpcDefinition = net.runelite.cache.definitions.NpcDefinition;
+	using NpcExporter = net.runelite.cache.definitions.exporters.NpcExporter;
+	using NpcLoader = net.runelite.cache.definitions.loaders.NpcLoader;
+	using Archive = net.runelite.cache.fs.Archive;
+	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
+	using FSFile = net.runelite.cache.fs.FSFile;
+	using Index = net.runelite.cache.fs.Index;
+	using Storage = net.runelite.cache.fs.Storage;
+	using Store = net.runelite.cache.fs.Store;
+	using IDClass = net.runelite.cache.util.IDClass;
 
-	public NpcManager(Store store)
+	public class NpcManager
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly IDictionary<int, NpcDefinition> npcs = new Dictionary<int, NpcDefinition>();
 
-	public void load() // throws IOException
-	{
-		NpcLoader loader = new NpcLoader();
-
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.CONFIGS);
-		Archive archive = index.getArchive(ConfigType.NPC.getId());
-
-		byte[] archiveData = storage.loadArchive(archive);
-		ArchiveFiles files = archive.getFiles(archiveData);
-
-		for (FSFile f : files.getFiles())
+		public NpcManager(Store store)
 		{
-			NpcDefinition npc = loader.load(f.getFileId(), f.getContents());
-			npcs.put(f.getFileId(), npc);
+			this.store = store;
 		}
-	}
 
-	public Collection<NpcDefinition> getNpcs()
-	{
-		return Collections.unmodifiableCollection(npcs.values());
-	}
-
-	public NpcDefinition get(int npcId)
-	{
-		return npcs.get(npcId);
-	}
-
-	public void dump(File out) // throws IOException
-	{
-		out.mkdirs();
-
-		for (NpcDefinition def : npcs.values())
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
 		{
-			NpcExporter exporter = new NpcExporter(def);
+			NpcLoader loader = new NpcLoader();
 
-			File targ = new File(out, def.id + ".json");
-			exporter.exportTo(targ);
-		}
-	}
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.CONFIGS);
+			Archive archive = index.getArchive(ConfigType.NPC.getId());
 
-	public void java(File java) // throws IOException
-	{
-		java.mkdirs();
-		try (IDClass ids = IDClass.create(java, "NpcID");
-			IDClass nulls = IDClass.create(java, "NullNpcID"))
-		{
-			for (NpcDefinition def : npcs.values())
+			sbyte[] archiveData = storage.loadArchive(archive);
+			ArchiveFiles files = archive.getFiles(archiveData);
+
+			foreach (FSFile f in files.Files)
 			{
-				if (def.name.equalsIgnoreCase("NULL"))
+				NpcDefinition npc = loader.load(f.FileId, f.Contents);
+				npcs[f.FileId] = npc;
+			}
+		}
+
+		public virtual ICollection<NpcDefinition> Npcs
+		{
+			get
+			{
+				return Collections.unmodifiableCollection(npcs.Values);
+			}
+		}
+
+		public virtual NpcDefinition get(int npcId)
+		{
+			return npcs[npcId];
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void dump(java.io.File out) throws java.io.IOException
+		public virtual void dump(File @out)
+		{
+			@out.mkdirs();
+
+			foreach (NpcDefinition def in npcs.Values)
+			{
+				NpcExporter exporter = new NpcExporter(def);
+
+				File targ = new File(@out, def.id + ".json");
+				exporter.exportTo(targ);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void java(java.io.File java) throws java.io.IOException
+		public virtual void java(File java)
+		{
+			java.mkdirs();
+			using (IDClass ids = IDClass.create(java, "NpcID"), IDClass nulls = IDClass.create(java, "NullNpcID"))
+			{
+				foreach (NpcDefinition def in npcs.Values)
 				{
-					nulls.add(def.name, def.id);
-				}
-				else
-				{
-					ids.add(def.name, def.id);
+					if (def.name.Equals("NULL", StringComparison.OrdinalIgnoreCase))
+					{
+						nulls.add(def.name, def.id);
+					}
+					else
+					{
+						ids.add(def.name, def.id);
+					}
 				}
 			}
 		}
 	}
+
 }

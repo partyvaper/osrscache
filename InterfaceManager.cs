@@ -1,3 +1,5 @@
+﻿using System;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,159 +24,166 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.io.File;
-// import java.io.IOException;
-// import java.io.PrintWriter;
-using OSRSCache.definitions.InterfaceDefinition;
-using OSRSCache.definitions.exporters.InterfaceExporter;
-using OSRSCache.definitions.loaders.InterfaceLoader;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.util.Namer;
-
-public class InterfaceManager
+namespace net.runelite.cache
 {
-	private readonly Store store;
-	private InterfaceDefinition[][] interfaces;
-	private readonly Namer namer = new Namer();
+	using InterfaceDefinition = net.runelite.cache.definitions.InterfaceDefinition;
+	using InterfaceExporter = net.runelite.cache.definitions.exporters.InterfaceExporter;
+	using InterfaceLoader = net.runelite.cache.definitions.loaders.InterfaceLoader;
+	using Archive = net.runelite.cache.fs.Archive;
+	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
+	using FSFile = net.runelite.cache.fs.FSFile;
+	using Index = net.runelite.cache.fs.Index;
+	using Storage = net.runelite.cache.fs.Storage;
+	using Store = net.runelite.cache.fs.Store;
+	using Namer = net.runelite.cache.util.Namer;
 
-	public InterfaceManager(Store store)
+	public class InterfaceManager
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private InterfaceDefinition[][] interfaces;
+		private readonly Namer namer = new Namer();
 
-	public void load() // throws IOException
-	{
-		InterfaceLoader loader = new InterfaceLoader();
-
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.INTERFACES);
-
-		int max = index.getArchives().stream().mapToInt(a -> a.getArchiveId()).max().getAsInt();
-		interfaces = new InterfaceDefinition[max + 1][];
-
-		for (Archive archive : index.getArchives())
+		public InterfaceManager(Store store)
 		{
-			int archiveId = archive.getArchiveId();
-			byte[] archiveData = storage.loadArchive(archive);
-			ArchiveFiles files = archive.getFiles(archiveData);
-
-			InterfaceDefinition[] ifaces = interfaces[archiveId];
-			if (ifaces == null)
-			{
-				ifaces = interfaces[archiveId] = new InterfaceDefinition[archive.getFileData().length];
-			}
-
-			for (FSFile file : files.getFiles())
-			{
-				int fileId = file.getFileId();
-
-				int widgetId = (archiveId << 16) + fileId;
-
-				InterfaceDefinition iface = loader.load(widgetId, file.getContents());
-				ifaces[fileId] = iface;
-			}
+			this.store = store;
 		}
-	}
 
-	public int getNumInterfaceGroups()
-	{
-		return interfaces.length;
-	}
-
-	public int getNumChildren(int groupId)
-	{
-		return interfaces[groupId].length;
-	}
-
-	public InterfaceDefinition[] getIntefaceGroup(int groupId)
-	{
-		return interfaces[groupId];
-	}
-
-	public InterfaceDefinition getInterface(int groupId, int childId)
-	{
-		return interfaces[groupId][childId];
-	}
-
-	public InterfaceDefinition[][] getInterfaces()
-	{
-		return interfaces;
-	}
-
-	public void export(File out) // throws IOException
-	{
-		out.mkdirs();
-
-		for (InterfaceDefinition[] defs : interfaces)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
 		{
-			if (defs == null)
-			{
-				continue;
-			}
+			InterfaceLoader loader = new InterfaceLoader();
 
-			for (InterfaceDefinition def : defs)
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.INTERFACES);
+
+			int max = index.Archives.Select(a => a.getArchiveId()).Max().getAsInt();
+			interfaces = new InterfaceDefinition[max + 1][];
+
+			foreach (Archive archive in index.Archives)
 			{
-				if (def == null)
+				int archiveId = archive.ArchiveId;
+				sbyte[] archiveData = storage.loadArchive(archive);
+				ArchiveFiles files = archive.getFiles(archiveData);
+
+				InterfaceDefinition[] ifaces = interfaces[archiveId];
+				if (ifaces == null)
 				{
-					continue;
+					ifaces = interfaces[archiveId] = new InterfaceDefinition[archive.FileData.Length];
 				}
 
-				InterfaceExporter exporter = new InterfaceExporter(def);
+				foreach (FSFile file in files.Files)
+				{
+					int fileId = file.FileId;
 
-				File folder = new File(out, "" + (def.id >>> 16));
-				folder.mkdirs();
+					int widgetId = (archiveId << 16) + fileId;
 
-				File targ = new File(folder, (def.id & 0xffff) + ".json");
-				exporter.exportTo(targ);
+					InterfaceDefinition iface = loader.load(widgetId, file.Contents);
+					ifaces[fileId] = iface;
+				}
 			}
 		}
-	}
 
-	public void java(File java) // throws IOException
-	{
-		System.setProperty("line.separator", "\n");
-		java.mkdirs();
-		File targ = new File(java, "InterfaceID.java");
-		try (PrintWriter fw = new PrintWriter(targ))
+		public virtual int NumInterfaceGroups
 		{
-			fw.println("/* This file is automatically generated. Do not edit. */");
-			fw.println("package net.runelite.api;");
-			fw.println("");
-			fw.println("public sealed class InterfaceID {");
-			for (InterfaceDefinition[] defs : interfaces)
+			get
+			{
+				return interfaces.Length;
+			}
+		}
+
+		public virtual int getNumChildren(int groupId)
+		{
+			return interfaces[groupId].Length;
+		}
+
+		public virtual InterfaceDefinition[] getIntefaceGroup(int groupId)
+		{
+			return interfaces[groupId];
+		}
+
+		public virtual InterfaceDefinition getInterface(int groupId, int childId)
+		{
+			return interfaces[groupId][childId];
+		}
+
+		public virtual InterfaceDefinition[][] Interfaces
+		{
+			get
+			{
+				return interfaces;
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void export(java.io.File out) throws java.io.IOException
+		public virtual void export(File @out)
+		{
+			@out.mkdirs();
+
+			foreach (InterfaceDefinition[] defs in interfaces)
 			{
 				if (defs == null)
 				{
 					continue;
 				}
-				for (InterfaceDefinition def : defs)
+
+				foreach (InterfaceDefinition def in defs)
 				{
-					if (def == null || def.name == null || def.name.equalsIgnoreCase("NULL"))
+					if (def == null)
 					{
 						continue;
 					}
 
-					string name = namer.name(def.name, def.id);
-					if (name == null)
-					{
-						continue;
-					}
+					InterfaceExporter exporter = new InterfaceExporter(def);
 
-					fw.println("	public const int " + name + " = " + def.id + ";");
+					File folder = new File(@out, "" + ((int)((uint)def.id >> 16)));
+					folder.mkdirs();
+
+					File targ = new File(folder, (def.id & 0xffff) + ".json");
+					exporter.exportTo(targ);
 				}
 			}
-			fw.println("}");
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void java(java.io.File java) throws java.io.IOException
+		public virtual void java(File java)
+		{
+			System.setProperty("line.separator", "\n");
+			java.mkdirs();
+			File targ = new File(java, "InterfaceID.java");
+			using (PrintWriter fw = new PrintWriter(targ))
+			{
+				fw.println("/* This file is automatically generated. Do not edit. */");
+				fw.println("package net.runelite.api;");
+				fw.println("");
+				fw.println("public final class InterfaceID {");
+				foreach (InterfaceDefinition[] defs in interfaces)
+				{
+					if (defs == null)
+					{
+						continue;
+					}
+					foreach (InterfaceDefinition def in defs)
+					{
+						if (def == null || string.ReferenceEquals(def.name, null) || def.name.Equals("NULL", StringComparison.OrdinalIgnoreCase))
+						{
+							continue;
+						}
+
+						string name = namer.name(def.name, def.id);
+						if (string.ReferenceEquals(name, null))
+						{
+							continue;
+						}
+
+						fw.println("	public static final int " + name + " = " + def.id + ";");
+					}
+				}
+				fw.println("}");
+			}
 		}
 	}
+
 }

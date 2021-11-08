@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,122 +23,99 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.SpriteDefinition;
-using OSRSCache.io.InputStream;
-
-public class SpriteLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public const int FLAG_VERTICAL = 0b01;
-	public const int FLAG_ALPHA    = 0b10;
+	using SpriteDefinition = net.runelite.cache.definitions.SpriteDefinition;
+	using InputStream = net.runelite.cache.io.InputStream;
 
-	public SpriteDefinition[] load(int id, byte[] b)
+	public class SpriteLoader
 	{
-		InputStream is = new InputStream(b);
+		public static readonly int FLAG_VERTICAL = 0b01;
+		public static readonly int FLAG_ALPHA = 0b10;
 
-		is.setOffset(is.getLength() - 2);
-		int spriteCount = is.readUnsignedShort();
-
-		SpriteDefinition[] sprites = new SpriteDefinition[spriteCount];
-
-		// 2 for size
-		// 5 for width, height, palette length
-		// + 8 bytes per sprite for offset x/y, width, and height
-		is.setOffset(is.getLength() - 7 - spriteCount * 8);
-
-		// max width and height
-		int width = is.readUnsignedShort();
-		int height = is.readUnsignedShort();
-		int paletteLength = is.readUnsignedByte() + 1;
-
-		for (int i = 0; i < spriteCount; ++i)
+		public virtual SpriteDefinition[] load(int id, sbyte[] b)
 		{
-			sprites[i] = new SpriteDefinition();
-			sprites[i].setId(id);
-			sprites[i].setFrame(i);
-			sprites[i].setMaxWidth(width);
-			sprites[i].setMaxHeight(height);
-		}
+			InputStream @is = new InputStream(b);
 
-		for (int i = 0; i < spriteCount; ++i)
-		{
-			sprites[i].setOffsetX(is.readUnsignedShort());
-		}
+			@is.Offset = @is.Length - 2;
+			int spriteCount = @is.readUnsignedShort();
 
-		for (int i = 0; i < spriteCount; ++i)
-		{
-			sprites[i].setOffsetY(is.readUnsignedShort());
-		}
+			SpriteDefinition[] sprites = new SpriteDefinition[spriteCount];
 
-		for (int i = 0; i < spriteCount; ++i)
-		{
-			sprites[i].setWidth(is.readUnsignedShort());
-		}
+			// 2 for size
+			// 5 for width, height, palette length
+			// + 8 bytes per sprite for offset x/y, width, and height
+			@is.Offset = @is.Length - 7 - spriteCount * 8;
 
-		for (int i = 0; i < spriteCount; ++i)
-		{
-			sprites[i].setHeight(is.readUnsignedShort());
-		}
+			// max width and height
+			int width = @is.readUnsignedShort();
+			int height = @is.readUnsignedShort();
+			int paletteLength = @is.readUnsignedByte() + 1;
 
-		// same as above + 3 bytes for each palette entry, except for the first one (which is transparent)
-		is.setOffset(is.getLength() - 7 - spriteCount * 8 - (paletteLength - 1) * 3);
-		int[] palette = new int[paletteLength];
-
-		for (int i = 1; i < paletteLength; ++i)
-		{
-			palette[i] = is.read24BitInt();
-
-			if (palette[i] == 0)
+			for (int i = 0; i < spriteCount; ++i)
 			{
-				palette[i] = 1;
+				sprites[i] = new SpriteDefinition();
+				sprites[i].setId(id);
+				sprites[i].setFrame(i);
+				sprites[i].setMaxWidth(width);
+				sprites[i].setMaxHeight(height);
 			}
-		}
 
-		is.setOffset(0);
-
-		for (int i = 0; i < spriteCount; ++i)
-		{
-			SpriteDefinition def = sprites[i];
-			int spriteWidth = def.getWidth();
-			int spriteHeight = def.getHeight();
-			int dimension = spriteWidth * spriteHeight;
-			byte[] pixelPaletteIndicies = new byte[dimension];
-			byte[] pixelAlphas = new byte[dimension];
-			def.pixelIdx = pixelPaletteIndicies;
-			def.palette = palette;
-
-			int flags = is.readUnsignedByte();
-
-			if ((flags & FLAG_VERTICAL) == 0)
+			for (int i = 0; i < spriteCount; ++i)
 			{
-				// read horizontally
-				for (int j = 0; j < dimension; ++j)
-				{
-					pixelPaletteIndicies[j] = is.readByte();
-				}
+				sprites[i].setOffsetX(@is.readUnsignedShort());
 			}
-			else
+
+			for (int i = 0; i < spriteCount; ++i)
 			{
-				// read vertically
-				for (int j = 0; j < spriteWidth; ++j)
+				sprites[i].setOffsetY(@is.readUnsignedShort());
+			}
+
+			for (int i = 0; i < spriteCount; ++i)
+			{
+				sprites[i].setWidth(@is.readUnsignedShort());
+			}
+
+			for (int i = 0; i < spriteCount; ++i)
+			{
+				sprites[i].setHeight(@is.readUnsignedShort());
+			}
+
+			// same as above + 3 bytes for each palette entry, except for the first one (which is transparent)
+			@is.Offset = @is.Length - 7 - spriteCount * 8 - (paletteLength - 1) * 3;
+			int[] palette = new int[paletteLength];
+
+			for (int i = 1; i < paletteLength; ++i)
+			{
+				palette[i] = @is.read24BitInt();
+
+				if (palette[i] == 0)
 				{
-					for (int k = 0; k < spriteHeight; ++k)
-					{
-						pixelPaletteIndicies[spriteWidth * k + j] = is.readByte();
-					}
+					palette[i] = 1;
 				}
 			}
 
-			// read alphas
-			if ((flags & FLAG_ALPHA) != 0)
+			@is.Offset = 0;
+
+			for (int i = 0; i < spriteCount; ++i)
 			{
+				SpriteDefinition def = sprites[i];
+				int spriteWidth = def.getWidth();
+				int spriteHeight = def.getHeight();
+				int dimension = spriteWidth * spriteHeight;
+				sbyte[] pixelPaletteIndicies = new sbyte[dimension];
+				sbyte[] pixelAlphas = new sbyte[dimension];
+				def.pixelIdx = pixelPaletteIndicies;
+				def.palette = palette;
+
+				int flags = @is.readUnsignedByte();
+
 				if ((flags & FLAG_VERTICAL) == 0)
 				{
 					// read horizontally
 					for (int j = 0; j < dimension; ++j)
 					{
-						pixelAlphas[j] = is.readByte();
+						pixelPaletteIndicies[j] = @is.readByte();
 					}
 				}
 				else
@@ -148,36 +125,63 @@ public class SpriteLoader
 					{
 						for (int k = 0; k < spriteHeight; ++k)
 						{
-							pixelAlphas[spriteWidth * k + j] = is.readByte();
+							pixelPaletteIndicies[spriteWidth * k + j] = @is.readByte();
 						}
 					}
 				}
-			}
-			else
-			{
-				// everything non-zero is opaque
+
+				// read alphas
+				if ((flags & FLAG_ALPHA) != 0)
+				{
+					if ((flags & FLAG_VERTICAL) == 0)
+					{
+						// read horizontally
+						for (int j = 0; j < dimension; ++j)
+						{
+							pixelAlphas[j] = @is.readByte();
+						}
+					}
+					else
+					{
+						// read vertically
+						for (int j = 0; j < spriteWidth; ++j)
+						{
+							for (int k = 0; k < spriteHeight; ++k)
+							{
+								pixelAlphas[spriteWidth * k + j] = @is.readByte();
+							}
+						}
+					}
+				}
+				else
+				{
+					// everything non-zero is opaque
+					for (int j = 0; j < dimension; ++j)
+					{
+						int index = pixelPaletteIndicies[j];
+
+						if (index != 0)
+						{
+							pixelAlphas[j] = unchecked((sbyte) 0xFF);
+						}
+					}
+				}
+
+				int[] pixels = new int[dimension];
+
+				// build argb pixels from palette/alphas
 				for (int j = 0; j < dimension; ++j)
 				{
-					int index = pixelPaletteIndicies[j];
+					int index = pixelPaletteIndicies[j] & 0xFF;
 
-					if (index != 0)
-						pixelAlphas[j] = (byte) 0xFF;
+					pixels[j] = palette[index] | (pixelAlphas[j] << 24);
 				}
+
+				def.setPixels(pixels);
 			}
 
-			int[] pixels = new int[dimension];
-
-			// build argb pixels from palette/alphas
-			for (int j = 0; j < dimension; ++j)
-			{
-				int index = pixelPaletteIndicies[j] & 0xFF;
-
-				pixels[j] = palette[index] | (pixelAlphas[j] << 24);
-			}
-
-			def.setPixels(pixels);
+			return sprites;
 		}
-
-		return sprites;
 	}
+
 }

@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,38 +24,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-
-namespace OSRSCache.util;
-
-// import java.io.IOException;
-// import java.util.HashMap;
-// import java.util.Map;
-// import java.util.Properties;
-
-public class Djb2Manager
+namespace net.runelite.cache.util
 {
-	private readonly Map<Integer, string> hashes = new HashMap<>();
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
 
-	public void load() // throws IOException
+	public class Djb2Manager
 	{
-		Properties properties = new Properties();
-		properties.load(Djb2Manager.class.getResourceAsStream("/djb2.properties"));
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(Djb2Manager));
 
-		for (Object key : properties.keySet())
+		private readonly IDictionary<int, string> hashes = new Dictionary<int, string>();
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
 		{
-			int hash = Integer.parseInt((string) key);
-			string value = properties.getProperty((string) key);
+			Properties properties = new Properties();
+			properties.load(typeof(Djb2Manager).getResourceAsStream("/djb2.properties"));
 
-			hashes.put(hash, value);
+			foreach (object key in properties.keySet())
+			{
+				int hash = int.Parse((string) key);
+				string value = properties.getProperty((string) key);
+
+				hashes[hash] = value;
+			}
+
+			logger.info("Loaded {} djb2 hashes", hashes.Count);
 		}
 
-		Console.WriteLine("Loaded {} djb2 hashes", hashes.size());
+		public virtual string getName(int hash)
+		{
+			return hashes[hash];
+		}
 	}
 
-	public string getName(int hash)
-	{
-		return hashes.get(hash);
-	}
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,33 +22,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.InventoryDefinition;
-using OSRSCache.io.InputStream;
-
-public class InventoryLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public InventoryDefinition load(int id, byte[] b)
+	using InventoryDefinition = net.runelite.cache.definitions.InventoryDefinition;
+	using InputStream = net.runelite.cache.io.InputStream;
+
+	public class InventoryLoader
 	{
-		InventoryDefinition def = new InventoryDefinition();
-		def.id = id;
-		InputStream is = new InputStream(b);
-
-		while (true)
+		public virtual InventoryDefinition load(int id, sbyte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			InventoryDefinition def = new InventoryDefinition();
+			def.id = id;
+			InputStream @is = new InputStream(b);
+
+			while (true)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				if (opcode == 2)
+				{
+					def.size = @is.readUnsignedShort();
+				}
 			}
 
-			if (opcode == 2)
-			{
-				def.size = is.readUnsignedShort();
-			}
+			return def;
 		}
-
-		return def;
 	}
+
 }

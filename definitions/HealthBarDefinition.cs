@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2020, Trevor <https://github.com/Trevor159>
  * All rights reserved.
  *
@@ -22,22 +22,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class HealthBarDefinition
+namespace net.runelite.cache.definitions
 {
-	public int id;
-	public int field3276;
-	public int field3277 = 255;
-	public int field3278 = 255;
-	public int field3283 = -1;
-	public int field3272 = 1;
-	public int field3275 = 70;
-	public int healthBarFrontSpriteId = -1;
-	public int healthBarBackSpriteId = -1;
-	public int healthScale = 30;
-	public int healthBarPadding = 0;
+	using Data = lombok.Data;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class HealthBarDefinition
+	public class HealthBarDefinition
+	{
+		public int id;
+		public int field3276;
+		public int field3277 = 255;
+		public int field3278 = 255;
+		public int field3283 = -1;
+		public int field3272 = 1;
+		public int field3275 = 70;
+		public int healthBarFrontSpriteId = -1;
+		public int healthBarBackSpriteId = -1;
+		public int healthScale = 30;
+		public int healthBarPadding = 0;
+	}
+
 }

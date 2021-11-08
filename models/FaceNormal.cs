@@ -1,8 +1,10 @@
-namespace OSRSCache.models;
-
-public class FaceNormal
+﻿namespace net.runelite.cache.models
 {
-	public int x;
-	public int y;
-	public int z;
+	public class FaceNormal
+	{
+		public int x;
+		public int y;
+		public int z;
+	}
+
 }

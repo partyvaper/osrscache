@@ -1,3 +1,5 @@
+﻿using System.Diagnostics;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,122 +24,118 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.models;
-
-// import java.io.PrintWriter;
-using OSRSCache.TextureManager;
-using OSRSCache.definitions.ModelDefinition;
-using OSRSCache.definitions.TextureDefinition;
-
-public class ObjExporter
+namespace net.runelite.cache.models
 {
-	private const double BRIGHTNESS = JagexColor.BRIGTHNESS_MIN;
+	using TextureManager = net.runelite.cache.TextureManager;
+	using ModelDefinition = net.runelite.cache.definitions.ModelDefinition;
+	using TextureDefinition = net.runelite.cache.definitions.TextureDefinition;
 
-	private readonly TextureManager textureManager;
-	private readonly ModelDefinition model;
-
-	public ObjExporter(TextureManager textureManager, ModelDefinition model)
+	public class ObjExporter
 	{
-		this.textureManager = textureManager;
-		this.model = model;
-	}
+		private const double BRIGHTNESS = JagexColor.BRIGTHNESS_MIN;
 
-	public void export(PrintWriter objWriter, PrintWriter mtlWriter)
-	{
-		model.computeNormals();
-		model.computeTextureUVCoordinates();
+		private readonly TextureManager textureManager;
+		private readonly ModelDefinition model;
 
-		objWriter.println("mtllib " + model.id + ".mtl");
-
-		objWriter.println("o runescapemodel");
-
-		for (int i = 0; i < model.vertexCount; ++i)
+		public ObjExporter(TextureManager textureManager, ModelDefinition model)
 		{
-			objWriter.println("v " + model.vertexPositionsX[i] + " "
-				+ model.vertexPositionsY[i] * -1 + " "
-				+ model.vertexPositionsZ[i] * -1);
+			this.textureManager = textureManager;
+			this.model = model;
 		}
 
-		if (model.faceTextures != null)
+		public virtual void export(PrintWriter objWriter, PrintWriter mtlWriter)
 		{
-			float[][] u = model.faceTextureUCoordinates;
-			float[][] v = model.faceTextureVCoordinates;
+			model.computeNormals();
+			model.computeTextureUVCoordinates();
+
+			objWriter.println("mtllib " + model.id + ".mtl");
+
+			objWriter.println("o runescapemodel");
+
+			for (int i = 0; i < model.vertexCount; ++i)
+			{
+				objWriter.println("v " + model.vertexPositionsX[i] + " " + model.vertexPositionsY[i] * -1 + " " + model.vertexPositionsZ[i] * -1);
+			}
+
+			if (model.faceTextures != null)
+			{
+				float[][] u = model.faceTextureUCoordinates;
+				float[][] v = model.faceTextureVCoordinates;
+
+				for (int i = 0; i < model.faceCount; ++i)
+				{
+					objWriter.println("vt " + u[i][0] + " " + v[i][0]);
+					objWriter.println("vt " + u[i][1] + " " + v[i][1]);
+					objWriter.println("vt " + u[i][2] + " " + v[i][2]);
+				}
+			}
+
+			foreach (VertexNormal normal in model.vertexNormals)
+			{
+				objWriter.println("vn " + normal.x + " " + normal.y + " " + normal.z);
+			}
 
 			for (int i = 0; i < model.faceCount; ++i)
 			{
-				objWriter.println("vt " + u[i][0] + " " + v[i][0]);
-				objWriter.println("vt " + u[i][1] + " " + v[i][1]);
-				objWriter.println("vt " + u[i][2] + " " + v[i][2]);
-			}
-		}
+				int x = model.faceVertexIndices1[i] + 1;
+				int y = model.faceVertexIndices2[i] + 1;
+				int z = model.faceVertexIndices3[i] + 1;
 
-		for (VertexNormal normal : model.vertexNormals)
-		{
-			objWriter.println("vn " + normal.x + " " + normal.y + " " + normal.z);
-		}
+				objWriter.println("usemtl m" + i);
+				if (model.faceTextures != null)
+				{
+					objWriter.println("f " + x + "/" + (i * 3 + 1) + " " + y + "/" + (i * 3 + 2) + " " + z + "/" + (i * 3 + 3));
 
-		for (int i = 0; i < model.faceCount; ++i)
-		{
-			int x = model.faceVertexIndices1[i] + 1;
-			int y = model.faceVertexIndices2[i] + 1;
-			int z = model.faceVertexIndices3[i] + 1;
-
-			objWriter.println("usemtl m" + i);
-			if (model.faceTextures != null)
-			{
-				objWriter.println("f "
-					+ x + "/" + (i * 3 + 1) + " "
-					+ y + "/" + (i * 3 + 2) + " "
-					+ z + "/" + (i * 3 + 3));
-
-			}
-			else
-			{
-				objWriter.println("f " + x + " " + y + " " + z);
-			}
-			objWriter.println("");
-		}
-
-		// Write material
-		for (int i = 0; i < model.faceCount; ++i)
-		{
-			short textureId = -1;
-
-			if (model.faceTextures != null)
-			{
-				textureId = model.faceTextures[i];
+				}
+				else
+				{
+					objWriter.println("f " + x + " " + y + " " + z);
+				}
+				objWriter.println("");
 			}
 
-			mtlWriter.println("newmtl m" + i);
-
-			if (textureId == -1)
+			// Write material
+			for (int i = 0; i < model.faceCount; ++i)
 			{
-				int rgb = JagexColor.HSLtoRGB( model.faceColors[i], BRIGHTNESS);
-				double r = ((rgb >> 16) & 0xff) / 255.0;
-				double g = ((rgb >> 8) & 0xff) / 255.0;
-				double b = (rgb & 0xff) / 255.0;
+				short textureId = -1;
 
-				mtlWriter.println("Kd " + r + " " + g + " " + b);
-			}
-			else
-			{
-				TextureDefinition texture = textureManager.findTexture(textureId);
-				assert texture != null;
+				if (model.faceTextures != null)
+				{
+					textureId = model.faceTextures[i];
+				}
 
-				mtlWriter.println("map_Kd sprite/" + texture.getFileIds()[0] + "-0.png");
-			}
+				mtlWriter.println("newmtl m" + i);
 
-			int alpha = 0;
+				if (textureId == -1)
+				{
+					int rgb = JagexColor.HSLtoRGB(model.faceColors[i], BRIGHTNESS);
+					double r = ((rgb >> 16) & 0xff) / 255.0;
+					double g = ((rgb >> 8) & 0xff) / 255.0;
+					double b = (rgb & 0xff) / 255.0;
 
-			if (model.faceAlphas != null)
-			{
-				alpha = model.faceAlphas[i] & 0xFF;
-			}
+					mtlWriter.println("Kd " + r + " " + g + " " + b);
+				}
+				else
+				{
+					TextureDefinition texture = textureManager.findTexture(textureId);
+					Debug.Assert(texture != null);
 
-			if (alpha != 0)
-			{
-				mtlWriter.println("d " + (alpha / 255.0));
+					mtlWriter.println("map_Kd sprite/" + texture.getFileIds()[0] + "-0.png");
+				}
+
+				int alpha = 0;
+
+				if (model.faceAlphas != null)
+				{
+					alpha = model.faceAlphas[i] & 0xFF;
+				}
+
+				if (alpha != 0)
+				{
+					mtlWriter.println("d " + (alpha / 255.0));
+				}
 			}
 		}
 	}
+
 }

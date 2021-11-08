@@ -1,3 +1,7 @@
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,61 +26,60 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.util;
-
-// import java.io.ByteArrayInputStream;
-// import java.io.ByteArrayOutputStream;
-// import java.io.IOException;
-// import java.io.InputStream;
-// import java.io.OutputStream;
-// import java.util.Arrays;
-// import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-// import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-// import org.apache.commons.compress.utils.IOUtils;
-
-public class BZip2
+namespace net.runelite.cache.util
 {
-	private const byte[] BZIP_HEADER = new byte[]
-	{
-		'B', 'Z', // magic
-		'h',      // 'h' for Bzip2 ('H'uffman coding)
-		'1'       // block size
-	};
+	using BZip2CompressorInputStream = org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+	using BZip2CompressorOutputStream = org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+	using IOUtils = org.apache.commons.compress.utils.IOUtils;
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
 
-	public static byte[] compress(byte[] bytes) // throws IOException
+	public class BZip2
 	{
-		InputStream is = new ByteArrayInputStream(bytes);
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		try (OutputStream os = new BZip2CompressorOutputStream(bout, 1))
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(BZip2));
+
+		private static readonly sbyte[] BZIP_HEADER = new sbyte[] {(sbyte)'B', (sbyte)'Z', (sbyte)'h', (sbyte)'1'};
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public static byte[] compress(byte[] bytes) throws java.io.IOException
+		public static sbyte[] compress(sbyte[] bytes)
 		{
-			IOUtils.copy(is, os);
+			Stream @is = new MemoryStream(bytes);
+			MemoryStream bout = new MemoryStream();
+			using (Stream os = new BZip2CompressorOutputStream(bout, 1))
+			{
+				IOUtils.copy(@is, os);
+			}
+
+			sbyte[] @out = bout.toByteArray();
+
+			Debug.Assert(BZIP_HEADER[0] == @out[0]);
+			Debug.Assert(BZIP_HEADER[1] == @out[1]);
+			Debug.Assert(BZIP_HEADER[2] == @out[2]);
+			Debug.Assert(BZIP_HEADER[3] == @out[3]);
+
+			return Arrays.CopyOfRange(@out, BZIP_HEADER.Length, @out.Length); // remove header..
 		}
 
-		byte[] out = bout.toByteArray();
-
-		assert BZIP_HEADER[0] == out[0];
-		assert BZIP_HEADER[1] == out[1];
-		assert BZIP_HEADER[2] == out[2];
-		assert BZIP_HEADER[3] == out[3];
-
-		return Arrays.copyOfRange(out, BZIP_HEADER.length, out.length); // remove header..
-	}
-
-	public static byte[] decompress(byte[] bytes, int len) // throws IOException
-	{
-		byte[] data = new byte[len + BZIP_HEADER.length];
-
-		// add header
-		System.arraycopy(BZIP_HEADER, 0, data, 0, BZIP_HEADER.length);
-		System.arraycopy(bytes, 0, data, BZIP_HEADER.length, len);
-
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-		try (InputStream is = new BZip2CompressorInputStream(new ByteArrayInputStream(data)))
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public static byte[] decompress(byte[] bytes, int len) throws java.io.IOException
+		public static sbyte[] decompress(sbyte[] bytes, int len)
 		{
-			IOUtils.copy(is, os);
-		}
+			sbyte[] data = new sbyte[len + BZIP_HEADER.Length];
 
-		return os.toByteArray();
+			// add header
+			Array.Copy(BZIP_HEADER, 0, data, 0, BZIP_HEADER.Length);
+			Array.Copy(bytes, 0, data, BZIP_HEADER.Length, len);
+
+			MemoryStream os = new MemoryStream();
+
+			using (Stream @is = new BZip2CompressorInputStream(new MemoryStream(data)))
+			{
+				IOUtils.copy(@is, os);
+			}
+
+			return os.toByteArray();
+		}
 	}
+
 }

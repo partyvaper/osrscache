@@ -1,3 +1,5 @@
+﻿using System.IO;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,39 +24,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.exporters;
-
-// import com.google.gson.Gson;
-// import com.google.gson.GsonBuilder;
-// import java.io.File;
-// import java.io.FileWriter;
-// import java.io.IOException;
-using OSRSCache.definitions.InterfaceDefinition;
-
-public class InterfaceExporter
+namespace net.runelite.cache.definitions.exporters
 {
-	private readonly InterfaceDefinition item;
-	private readonly Gson gson;
+	using Gson = com.google.gson.Gson;
+	using GsonBuilder = com.google.gson.GsonBuilder;
+	using InterfaceDefinition = net.runelite.cache.definitions.InterfaceDefinition;
 
-	public InterfaceExporter(InterfaceDefinition item)
+	public class InterfaceExporter
 	{
-		this.item = item;
+		private readonly InterfaceDefinition item;
+		private readonly Gson gson;
 
-		GsonBuilder builder = new GsonBuilder()
-			.setPrettyPrinting();
-		gson = builder.create();
-	}
-
-	public string export()
-	{
-		return gson.toJson(item);
-	}
-
-	public void exportTo(File file) // throws IOException
-	{
-		try (FileWriter fw = new FileWriter(file))
+		public InterfaceExporter(InterfaceDefinition item)
 		{
-			fw.write(export());
+			this.item = item;
+
+			GsonBuilder builder = (new GsonBuilder()).setPrettyPrinting();
+			gson = builder.create();
+		}
+
+		public virtual string export()
+		{
+			return gson.toJson(item);
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void exportTo(java.io.File file) throws java.io.IOException
+		public virtual void exportTo(File file)
+		{
+			using (StreamWriter fw = new StreamWriter(file))
+			{
+				fw.Write(export());
+			}
 		}
 	}
+
 }

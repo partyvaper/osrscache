@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,61 +24,58 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.ObjectModel;
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.io.IOException;
-// import java.util.Collection;
-// import java.util.Collections;
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.AreaDefinition;
-using OSRSCache.definitions.loaders.AreaLoader;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-
-public class AreaManager
+namespace net.runelite.cache
 {
-	private readonly Store store;
-	private readonly Map<Integer, AreaDefinition> areas = new HashMap<>();
+	using AreaDefinition = net.runelite.cache.definitions.AreaDefinition;
+	using AreaLoader = net.runelite.cache.definitions.loaders.AreaLoader;
+	using Archive = net.runelite.cache.fs.Archive;
+	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
+	using FSFile = net.runelite.cache.fs.FSFile;
+	using Index = net.runelite.cache.fs.Index;
+	using Storage = net.runelite.cache.fs.Storage;
+	using Store = net.runelite.cache.fs.Store;
 
-	public AreaManager(Store store)
+	public class AreaManager
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly IDictionary<int, AreaDefinition> areas = new Dictionary<int, AreaDefinition>();
 
-	public void load() // throws IOException
-	{
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.CONFIGS);
-		Archive archive = index.getArchive(ConfigType.AREA.getId());
-
-		byte[] archiveData = storage.loadArchive(archive);
-		ArchiveFiles files = archive.getFiles(archiveData);
-
-		for (FSFile file : files.getFiles())
+		public AreaManager(Store store)
 		{
-			AreaLoader loader = new AreaLoader();
-			AreaDefinition area = loader.load(file.getContents(), file.getFileId());
-			areas.put(area.id, area);
+			this.store = store;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
+		{
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.CONFIGS);
+			Archive archive = index.getArchive(ConfigType.AREA.getId());
+
+			sbyte[] archiveData = storage.loadArchive(archive);
+			ArchiveFiles files = archive.getFiles(archiveData);
+
+			foreach (FSFile file in files.Files)
+			{
+				AreaLoader loader = new AreaLoader();
+				AreaDefinition area = loader.load(file.Contents, file.FileId);
+				areas[area.id] = area;
+			}
+		}
+
+		public virtual ICollection<AreaDefinition> Areas
+		{
+			get
+			{
+				return Collections.unmodifiableCollection(areas.Values);
+			}
+		}
+
+		public virtual AreaDefinition getArea(int areaId)
+		{
+			return areas[areaId];
 		}
 	}
 
-	public Collection<AreaDefinition> getAreas()
-	{
-		return Collections.unmodifiableCollection(areas.values());
-	}
-
-	public AreaDefinition getArea(int areaId)
-	{
-		return areas.get(areaId);
-	}
 }

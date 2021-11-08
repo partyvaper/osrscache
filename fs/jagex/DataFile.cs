@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,231 +22,227 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-
-namespace OSRSCache.fs.jagex;
-
-// import java.io.Closeable;
-// import java.io.File;
-// import java.io.FileNotFoundException;
-// import java.io.IOException;
-// import java.io.RandomAccessFile;
-// import java.nio.ByteBuffer;
-
-public class DataFile // , Closeable
+namespace net.runelite.cache.fs.jagex
 {
-	private const int SECTOR_SIZE = 520;
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
 
-	private readonly RandomAccessFile dat;
-
-	public DataFile(File file) throws FileNotFoundException
+	public class DataFile : System.IDisposable
 	{
-		this.dat = new RandomAccessFile(file, "rw");
-	}
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(DataFile));
 
-	// @Override
-	public void close() // throws IOException
-	{
-		dat.close();
-	}
+		private const int SECTOR_SIZE = 520;
 
-	public void clear() // throws IOException
-	{
-		dat.setLength(0L);
-	}
+		private readonly RandomAccessFile dat;
 
-	/**
-	 *
-	 * @param indexId expected index of archive of contents being read
-	 * @param archiveId expected archive of contents being read
-	 * @param sector sector to start reading at
-	 * @param size size of file
-	 * @return
-	 * @throws IOException
-	 */
-	public synchronized byte[] read(int indexId, int archiveId, int sector, int size) // throws IOException
-	{
-		if (sector <= 0L || dat.length() / SECTOR_SIZE < (long) sector)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public DataFile(java.io.File file) throws java.io.FileNotFoundException
+		public DataFile(File file)
 		{
-			Console.WriteLine("bad read, dat length {}, requested sector {}", dat.length(), sector);
-			return null;
+			this.dat = new RandomAccessFile(file, "rw");
 		}
 
-		byte[] readBuffer = new byte[SECTOR_SIZE];
-		ByteBuffer buffer = ByteBuffer.allocate(size);
-
-		for (int part = 0, readBytesCount = 0, nextSector;
-			size > readBytesCount;
-			sector = nextSector)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void close() throws java.io.IOException
+		public virtual void Dispose()
 		{
-			if (sector == 0)
+			dat.close();
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void clear() throws java.io.IOException
+		public virtual void clear()
+		{
+			dat.setLength(0L);
+		}
+
+		/// 
+		/// <param name="indexId"> expected index of archive of contents being read </param>
+		/// <param name="archiveId"> expected archive of contents being read </param>
+		/// <param name="sector"> sector to start reading at </param>
+		/// <param name="size"> size of file
+		/// @return </param>
+		/// <exception cref="IOException"> </exception>
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public synchronized byte[] read(int indexId, int archiveId, int sector, int size) throws java.io.IOException
+		public virtual sbyte[] read(int indexId, int archiveId, int sector, int size)
+		{
+			lock (this)
 			{
-				Console.WriteLine("Unexpected end of file");
-				return null;
-			}
-
-			dat.seek(SECTOR_SIZE * sector);
-
-			int dataBlockSize = size - readBytesCount;
-			byte headerSize;
-			int currentIndex;
-			int currentPart;
-			int currentArchive;
-			if (archiveId > 0xFFFF)
-			{
-				headerSize = 10;
-				if (dataBlockSize > SECTOR_SIZE - headerSize)
+				if (sector <= 0L || dat.length() / SECTOR_SIZE < (long) sector)
 				{
-					dataBlockSize = SECTOR_SIZE - headerSize;
-				}
-
-				int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
-				if (i != headerSize + dataBlockSize)
-				{
-					Console.WriteLine("Short read when reading file data for {}/{}", indexId, archiveId);
+					logger.warn("bad read, dat length {}, requested sector {}", dat.length(), sector);
 					return null;
 				}
-
-				currentArchive = ((readBuffer[0] & 0xFF) << 24)
-					| ((readBuffer[1] & 0xFF) << 16)
-					| ((readBuffer[2] & 0xFF) << 8)
-					| (readBuffer[3] & 0xFF);
-				currentPart = ((readBuffer[4] & 0xFF) << 8) + (readBuffer[5] & 0xFF);
-				nextSector = ((readBuffer[6] & 0xFF) << 16)
-					| ((readBuffer[7] & 0xFF) << 8)
-					| (readBuffer[8] & 0xFF);
-				currentIndex = readBuffer[9] & 0xFF;
-			}
-			else
-			{
-				headerSize = 8;
-				if (dataBlockSize > SECTOR_SIZE - headerSize)
+        
+				sbyte[] readBuffer = new sbyte[SECTOR_SIZE];
+				ByteBuffer buffer = ByteBuffer.allocate(size);
+        
+				for (int part = 0, readBytesCount = 0, nextSector; size > readBytesCount; sector = nextSector)
 				{
-					dataBlockSize = SECTOR_SIZE - headerSize;
+					if (sector == 0)
+					{
+						logger.warn("Unexpected end of file");
+						return null;
+					}
+        
+					dat.seek(SECTOR_SIZE * sector);
+        
+					int dataBlockSize = size - readBytesCount;
+					sbyte headerSize;
+					int currentIndex;
+					int currentPart;
+					int currentArchive;
+					if (archiveId > 0xFFFF)
+					{
+						headerSize = 10;
+						if (dataBlockSize > SECTOR_SIZE - headerSize)
+						{
+							dataBlockSize = SECTOR_SIZE - headerSize;
+						}
+        
+						int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
+						if (i != headerSize + dataBlockSize)
+						{
+							logger.warn("Short read when reading file data for {}/{}", indexId, archiveId);
+							return null;
+						}
+        
+						currentArchive = ((readBuffer[0] & 0xFF) << 24) | ((readBuffer[1] & 0xFF) << 16) | ((readBuffer[2] & 0xFF) << 8) | (readBuffer[3] & 0xFF);
+						currentPart = ((readBuffer[4] & 0xFF) << 8) + (readBuffer[5] & 0xFF);
+						nextSector = ((readBuffer[6] & 0xFF) << 16) | ((readBuffer[7] & 0xFF) << 8) | (readBuffer[8] & 0xFF);
+						currentIndex = readBuffer[9] & 0xFF;
+					}
+					else
+					{
+						headerSize = 8;
+						if (dataBlockSize > SECTOR_SIZE - headerSize)
+						{
+							dataBlockSize = SECTOR_SIZE - headerSize;
+						}
+        
+						int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
+						if (i != headerSize + dataBlockSize)
+						{
+							logger.warn("short read");
+							return null;
+						}
+        
+						currentArchive = ((readBuffer[0] & 0xFF) << 8) | (readBuffer[1] & 0xFF);
+						currentPart = ((readBuffer[2] & 0xFF) << 8) | (readBuffer[3] & 0xFF);
+						nextSector = ((readBuffer[4] & 0xFF) << 16) | ((readBuffer[5] & 0xFF) << 8) | (readBuffer[6] & 0xFF);
+						currentIndex = readBuffer[7] & 0xFF;
+					}
+        
+					if (archiveId != currentArchive || currentPart != part || indexId != currentIndex)
+					{
+						logger.warn("data mismatch {} != {}, {} != {}, {} != {}", archiveId, currentArchive, part, currentPart, indexId, currentIndex);
+						return null;
+					}
+        
+					if (nextSector < 0 || dat.length() / SECTOR_SIZE < (long) nextSector)
+					{
+						logger.warn("Invalid next sector");
+						return null;
+					}
+        
+					buffer.put(readBuffer, headerSize, dataBlockSize);
+					readBytesCount += dataBlockSize;
+        
+					++part;
 				}
-
-				int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
-				if (i != headerSize + dataBlockSize)
-				{
-					Console.WriteLine("short read");
-					return null;
-				}
-
-				currentArchive = ((readBuffer[0] & 0xFF) << 8)
-					| (readBuffer[1] & 0xFF);
-				currentPart = ((readBuffer[2] & 0xFF) << 8)
-					| (readBuffer[3] & 0xFF);
-				nextSector = ((readBuffer[4] & 0xFF) << 16)
-					| ((readBuffer[5] & 0xFF) << 8)
-					| (readBuffer[6] & 0xFF);
-				currentIndex = readBuffer[7] & 0xFF;
+        
+				buffer.flip();
+				return buffer.array();
 			}
-
-			if (archiveId != currentArchive || currentPart != part || indexId != currentIndex)
-			{
-				Console.WriteLine("data mismatch {} != {}, {} != {}, {} != {}",
-					archiveId, currentArchive,
-					part, currentPart,
-					indexId, currentIndex);
-				return null;
-			}
-
-			if (nextSector < 0 || dat.length() / SECTOR_SIZE < (long) nextSector)
-			{
-				Console.WriteLine("Invalid next sector");
-				return null;
-			}
-
-			buffer.put(readBuffer, headerSize, dataBlockSize);
-			readBytesCount += dataBlockSize;
-
-			++part;
 		}
 
-		buffer.flip();
-		return buffer.array();
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public synchronized DataFileWriteResult write(int indexId, int archiveId, byte[] compressedData) throws java.io.IOException
+		public virtual DataFileWriteResult write(int indexId, int archiveId, sbyte[] compressedData)
+		{
+			lock (this)
+			{
+				int sector;
+				int startSector;
+        
+				sbyte[] writeBuffer = new sbyte[SECTOR_SIZE];
+				ByteBuffer data = ByteBuffer.wrap(compressedData);
+        
+				sector = (int)((dat.length() + (long)(SECTOR_SIZE - 1)) / (long) SECTOR_SIZE);
+				if (sector == 0)
+				{
+					sector = 1;
+				}
+				startSector = sector;
+        
+				for (int part = 0; data.hasRemaining(); ++part)
+				{
+					int nextSector = sector + 1; // we always just append sectors
+					int dataToWrite;
+        
+					if (0xFFFF < archiveId)
+					{
+						if (data.remaining() <= 510)
+						{
+							nextSector = 0;
+						}
+        
+						writeBuffer[0] = (sbyte)(archiveId >> 24);
+						writeBuffer[1] = (sbyte)(archiveId >> 16);
+						writeBuffer[2] = (sbyte)(archiveId >> 8);
+						writeBuffer[3] = (sbyte) archiveId;
+						writeBuffer[4] = (sbyte)(part >> 8);
+						writeBuffer[5] = (sbyte) part;
+						writeBuffer[6] = (sbyte)(nextSector >> 16);
+						writeBuffer[7] = (sbyte)(nextSector >> 8);
+						writeBuffer[8] = (sbyte) nextSector;
+						writeBuffer[9] = (sbyte) indexId;
+						dat.seek(SECTOR_SIZE * sector);
+						dat.write(writeBuffer, 0, 10);
+        
+						dataToWrite = data.remaining();
+						if (dataToWrite > 510)
+						{
+							dataToWrite = 510;
+						}
+					}
+					else
+					{
+						if (data.remaining() <= 512)
+						{
+							nextSector = 0;
+						}
+        
+						writeBuffer[0] = (sbyte)(archiveId >> 8);
+						writeBuffer[1] = (sbyte) archiveId;
+						writeBuffer[2] = (sbyte)(part >> 8);
+						writeBuffer[3] = (sbyte) part;
+						writeBuffer[4] = (sbyte)(nextSector >> 16);
+						writeBuffer[5] = (sbyte)(nextSector >> 8);
+						writeBuffer[6] = (sbyte) nextSector;
+						writeBuffer[7] = (sbyte) indexId;
+						dat.seek(SECTOR_SIZE * sector);
+						dat.write(writeBuffer, 0, 8);
+        
+						dataToWrite = data.remaining();
+						if (dataToWrite > 512)
+						{
+							dataToWrite = 512;
+						}
+					}
+        
+					data.get(writeBuffer, 0, dataToWrite);
+					dat.write(writeBuffer, 0, dataToWrite);
+					sector = nextSector;
+				}
+        
+				DataFileWriteResult res = new DataFileWriteResult();
+				res.sector = startSector;
+				res.compressedLength = compressedData.Length;
+				return res;
+			}
+		}
 	}
 
-	public synchronized DataFileWriteResult write(int indexId, int archiveId, byte[] compressedData) // throws IOException
-	{
-		int sector;
-		int startSector;
-
-		byte[] writeBuffer = new byte[SECTOR_SIZE];
-		ByteBuffer data = ByteBuffer.wrap(compressedData);
-
-		sector = (int) ((dat.length() + (long) (SECTOR_SIZE - 1)) / (long) SECTOR_SIZE);
-		if (sector == 0)
-		{
-			sector = 1;
-		}
-		startSector = sector;
-
-		for (int part = 0; data.hasRemaining(); ++part)
-		{
-			int nextSector = sector + 1; // we always just append sectors
-			int dataToWrite;
-
-			if (0xFFFF < archiveId)
-			{
-				if (data.remaining() <= 510)
-				{
-					nextSector = 0;
-				}
-
-				writeBuffer[0] = (byte) (archiveId >> 24);
-				writeBuffer[1] = (byte) (archiveId >> 16);
-				writeBuffer[2] = (byte) (archiveId >> 8);
-				writeBuffer[3] = (byte) archiveId;
-				writeBuffer[4] = (byte) (part >> 8);
-				writeBuffer[5] = (byte) part;
-				writeBuffer[6] = (byte) (nextSector >> 16);
-				writeBuffer[7] = (byte) (nextSector >> 8);
-				writeBuffer[8] = (byte) nextSector;
-				writeBuffer[9] = (byte) indexId;
-				dat.seek(SECTOR_SIZE * sector);
-				dat.write(writeBuffer, 0, 10);
-
-				dataToWrite = data.remaining();
-				if (dataToWrite > 510)
-				{
-					dataToWrite = 510;
-				}
-			}
-			else
-			{
-				if (data.remaining() <= 512)
-				{
-					nextSector = 0;
-				}
-
-				writeBuffer[0] = (byte) (archiveId >> 8);
-				writeBuffer[1] = (byte) archiveId;
-				writeBuffer[2] = (byte) (part >> 8);
-				writeBuffer[3] = (byte) part;
-				writeBuffer[4] = (byte) (nextSector >> 16);
-				writeBuffer[5] = (byte) (nextSector >> 8);
-				writeBuffer[6] = (byte) nextSector;
-				writeBuffer[7] = (byte) indexId;
-				dat.seek(SECTOR_SIZE * sector);
-				dat.write(writeBuffer, 0, 8);
-
-				dataToWrite = data.remaining();
-				if (dataToWrite > 512)
-				{
-					dataToWrite = 512;
-				}
-			}
-
-			data.get(writeBuffer, 0, dataToWrite);
-			dat.write(writeBuffer, 0, dataToWrite);
-			sector = nextSector;
-		}
-
-		DataFileWriteResult res = new DataFileWriteResult();
-		res.sector = startSector;
-		res.compressedLength = compressedData.length;
-		return res;
-	}
 }

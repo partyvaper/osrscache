@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,9 +23,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.fs.jagex;
-
-public class DataFileWriteResult
+namespace net.runelite.cache.fs.jagex
 {
-	public int sector, compressedLength;
+	public class DataFileWriteResult
+	{
+		public int sector, compressedLength;
+	}
+
 }

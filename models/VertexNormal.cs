@@ -1,32 +1,35 @@
-using System;
+﻿using System;
+using System.Diagnostics;
 
-namespace OSRSCache.models;
-
-public class VertexNormal
+namespace net.runelite.cache.models
 {
-	public int x;
-	public int y;
-	public int z;
-	public int magnitude;
-
-	public Vector3f normalize()
+	public class VertexNormal
 	{
-		Vector3f v = new Vector3f();
+		public int x;
+		public int y;
+		public int z;
+		public int magnitude;
 
-		int length = (int) Math.sqrt((double) (x * x + y * y + z * z));
-		if (length == 0)
+		public virtual Vector3f normalize()
 		{
-			length = 1;
+			Vector3f v = new Vector3f();
+
+			int length = (int) Math.Sqrt((double)(x * x + y * y + z * z));
+			if (length == 0)
+			{
+				length = 1;
+			}
+
+			v.x = (float) x / length;
+			v.y = (float) y / length;
+			v.z = (float) z / length;
+
+			Debug.Assert(v.x >= -1f && v.x <= 1f);
+			Debug.Assert(v.y >= -1f && v.y <= 1f);
+			Debug.Assert(v.z >= -1f && v.z <= 1f);
+
+			return v;
 		}
-
-		v.x = (float) x / length;
-		v.y = (float) y / length;
-		v.z = (float) z / length;
-
-		assert v.x >= -1f && v.x <= 1f;
-		assert v.y >= -1f && v.y <= 1f;
-		assert v.z >= -1f && v.z <= 1f;
-
-		return v;
 	}
+
 }

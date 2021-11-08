@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2020, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,16 +22,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-using OSRSCache.util.ScriptVarType;
-
-@Data
-public class ParamDefinition
+namespace net.runelite.cache.definitions
 {
-	private ScriptVarType type;
-	private bool isMembers = true;
-	private int defaultInt;
-	private string defaultstring;
+	using Data = lombok.Data;
+	using ScriptVarType = net.runelite.cache.util.ScriptVarType;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class ParamDefinition
+	public class ParamDefinition
+	{
+		private ScriptVarType type;
+		private bool isMembers = true;
+		private int defaultInt;
+		private string defaultString;
+	}
+
 }

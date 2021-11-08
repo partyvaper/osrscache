@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,15 +23,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.region;
-
-// import lombok.Value;
-
-@Value
-public class Location
+namespace net.runelite.cache.region
 {
-	private readonly int id;
-	private readonly int type;
-	private readonly int orientation;
-	private readonly Position position;
+	using Value = lombok.Value;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Value public class Location
+	public class Location
+	{
+		private readonly int id;
+		private readonly int type;
+		private readonly int orientation;
+		private readonly Position position;
+	}
+
 }

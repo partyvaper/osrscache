@@ -1,3 +1,5 @@
+﻿using System.Linq;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -23,87 +25,98 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-
-namespace OSRSCache.fs;
-
-// import java.util.Arrays;
-
-public class FSFile
+namespace net.runelite.cache.fs
 {
-	private readonly int fileId;
-	private int nameHash;
-	private byte[] contents;
 
-	public FSFile(int fileId)
+	public class FSFile
 	{
-		this.fileId = fileId;
-	}
+		private readonly int fileId;
+		private int nameHash;
+		private sbyte[] contents;
 
-	// @Override
-	public int hashCode()
-	{
-		int hash = 7;
-		hash = 97 * hash + this.fileId;
-		hash = 97 * hash + this.nameHash;
-		hash = 97 * hash + Arrays.hashCode(this.contents);
-		return hash;
-	}
-
-	// @Override
-	public bool equals(Object obj)
-	{
-		if (obj == null)
+		public FSFile(int fileId)
 		{
-			return false;
+			this.fileId = fileId;
 		}
-		if (getClass() != obj.getClass())
+
+		public override int GetHashCode()
 		{
-			return false;
+			int hash = 7;
+			hash = 97 * hash + this.fileId;
+			hash = 97 * hash + this.nameHash;
+			hash = 97 * hash + Arrays.hashCode(this.contents);
+			return hash;
 		}
-		final FSFile other = (FSFile) obj;
-		if (this.fileId != other.fileId)
+
+		public override bool Equals(object obj)
 		{
-			return false;
+			if (obj == null)
+			{
+				return false;
+			}
+			if (this.GetType() != obj.GetType())
+			{
+				return false;
+			}
+//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+//ORIGINAL LINE: final FSFile other = (FSFile) obj;
+			FSFile other = (FSFile) obj;
+			if (this.fileId != other.fileId)
+			{
+				return false;
+			}
+			if (this.nameHash != other.nameHash)
+			{
+				return false;
+			}
+			if (!this.contents.SequenceEqual(other.contents))
+			{
+				return false;
+			}
+			return true;
 		}
-		if (this.nameHash != other.nameHash)
+
+		public virtual int FileId
 		{
-			return false;
+			get
+			{
+				return fileId;
+			}
 		}
-		if (!Arrays.equals(this.contents, other.contents))
+
+		public virtual int NameHash
 		{
-			return false;
+			get
+			{
+				return nameHash;
+			}
+			set
+			{
+				this.nameHash = value;
+			}
 		}
-		return true;
+
+
+		public virtual sbyte[] Contents
+		{
+			get
+			{
+				return contents;
+			}
+			set
+			{
+				this.contents = value;
+			}
+		}
+
+
+		public virtual int Size
+		{
+			get
+			{
+				return contents.Length;
+			}
+		}
 	}
 
-	public int getFileId()
-	{
-		return fileId;
-	}
-
-	public int getNameHash()
-	{
-		return nameHash;
-	}
-
-	public void setNameHash(int nameHash)
-	{
-		this.nameHash = nameHash;
-	}
-
-	public byte[] getContents()
-	{
-		return contents;
-	}
-
-	public void setContents(byte[] contents)
-	{
-		this.contents = contents;
-	}
-	
-	public int getSize()
-	{
-		return contents.length;
-	}
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,14 +22,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.script;
-
-public class RuneLiteInstructions  // , Instructions, RuneLiteOpcodes
+namespace net.runelite.cache.script
 {
-	// @Override
-	public void init()
+	public class RuneLiteInstructions : Instructions, RuneLiteOpcodes
 	{
-		super.init();
-		add(RUNELITE_EXECUTE, "runelite_callback");
+		public override void init()
+		{
+			base.init();
+			add(RUNELITE_EXECUTE, "runelite_callback");
+		}
 	}
+
 }

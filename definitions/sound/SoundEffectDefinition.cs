@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,11 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.sound;
-
-public class SoundEffectDefinition
+namespace net.runelite.cache.definitions.sound
 {
-	public int field1006;
-	public SoundEffect1Definition[] field1008 = new SoundEffect1Definition[10];
-	public int field1009;
+	public class SoundEffectDefinition
+	{
+		public int field1006;
+		public SoundEffect1Definition[] field1008 = new SoundEffect1Definition[10];
+		public int field1009;
+	}
+
 }

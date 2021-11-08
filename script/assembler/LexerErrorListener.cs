@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,28 +22,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-
-namespace OSRSCache.script.assembler;
-
-// import org.antlr.v4.runtime.BaseErrorListener;
-// import org.antlr.v4.runtime.RecognitionException;
-// import org.antlr.v4.runtime.Recognizer;
-
-public class LexerErrorListener extends BaseErrorListener
+namespace net.runelite.cache.script.assembler
 {
-	private int errors;
+	using BaseErrorListener = org.antlr.v4.runtime.BaseErrorListener;
+	using RecognitionException = org.antlr.v4.runtime.RecognitionException;
+	using Recognizer = org.antlr.v4.runtime.Recognizer;
 
-	// @Override
-	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+	public class LexerErrorListener : BaseErrorListener
 	{
-		++errors;
-	}
+		private int errors;
 
-	public int getErrors()
-	{
-		return errors;
+		public override void syntaxError<T1, T2>(Recognizer<T1, T2> recognizer, object offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+		{
+			++errors;
+		}
+
+		public virtual int Errors
+		{
+			get
+			{
+				return errors;
+			}
+		}
+
 	}
 
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,30 +22,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.index;
-
-public class FileData
+namespace net.runelite.cache.index
 {
-	int id;
-	int nameHash;
-
-	public int getId()
+	public class FileData
 	{
-		return id;
+		internal int id;
+		internal int nameHash;
+
+		public virtual int Id
+		{
+			get
+			{
+				return id;
+			}
+			set
+			{
+				this.id = value;
+			}
+		}
+
+
+		public virtual int NameHash
+		{
+			get
+			{
+				return nameHash;
+			}
+			set
+			{
+				this.nameHash = value;
+			}
+		}
+
 	}
 
-	public void setId(int id)
-	{
-		this.id = id;
-	}
-
-	public int getNameHash()
-	{
-		return nameHash;
-	}
-
-	public void setNameHash(int nameHash)
-	{
-		this.nameHash = nameHash;
-	}
 }

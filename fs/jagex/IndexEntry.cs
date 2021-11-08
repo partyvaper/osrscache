@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,84 +23,95 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-
-namespace OSRSCache.fs.jagex;
-
-// import java.util.Objects;
-
-public class IndexEntry
+namespace net.runelite.cache.fs.jagex
 {
-	private readonly IndexFile indexFile;
-	private readonly int id, sector, length;
 
-	public IndexEntry(IndexFile indexFile, int id, int sector, int length)
+	public class IndexEntry
 	{
-		this.indexFile = indexFile;
-		this.id = id;
-		this.sector = sector;
-		this.length = length;
-	}
+		private readonly IndexFile indexFile;
+		private readonly int id, sector, length;
 
-	public IndexFile getIndexFile()
-	{
-		return indexFile;
-	}
-
-	public int getId()
-	{
-		return id;
-	}
-
-	public int getSector()
-	{
-		return sector;
-	}
-
-	public int getLength()
-	{
-		return length;
-	}
-
-	// @Override
-	public int hashCode()
-	{
-		int hash = 7;
-		hash = 19 * hash + Objects.hashCode(this.indexFile);
-		hash = 19 * hash + this.id;
-		hash = 19 * hash + this.sector;
-		hash = 19 * hash + this.length;
-		return hash;
-	}
-
-	// @Override
-	public bool equals(Object obj)
-	{
-		if (obj == null)
+		public IndexEntry(IndexFile indexFile, int id, int sector, int length)
 		{
-			return false;
+			this.indexFile = indexFile;
+			this.id = id;
+			this.sector = sector;
+			this.length = length;
 		}
-		if (getClass() != obj.getClass())
+
+		public virtual IndexFile IndexFile
 		{
-			return false;
+			get
+			{
+				return indexFile;
+			}
 		}
-		final IndexEntry other = (IndexEntry) obj;
-		if (!Objects.equals(this.indexFile, other.indexFile))
+
+		public virtual int Id
 		{
-			return false;
+			get
+			{
+				return id;
+			}
 		}
-		if (this.id != other.id)
+
+		public virtual int Sector
 		{
-			return false;
+			get
+			{
+				return sector;
+			}
 		}
-		if (this.sector != other.sector)
+
+		public virtual int Length
 		{
-			return false;
+			get
+			{
+				return length;
+			}
 		}
-		if (this.length != other.length)
+
+		public override int GetHashCode()
 		{
-			return false;
+			int hash = 7;
+			hash = 19 * hash + Objects.hashCode(this.indexFile);
+			hash = 19 * hash + this.id;
+			hash = 19 * hash + this.sector;
+			hash = 19 * hash + this.length;
+			return hash;
 		}
-		return true;
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+			{
+				return false;
+			}
+			if (this.GetType() != obj.GetType())
+			{
+				return false;
+			}
+//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+//ORIGINAL LINE: final IndexEntry other = (IndexEntry) obj;
+			IndexEntry other = (IndexEntry) obj;
+			if (!Objects.equals(this.indexFile, other.indexFile))
+			{
+				return false;
+			}
+			if (this.id != other.id)
+			{
+				return false;
+			}
+			if (this.sector != other.sector)
+			{
+				return false;
+			}
+			if (this.length != other.length)
+			{
+				return false;
+			}
+			return true;
+		}
 	}
+
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,23 +22,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class SpotAnimDefinition
+namespace net.runelite.cache.definitions
 {
-	public int rotaton = 0;
-	public short[] textureToReplace;
-	public int id;
-	public short[] textureToFind;
-	public int resizeY = 128;
-	public int animationId = -1;
-	public short[] recolorToFind;
-	public short[] recolorToReplace;
-	public int resizeX = 128;
-	public int modelId;
-	public int ambient = 0;
-	public int contrast = 0;
+	using Data = lombok.Data;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class SpotAnimDefinition
+	public class SpotAnimDefinition
+	{
+		public int rotaton = 0;
+		public short[] textureToReplace;
+		public int id;
+		public short[] textureToFind;
+		public int resizeY = 128;
+		public int animationId = -1;
+		public short[] recolorToFind;
+		public short[] recolorToReplace;
+		public int resizeX = 128;
+		public int modelId;
+		public int ambient = 0;
+		public int contrast = 0;
+	}
+
 }

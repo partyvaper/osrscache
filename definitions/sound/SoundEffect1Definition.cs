@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,34 +22,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.sound;
-
-public class SoundEffect1Definition
+namespace net.runelite.cache.definitions.sound
 {
-	public SoundEffect2Definition field1173;
-	public SoundEffect2Definition field1174;
-	public SoundEffect2Definition field1175;
-	public int field1176 = 500;
-	public int[] field1177 = new int[]
+	public class SoundEffect1Definition
 	{
-		0, 0, 0, 0, 0
-	};
-	public SoundEffect2Definition field1178;
-	public int[] field1179 = new int[]
-	{
-		0, 0, 0, 0, 0
-	};
-	public int[] field1180 = new int[]
-	{
-		0, 0, 0, 0, 0
-	};
-	public SoundEffect2Definition field1181;
-	public SoundEffect3Definition field1182;
-	public SoundEffect2Definition field1183;
-	public int field1184 = 100;
-	public SoundEffect2Definition field1186;
-	public int field1187 = 0;
-	public int field1188 = 0;
-	public SoundEffect2Definition field1192;
-	public SoundEffect2Definition field1193;
+		public SoundEffect2Definition field1173;
+		public SoundEffect2Definition field1174;
+		public SoundEffect2Definition field1175;
+		public int field1176 = 500;
+		public int[] field1177 = new int[] {0, 0, 0, 0, 0};
+		public SoundEffect2Definition field1178;
+		public int[] field1179 = new int[] {0, 0, 0, 0, 0};
+		public int[] field1180 = new int[] {0, 0, 0, 0, 0};
+		public SoundEffect2Definition field1181;
+		public SoundEffect3Definition field1182;
+		public SoundEffect2Definition field1183;
+		public int field1184 = 100;
+		public SoundEffect2Definition field1186;
+		public int field1187 = 0;
+		public int field1188 = 0;
+		public SoundEffect2Definition field1192;
+		public SoundEffect2Definition field1193;
+	}
+
 }

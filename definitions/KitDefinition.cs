@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,23 +22,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class KitDefinition
+namespace net.runelite.cache.definitions
 {
-	private readonly int id;
-	public short[] recolorToReplace;
-	public short[] recolorToFind;
-	public short[] retextureToFind;
-	public short[] retextureToReplace;
-	public int bodyPartId = -1;
-	public int[] models;
-	public int[] chatheadModels = new int[]
+	using Data = lombok.Data;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class KitDefinition
+	public class KitDefinition
 	{
-		-1, -1, -1, -1, -1
-	};
-	public bool nonSelectable = false;
+		private readonly int id;
+		public short[] recolorToReplace;
+		public short[] recolorToFind;
+		public short[] retextureToFind;
+		public short[] retextureToReplace;
+		public int bodyPartId = -1;
+		public int[] models;
+		public int[] chatheadModels = new int[] {-1, -1, -1, -1, -1};
+		public bool nonSelectable = false;
+	}
+
 }

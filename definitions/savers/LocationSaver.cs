@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,61 +24,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
-namespace OSRSCache.definitions.savers;
-
-// import com.google.common.collect.LinkedListMultimap;
-// import com.google.common.collect.Multimap;
-// import java.util.ArrayList;
-// import java.util.Collection;
-// import java.util.List;
-using OSRSCache.definitions.LocationsDefinition;
-using OSRSCache.io.OutputStream;
-using OSRSCache.region.Location;
-
-public class LocationSaver
+namespace net.runelite.cache.definitions.savers
 {
-	public byte[] save(LocationsDefinition locs)
+	using LinkedListMultimap = com.google.common.collect.LinkedListMultimap;
+	using Multimap = com.google.common.collect.Multimap;
+	using LocationsDefinition = net.runelite.cache.definitions.LocationsDefinition;
+	using OutputStream = net.runelite.cache.io.OutputStream;
+	using Location = net.runelite.cache.region.Location;
+
+	public class LocationSaver
 	{
-		Multimap<Integer, Location> locById = LinkedListMultimap.create();
-		List<Location> sortedLocs = new ArrayList<>(locs.getLocations());
-		sortedLocs.sort((l1, l2) -> Integer.compare(l1.getId(), l2.getId()));
-		for (Location loc : sortedLocs)
+		public virtual sbyte[] save(LocationsDefinition locs)
 		{
-			locById.put(loc.getId(), loc);
-		}
-		OutputStream out = new OutputStream();
-		int prevId = -1;
-		for (Integer id : locById.keySet())
-		{
-			int diffId = id - prevId;
-			prevId = id;
-
-			out.writeShortSmart(diffId);
-
-			Collection<Location> locations = locById.get(id);
-			int position = 0;
-			for (Location loc : locations)
+			Multimap<int, Location> locById = LinkedListMultimap.create();
+			IList<Location> sortedLocs = new List<Location>(locs.getLocations());
+			sortedLocs.Sort((l1, l2) => Integer.compare(l1.getId(), l2.getId()));
+			foreach (Location loc in sortedLocs)
 			{
-				int packedPosition = (loc.getPosition().getZ() << 12)
-					| (loc.getPosition().getX() << 6)
-					| (loc.getPosition().getY());
-
-				int diffPos = packedPosition - position;
-				position = packedPosition;
-
-				out.writeShortSmart(diffPos + 1);
-
-				int packedAttributes = (loc.getType() << 2) | loc.getOrientation();
-				out.writeByte(packedAttributes);
+				locById.put(loc.getId(), loc);
 			}
+			OutputStream @out = new OutputStream();
+			int prevId = -1;
+			foreach (int? id in locById.keySet())
+			{
+				int diffId = id.Value - prevId;
+				prevId = id.Value;
 
-			out.writeShortSmart(0);
+				@out.writeShortSmart(diffId);
+
+				ICollection<Location> locations = locById.get(id);
+				int position = 0;
+				foreach (Location loc in locations)
+				{
+					int packedPosition = (loc.getPosition().getZ() << 12) | (loc.getPosition().getX() << 6) | (loc.getPosition().getY());
+
+					int diffPos = packedPosition - position;
+					position = packedPosition;
+
+					@out.writeShortSmart(diffPos + 1);
+
+					int packedAttributes = (loc.getType() << 2) | loc.getOrientation();
+					@out.writeByte(packedAttributes);
+				}
+
+				@out.writeShortSmart(0);
+			}
+			@out.writeShortSmart(0);
+			return @out.flip();
 		}
-		out.writeShortSmart(0);
-		return out.flip();
 	}
+
 }

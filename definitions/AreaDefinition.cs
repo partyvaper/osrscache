@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,24 +22,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class AreaDefinition
+namespace net.runelite.cache.definitions
 {
-	public int id;
-	public int[] field3292;
-	public int spriteId = -1;
-	public int field3294 = -1;
-	public string name;
-	public int field3296;
-	public int field3297 = -1;
-	public string[] field3298 = new string[5];
-	public int[] field3300;
-	public string field3308;
-	public byte[] field3309;
-	public int field3310;
+	using Data = lombok.Data;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class AreaDefinition
+	public class AreaDefinition
+	{
+		public int id;
+		public int[] field3292;
+		public int spriteId = -1;
+		public int field3294 = -1;
+		public string name;
+		public int field3296;
+		public int field3297 = -1;
+		public string[] field3298 = new string[5];
+		public int[] field3300;
+		public string field3308;
+		public sbyte[] field3309;
+		public int field3310;
+
+	}
 
 }

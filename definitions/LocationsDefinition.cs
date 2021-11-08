@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,20 +24,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.Generic;
-
-namespace OSRSCache.definitions;
-
-// import java.util.ArrayList;
-// import java.util.List;
-// import lombok.Data;
-using OSRSCache.region.Location;
-
-@Data
-public class LocationsDefinition
+namespace net.runelite.cache.definitions
 {
-	private int regionX;
-	private int regionY;
-	private List<Location> locations = new ArrayList<>();
+	using Data = lombok.Data;
+	using Location = net.runelite.cache.region.Location;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class LocationsDefinition
+	public class LocationsDefinition
+	{
+		private int regionX;
+		private int regionY;
+		private IList<Location> locations = new List<Location>();
+	}
+
 }

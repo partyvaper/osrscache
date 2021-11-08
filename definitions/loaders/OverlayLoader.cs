@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,51 +22,57 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.OverlayDefinition;
-using OSRSCache.io.InputStream;
-
-public class OverlayLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public OverlayDefinition load(int id, byte[] b)
+	using OverlayDefinition = net.runelite.cache.definitions.OverlayDefinition;
+	using InputStream = net.runelite.cache.io.InputStream;
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
+
+	public class OverlayLoader
 	{
-		OverlayDefinition def = new OverlayDefinition();
-		InputStream is = new InputStream(b);
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(OverlayLoader));
 
-		def.setId(id);
-
-		for (;;)
+		public virtual OverlayDefinition load(int id, sbyte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			OverlayDefinition def = new OverlayDefinition();
+			InputStream @is = new InputStream(b);
+
+			def.setId(id);
+
+			for (;;)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				if (opcode == 1)
+				{
+					int color = @is.read24BitInt();
+					def.setRgbColor(color);
+				}
+				else if (opcode == 2)
+				{
+					int texture = @is.readUnsignedByte();
+					def.setTexture(texture);
+				}
+				else if (opcode == 5)
+				{
+					def.setHideUnderlay(false);
+				}
+				else if (opcode == 7)
+				{
+					int secondaryColor = @is.read24BitInt();
+					def.setSecondaryRgbColor(secondaryColor);
+				}
 			}
 
-			if (opcode == 1)
-			{
-				int color = is.read24BitInt();
-				def.setRgbColor(color);
-			}
-			else if (opcode == 2)
-			{
-				int texture = is.readUnsignedByte();
-				def.setTexture(texture);
-			}
-			else if (opcode == 5)
-			{
-				def.setHideUnderlay(false);
-			}
-			else if (opcode == 7)
-			{
-				int secondaryColor = is.read24BitInt();
-				def.setSecondaryRgbColor(secondaryColor);
-			}
+			def.calculateHsl();
+
+			return def;
 		}
-
-		def.calculateHsl();
-
-		return def;
 	}
+
 }

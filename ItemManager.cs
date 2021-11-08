@@ -1,3 +1,6 @@
+﻿using System;
+using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,105 +25,103 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.ObjectModel;
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.io.File;
-// import java.io.IOException;
-// import java.util.Collection;
-// import java.util.Collections;
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.ItemDefinition;
-using OSRSCache.definitions.exporters.ItemExporter;
-using OSRSCache.definitions.loaders.ItemLoader;
-using OSRSCache.definitions.providers.ItemProvider;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.util.IDClass;
-
-public class ItemManager // , ItemProvider
+namespace net.runelite.cache
 {
-	private readonly Store store;
-	private readonly Map<Integer, ItemDefinition> items = new HashMap<>();
+	using ItemDefinition = net.runelite.cache.definitions.ItemDefinition;
+	using ItemExporter = net.runelite.cache.definitions.exporters.ItemExporter;
+	using ItemLoader = net.runelite.cache.definitions.loaders.ItemLoader;
+	using ItemProvider = net.runelite.cache.definitions.providers.ItemProvider;
+	using Archive = net.runelite.cache.fs.Archive;
+	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
+	using FSFile = net.runelite.cache.fs.FSFile;
+	using Index = net.runelite.cache.fs.Index;
+	using Storage = net.runelite.cache.fs.Storage;
+	using Store = net.runelite.cache.fs.Store;
+	using IDClass = net.runelite.cache.util.IDClass;
 
-	public ItemManager(Store store)
+	public class ItemManager : ItemProvider
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly IDictionary<int, ItemDefinition> items = new Dictionary<int, ItemDefinition>();
 
-	public void load() // throws IOException
-	{
-		ItemLoader loader = new ItemLoader();
-
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.CONFIGS);
-		Archive archive = index.getArchive(ConfigType.ITEM.getId());
-
-		byte[] archiveData = storage.loadArchive(archive);
-		ArchiveFiles files = archive.getFiles(archiveData);
-
-		for (FSFile f : files.getFiles())
+		public ItemManager(Store store)
 		{
-			ItemDefinition def = loader.load(f.getFileId(), f.getContents());
-			items.put(f.getFileId(), def);
+			this.store = store;
 		}
-	}
 
-	public Collection<ItemDefinition> getItems()
-	{
-		return Collections.unmodifiableCollection(items.values());
-	}
-
-	public ItemDefinition getItem(int itemId)
-	{
-		return items.get(itemId);
-	}
-
-	public void export(File out) // throws IOException
-	{
-		out.mkdirs();
-
-		for (ItemDefinition def : items.values())
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
 		{
-			ItemExporter exporter = new ItemExporter(def);
+			ItemLoader loader = new ItemLoader();
 
-			File targ = new File(out, def.id + ".json");
-			exporter.exportTo(targ);
-		}
-	}
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.CONFIGS);
+			Archive archive = index.getArchive(ConfigType.ITEM.getId());
 
-	public void java(File java) // throws IOException
-	{
-		java.mkdirs();
-		try (IDClass ids = IDClass.create(java, "ItemID");
-			IDClass nulls = IDClass.create(java, "NullItemID"))
-		{
-			for (ItemDefinition def : items.values())
+			sbyte[] archiveData = storage.loadArchive(archive);
+			ArchiveFiles files = archive.getFiles(archiveData);
+
+			foreach (FSFile f in files.Files)
 			{
-				if (def.name.equalsIgnoreCase("NULL"))
+				ItemDefinition def = loader.load(f.FileId, f.Contents);
+				items[f.FileId] = def;
+			}
+		}
+
+		public virtual ICollection<ItemDefinition> Items
+		{
+			get
+			{
+				return Collections.unmodifiableCollection(items.Values);
+			}
+		}
+
+		public virtual ItemDefinition getItem(int itemId)
+		{
+			return items[itemId];
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void export(java.io.File out) throws java.io.IOException
+		public virtual void export(File @out)
+		{
+			@out.mkdirs();
+
+			foreach (ItemDefinition def in items.Values)
+			{
+				ItemExporter exporter = new ItemExporter(def);
+
+				File targ = new File(@out, def.id + ".json");
+				exporter.exportTo(targ);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void java(java.io.File java) throws java.io.IOException
+		public virtual void java(File java)
+		{
+			java.mkdirs();
+			using (IDClass ids = IDClass.create(java, "ItemID"), IDClass nulls = IDClass.create(java, "NullItemID"))
+			{
+				foreach (ItemDefinition def in items.Values)
 				{
-					nulls.add(def.name, def.id);
-				}
-				else
-				{
-					ids.add(def.name, def.id);
+					if (def.name.Equals("NULL", StringComparison.OrdinalIgnoreCase))
+					{
+						nulls.add(def.name, def.id);
+					}
+					else
+					{
+						ids.add(def.name, def.id);
+					}
 				}
 			}
 		}
+
+		public virtual ItemDefinition provide(int itemId)
+		{
+			return getItem(itemId);
+		}
 	}
 
-	// @Override
-	public ItemDefinition provide(int itemId)
-	{
-		return getItem(itemId);
-	}
 }

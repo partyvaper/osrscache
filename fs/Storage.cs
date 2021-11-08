@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,25 +22,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using OSRSCache.fs;
-
-namespace OSRSCache.fs;
-
-// import java.io.IOException;
-
-public interface Storage extends AutoCloseable
+namespace net.runelite.cache.fs
 {
-	void init(Store store) // throws IOException;
 
-	// @Override
-	void close() // throws IOException;
+	public interface Storage : AutoCloseable
+	{
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: void init(Store store) throws java.io.IOException;
+		void init(Store store);
 
-	void load(Store store) // throws IOException;
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override void close() throws java.io.IOException;
+		void close();
 
-	void save(Store store) // throws IOException;
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: void load(Store store) throws java.io.IOException;
+		void load(Store store);
 
-	byte[] loadArchive(Archive archive) // throws IOException;
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: void save(Store store) throws java.io.IOException;
+		void save(Store store);
 
-	void saveArchive(Archive archive, byte[] data) // throws IOException;
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: byte[] loadArchive(Archive archive) throws java.io.IOException;
+		sbyte[] loadArchive(Archive archive);
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: void saveArchive(Archive archive, byte[] data) throws java.io.IOException;
+		void saveArchive(Archive archive, sbyte[] data);
+	}
+
 }

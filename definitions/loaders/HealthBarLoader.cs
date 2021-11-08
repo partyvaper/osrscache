@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2020, Trevor <https://github.com/Trevor159>
  * All rights reserved.
  *
@@ -22,78 +22,80 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.HealthBarDefinition;
-using OSRSCache.io.InputStream;
-
-public class HealthBarLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public HealthBarDefinition load(int id, byte[] b)
-	{
-		HealthBarDefinition def = new HealthBarDefinition();
-		InputStream is = new InputStream(b);
-		def.id = id;
+	using HealthBarDefinition = net.runelite.cache.definitions.HealthBarDefinition;
+	using InputStream = net.runelite.cache.io.InputStream;
 
-		while (true)
+	public class HealthBarLoader
+	{
+		public virtual HealthBarDefinition load(int id, sbyte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			HealthBarDefinition def = new HealthBarDefinition();
+			InputStream @is = new InputStream(b);
+			def.id = id;
+
+			while (true)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				this.decodeValues(opcode, def, @is);
 			}
 
-			this.decodeValues(opcode, def, is);
+			return def;
 		}
 
-		return def;
+		private void decodeValues(int opcode, HealthBarDefinition def, InputStream stream)
+		{
+			if (opcode == 1)
+			{
+				stream.readUnsignedShort();
+			}
+			else if (opcode == 2)
+			{
+				def.field3277 = stream.readUnsignedByte();
+			}
+			else if (opcode == 3)
+			{
+				def.field3278 = stream.readUnsignedByte();
+			}
+			else if (opcode == 4)
+			{
+				def.field3283 = 0;
+			}
+			else if (opcode == 5)
+			{
+				def.field3275 = stream.readUnsignedShort();
+			}
+			else if (opcode == 6)
+			{
+				stream.readUnsignedByte();
+			}
+			else if (opcode == 7)
+			{
+				def.healthBarFrontSpriteId = stream.readBigSmart2();
+			}
+			else if (opcode == 8)
+			{
+				def.healthBarBackSpriteId = stream.readBigSmart2();
+			}
+			else if (opcode == 11)
+			{
+				def.field3283 = stream.readUnsignedShort();
+			}
+			else if (opcode == 14)
+			{
+				def.healthScale = stream.readUnsignedByte();
+			}
+			else if (opcode == 15)
+			{
+				def.healthBarPadding = stream.readUnsignedByte();
+			}
+		}
 	}
 
-	private void decodeValues(int opcode, HealthBarDefinition def, InputStream stream)
-	{
-		if (opcode == 1)
-		{
-			stream.readUnsignedShort();
-		}
-		else if (opcode == 2)
-		{
-			def.field3277 = stream.readUnsignedByte();
-		}
-		else if (opcode == 3)
-		{
-			def.field3278 = stream.readUnsignedByte();
-		}
-		else if (opcode == 4)
-		{
-			def.field3283 = 0;
-		}
-		else if (opcode == 5)
-		{
-			def.field3275 = stream.readUnsignedShort();
-		}
-		else if (opcode == 6)
-		{
-			stream.readUnsignedByte();
-		}
-		else if (opcode == 7)
-		{
-			def.healthBarFrontSpriteId = stream.readBigSmart2();
-		}
-		else if (opcode == 8)
-		{
-			def.healthBarBackSpriteId = stream.readBigSmart2();
-		}
-		else if (opcode == 11)
-		{
-			def.field3283 = stream.readUnsignedShort();
-		}
-		else if (opcode == 14)
-		{
-			def.healthScale = stream.readUnsignedByte();
-		}
-		else if (opcode == 15)
-		{
-			def.healthBarPadding = stream.readUnsignedByte();
-		}
-	}
 }

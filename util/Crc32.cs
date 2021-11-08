@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,21 +23,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.util;
-
-// import java.util.zip.CRC32;
-
-public class Crc32
+namespace net.runelite.cache.util
 {
-	private readonly CRC32 crc32 = new CRC32();
 
-	public void update(byte[] data, int offset, int length)
+	public class Crc32
 	{
-		crc32.update(data, offset, length);
+		private readonly CRC32 crc32 = new CRC32();
+
+		public virtual void update(sbyte[] data, int offset, int length)
+		{
+			crc32.update(data, offset, length);
+		}
+
+		public virtual int Hash
+		{
+			get
+			{
+				return (int) crc32.getValue();
+			}
+		}
 	}
 
-	public int getHash()
-	{
-		return (int) crc32.getValue();
-	}
 }

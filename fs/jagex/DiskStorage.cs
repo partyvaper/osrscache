@@ -1,3 +1,6 @@
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,219 +25,225 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-using System.Collections.Generic;
-using OSRSCache.fs;
-
-namespace OSRSCache.fs.jagex;
-
-// import com.google.common.primitives.Ints;
-// import java.io.File;
-// import java.io.FileNotFoundException;
-// import java.io.IOException;
-// import java.util.ArrayList;
-// import java.util.List;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.Container;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.index.ArchiveData;
-using OSRSCache.index.IndexData;
-using OSRSCache.util.Crc32;
-
-public class DiskStorage // , Storage
+namespace net.runelite.cache.fs.jagex
 {
-	private const string MAIN_FILE_CACHE_DAT = "main_file_cache.dat2";
-	private const string MAIN_FILE_CACHE_IDX = "main_file_cache.idx";
+	using Ints = com.google.common.primitives.Ints;
+	using Archive = net.runelite.cache.fs.Archive;
+	using Container = net.runelite.cache.fs.Container;
+	using Index = net.runelite.cache.fs.Index;
+	using Storage = net.runelite.cache.fs.Storage;
+	using Store = net.runelite.cache.fs.Store;
+	using ArchiveData = net.runelite.cache.index.ArchiveData;
+	using IndexData = net.runelite.cache.index.IndexData;
+	using Crc32 = net.runelite.cache.util.Crc32;
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
 
-	private readonly File folder;
-
-	private readonly DataFile data;
-	private readonly IndexFile index255;
-	private readonly List<IndexFile> indexFiles = new ArrayList<>();
-
-	public DiskStorage(File folder) // throws IOException
+	public class DiskStorage : Storage
 	{
-		this.folder = folder;
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(DiskStorage));
 
-		this.data = new DataFile(new File(folder, MAIN_FILE_CACHE_DAT));
-		this.index255 = new IndexFile(255, new File(folder, MAIN_FILE_CACHE_IDX + "255"));
-	}
+		private const string MAIN_FILE_CACHE_DAT = "main_file_cache.dat2";
+		private const string MAIN_FILE_CACHE_IDX = "main_file_cache.idx";
 
-	// @Override
-	public void init(Store store) // throws IOException
-	{
-		for (int i = 0; i < index255.getIndexCount(); ++i)
+		private readonly File folder;
+
+		private readonly DataFile data;
+		private readonly IndexFile index255;
+		private readonly IList<IndexFile> indexFiles = new List<IndexFile>();
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public DiskStorage(java.io.File folder) throws java.io.IOException
+		public DiskStorage(File folder)
 		{
-			store.addIndex(i);
-			getIndex(i);
+			this.folder = folder;
+
+			this.data = new DataFile(new File(folder, MAIN_FILE_CACHE_DAT));
+			this.index255 = new IndexFile(255, new File(folder, MAIN_FILE_CACHE_IDX + "255"));
 		}
 
-		assert store.getIndexes().size() == indexFiles.size();
-	}
-
-	// @Override
-	public void close() // throws IOException
-	{
-		data.close();
-		index255.close();
-		for (IndexFile indexFile : indexFiles)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void init(net.runelite.cache.fs.Store store) throws java.io.IOException
+		public virtual void init(Store store)
 		{
-			indexFile.close();
-		}
-	}
-
-	private IndexFile getIndex(int i) throws FileNotFoundException
-	{
-		for (IndexFile indexFile : indexFiles)
-		{
-			if (indexFile.getIndexFileId() == i)
+			for (int i = 0; i < index255.IndexCount; ++i)
 			{
-				return indexFile;
+				store.addIndex(i);
+				getIndex(i);
+			}
+
+			Debug.Assert(store.Indexes.Count == indexFiles.Count);
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void close() throws java.io.IOException
+		public virtual void close()
+		{
+			data.Dispose();
+			index255.Dispose();
+			foreach (IndexFile indexFile in indexFiles)
+			{
+				indexFile.Dispose();
 			}
 		}
 
-		IndexFile indexFile = new IndexFile(i, new File(folder, MAIN_FILE_CACHE_IDX + i));
-		indexFiles.add(indexFile);
-		return indexFile;
-	}
-
-	// @Override
-	public void load(Store store) // throws IOException
-	{
-		for (Index index : store.getIndexes())
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: private IndexFile getIndex(int i) throws java.io.FileNotFoundException
+		private IndexFile getIndex(int i)
 		{
-			loadIndex(index);
+			foreach (IndexFile indexFile in indexFiles)
+			{
+				if (indexFile.IndexFileId == i)
+				{
+					return indexFile;
+				}
+			}
+
+			IndexFile indexFile = new IndexFile(i, new File(folder, MAIN_FILE_CACHE_IDX + i));
+			indexFiles.Add(indexFile);
+			return indexFile;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void load(net.runelite.cache.fs.Store store) throws java.io.IOException
+		public virtual void load(Store store)
+		{
+			foreach (Index index in store.Indexes)
+			{
+				loadIndex(index);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public byte[] readIndex(int indexId) throws java.io.IOException
+		public virtual sbyte[] readIndex(int indexId)
+		{
+			IndexEntry entry = index255.read(indexId);
+			if (entry == null)
+			{
+				return null;
+			}
+
+			sbyte[] indexData = data.read(index255.IndexFileId, entry.Id, entry.Sector, entry.Length);
+			return indexData;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: private void loadIndex(net.runelite.cache.fs.Index index) throws java.io.IOException
+		private void loadIndex(Index index)
+		{
+			logger.trace("Loading index {}", index.Id);
+
+			sbyte[] indexData = readIndex(index.Id);
+			if (indexData == null)
+			{
+				return;
+			}
+
+			Container res = Container.decompress(indexData, null);
+			sbyte[] data = res.data;
+
+			IndexData id = new IndexData();
+			id.load(data);
+
+			index.Protocol = id.Protocol;
+			index.Revision = id.Revision;
+			index.Named = id.Named;
+
+			foreach (ArchiveData ad in id.Archives)
+			{
+				Archive archive = index.addArchive(ad.Id);
+				archive.NameHash = ad.NameHash;
+				archive.Crc = ad.Crc;
+				archive.Revision = ad.Revision;
+				archive.FileData = ad.Files;
+
+				Debug.Assert(ad.Files.Length > 0);
+			}
+
+			index.Crc = res.crc;
+			index.Compression = res.compression;
+			Debug.Assert(res.revision == -1);
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public byte[] loadArchive(net.runelite.cache.fs.Archive archive) throws java.io.IOException
+		public virtual sbyte[] loadArchive(Archive archive)
+		{
+			Index index = archive.Index;
+			IndexFile indexFile = getIndex(index.Id);
+
+			Debug.Assert(indexFile.IndexFileId == index.Id);
+
+			IndexEntry entry = indexFile.read(archive.ArchiveId);
+			if (entry == null)
+			{
+				logger.debug("can't read archive " + archive.ArchiveId + " from index " + index.Id);
+				return null;
+			}
+
+			Debug.Assert(entry.Id == archive.ArchiveId);
+
+			logger.trace("Loading archive {} for index {} from sector {} length {}", archive.ArchiveId, index.Id, entry.Sector, entry.Length);
+
+			sbyte[] archiveData = data.read(index.Id, entry.Id, entry.Sector, entry.Length);
+			return archiveData;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void save(net.runelite.cache.fs.Store store) throws java.io.IOException
+		public virtual void save(Store store)
+		{
+			logger.debug("Saving store");
+
+			foreach (Index i in store.Indexes)
+			{
+				saveIndex(i);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: private void saveIndex(net.runelite.cache.fs.Index index) throws java.io.IOException
+		private void saveIndex(Index index)
+		{
+			IndexData indexData = index.toIndexData();
+			sbyte[] data = indexData.writeIndexData();
+
+			Container container = new Container(index.Compression, -1); // index data revision is always -1
+			container.compress(data, null);
+			sbyte[] compressedData = container.data;
+			DataFileWriteResult res = this.data.write(index255.IndexFileId, index.Id, compressedData);
+
+			index255.write(new IndexEntry(index255, index.Id, res.sector, res.compressedLength));
+
+			Crc32 crc = new Crc32();
+			crc.update(compressedData, 0, compressedData.Length);
+			index.Crc = crc.Hash;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void saveArchive(net.runelite.cache.fs.Archive a, byte[] archiveData) throws java.io.IOException
+		public virtual void saveArchive(Archive a, sbyte[] archiveData)
+		{
+			Index index = a.Index;
+			IndexFile indexFile = getIndex(index.Id);
+			Debug.Assert(indexFile.IndexFileId == index.Id);
+
+			DataFileWriteResult res = data.write(index.Id, a.ArchiveId, archiveData);
+			indexFile.write(new IndexEntry(indexFile, a.ArchiveId, res.sector, res.compressedLength));
+
+			sbyte compression = archiveData[0];
+			int compressedSize = Ints.fromBytes(archiveData[1], archiveData[2], archiveData[3], archiveData[4]);
+
+			// don't crc the appended revision, if it is there
+			int length = 1 + 4 + compressedSize + (compression != CompressionType.NONE ? 4 : 0);
+
+			Crc32 crc = new Crc32();
+			crc.update(archiveData, 0, length);
+			a.Crc = crc.Hash;
+
+			logger.trace("Saved archive {}/{} at sector {}, compressed length {}", index.Id, a.ArchiveId, res.sector, res.compressedLength);
 		}
 	}
 
-	public byte[] readIndex(int indexId) // throws IOException
-	{
-		IndexEntry entry = index255.read(indexId);
-		if (entry == null)
-		{
-			return null;
-		}
-
-		byte[] indexData = data.read(index255.getIndexFileId(), entry.getId(), entry.getSector(), entry.getLength());
-		return indexData;
-	}
-
-	private void loadIndex(Index index) // throws IOException
-	{
-		Console.WriteLine("Loading index {}", index.getId());
-
-		byte[] indexData = readIndex(index.getId());
-		if (indexData == null)
-		{
-			return;
-		}
-
-		Container res = Container.decompress(indexData, null);
-		byte[] data = res.data;
-
-		IndexData id = new IndexData();
-		id.load(data);
-
-		index.setProtocol(id.getProtocol());
-		index.setRevision(id.getRevision());
-		index.setNamed(id.isNamed());
-
-		for (ArchiveData ad : id.getArchives())
-		{
-			Archive archive = index.addArchive(ad.getId());
-			archive.setNameHash(ad.getNameHash());
-			archive.setCrc(ad.getCrc());
-			archive.setRevision(ad.getRevision());
-			archive.setFileData(ad.getFiles());
-
-			assert ad.getFiles().length > 0;
-		}
-
-		index.setCrc(res.crc);
-		index.setCompression(res.compression);
-		assert res.revision == -1;
-	}
-
-	// @Override
-	public byte[] loadArchive(Archive archive) // throws IOException
-	{
-		Index index = archive.getIndex();
-		IndexFile indexFile = getIndex(index.getId());
-
-		assert indexFile.getIndexFileId() == index.getId();
-
-		IndexEntry entry = indexFile.read(archive.getArchiveId());
-		if (entry == null)
-		{
-			Console.WriteLine("can't read archive " + archive.getArchiveId() + " from index " + index.getId());
-			return null;
-		}
-
-		assert entry.getId() == archive.getArchiveId();
-
-		Console.WriteLine("Loading archive {} for index {} from sector {} length {}",
-			archive.getArchiveId(), index.getId(), entry.getSector(), entry.getLength());
-
-		byte[] archiveData = data.read(index.getId(), entry.getId(), entry.getSector(), entry.getLength());
-		return archiveData;
-	}
-
-	// @Override
-	public void save(Store store) // throws IOException
-	{
-		Console.WriteLine("Saving store");
-
-		for (Index i : store.getIndexes())
-		{
-			saveIndex(i);
-		}
-	}
-
-	private void saveIndex(Index index) // throws IOException
-	{
-		IndexData indexData = index.toIndexData();
-		byte[] data = indexData.writeIndexData();
-
-		Container container = new Container(index.getCompression(), -1); // index data revision is always -1
-		container.compress(data, null);
-		byte[] compressedData = container.data;
-		DataFileWriteResult res = this.data.write(index255.getIndexFileId(), index.getId(), compressedData);
-
-		index255.write(new IndexEntry(index255, index.getId(), res.sector, res.compressedLength));
-
-		Crc32 crc = new Crc32();
-		crc.update(compressedData, 0, compressedData.length);
-		index.setCrc(crc.getHash());
-	}
-
-	// @Override
-	public void saveArchive(Archive a, byte[] archiveData) // throws IOException
-	{
-		Index index = a.getIndex();
-		IndexFile indexFile = getIndex(index.getId());
-		assert indexFile.getIndexFileId() == index.getId();
-
-		DataFileWriteResult res = data.write(index.getId(), a.getArchiveId(), archiveData);
-		indexFile.write(new IndexEntry(indexFile, a.getArchiveId(), res.sector, res.compressedLength));
-
-		byte compression = archiveData[0];
-		int compressedSize = Ints.fromBytes(archiveData[1], archiveData[2],
-			archiveData[3], archiveData[4]);
-
-		// don't crc the appended revision, if it is there
-		int length = 1 // compression type
-			+ 4 // compressed size
-			+ compressedSize
-			+ (compression != CompressionType.NONE ? 4 : 0);
-
-		Crc32 crc = new Crc32();
-		crc.update(archiveData, 0, length);
-		a.setCrc(crc.getHash());
-
-		Console.WriteLine("Saved archive {}/{} at sector {}, compressed length {}",
-			index.getId(), a.getArchiveId(), res.sector, res.compressedLength);
-	}
 }

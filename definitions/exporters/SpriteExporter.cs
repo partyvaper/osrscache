@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,33 +22,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.exporters;
-
-// import java.awt.image.BufferedImage;
-// import java.io.File;
-// import java.io.IOException;
-// import javax.imageio.ImageIO;
-using OSRSCache.definitions.SpriteDefinition;
-
-public class SpriteExporter
+namespace net.runelite.cache.definitions.exporters
 {
-	private readonly SpriteDefinition sprite;
+	using SpriteDefinition = net.runelite.cache.definitions.SpriteDefinition;
 
-	public SpriteExporter(SpriteDefinition sprite)
+	public class SpriteExporter
 	{
-		this.sprite = sprite;
+		private readonly SpriteDefinition sprite;
+
+		public SpriteExporter(SpriteDefinition sprite)
+		{
+			this.sprite = sprite;
+		}
+
+		public virtual BufferedImage export()
+		{
+			BufferedImage bi = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			bi.setRGB(0, 0, sprite.getWidth(), sprite.getHeight(), sprite.getPixels(), 0, sprite.getWidth());
+			return bi;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void exportTo(java.io.File file) throws java.io.IOException
+		public virtual void exportTo(File file)
+		{
+			BufferedImage image = export();
+			ImageIO.write(image, "png", file);
+		}
 	}
 
-	public BufferedImage export()
-	{
-		BufferedImage bi = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		bi.setRGB(0, 0, sprite.getWidth(), sprite.getHeight(), sprite.getPixels(), 0, sprite.getWidth());
-		return bi;
-	}
-
-	public void exportTo(File file) // throws IOException
-	{
-		BufferedImage image = export();
-		ImageIO.write(image, "png", file);
-	}
 }

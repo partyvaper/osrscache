@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,205 +22,207 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.savers;
-
-using OSRSCache.definitions.ClientScript1Instruction;
-using OSRSCache.definitions.InterfaceDefinition;
-using OSRSCache.io.OutputStream;
-
-public class InterfaceSaver
+namespace net.runelite.cache.definitions.savers
 {
-	public byte[] save(InterfaceDefinition def)
-	{
-		if (def.isIf3)
-		{
-			return saveIf3(def);
-		}
-		else
-		{
-			return saveIf1(def);
-		}
-	}
+	using ClientScript1Instruction = net.runelite.cache.definitions.ClientScript1Instruction;
+	using InterfaceDefinition = net.runelite.cache.definitions.InterfaceDefinition;
+	using OutputStream = net.runelite.cache.io.OutputStream;
 
-	private byte[] saveIf3(InterfaceDefinition def)
+	public class InterfaceSaver
 	{
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	private byte[] saveIf1(InterfaceDefinition def)
-	{
-		OutputStream out = new OutputStream();
-		out.writeByte(def.type);
-		out.writeByte(def.menuType);
-		out.writeShort(def.contentType);
-		out.writeShort(def.originalX);
-		out.writeShort(def.originalY);
-		out.writeShort(def.originalWidth);
-		out.writeShort(def.originalHeight);
-		out.writeByte(def.opacity);
-		out.writeShort(def.parentId);
-		out.writeShort(def.hoveredSiblingId);
-		if (def.alternateOperators != null)
+		public virtual sbyte[] save(InterfaceDefinition def)
 		{
-			out.writeByte(def.alternateOperators.length);
-			for (int i = 0; i < def.alternateOperators.length; ++i)
+			if (def.isIf3)
 			{
-				out.writeByte(def.alternateOperators[i]);
-				out.writeShort(def.alternateRhs[i]);
+				return saveIf3(def);
+			}
+			else
+			{
+				return saveIf1(def);
 			}
 		}
-		else
+
+		private sbyte[] saveIf3(InterfaceDefinition def)
 		{
-			out.writeByte(0);
+			throw new System.NotSupportedException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
-		if (def.clientScripts != null)
+
+		private sbyte[] saveIf1(InterfaceDefinition def)
 		{
-			out.writeByte(def.clientScripts.length);
-			for (int i = 0; i < def.clientScripts.length; ++i)
+			OutputStream @out = new OutputStream();
+			@out.writeByte(def.type);
+			@out.writeByte(def.menuType);
+			@out.writeShort(def.contentType);
+			@out.writeShort(def.originalX);
+			@out.writeShort(def.originalY);
+			@out.writeShort(def.originalWidth);
+			@out.writeShort(def.originalHeight);
+			@out.writeByte(def.opacity);
+			@out.writeShort(def.parentId);
+			@out.writeShort(def.hoveredSiblingId);
+			if (def.alternateOperators != null)
 			{
-				int len = 0;
-				for (int j = 0; j < def.clientScripts[i].length; ++j)
+				@out.writeByte(def.alternateOperators.Length);
+				for (int i = 0; i < def.alternateOperators.Length; ++i)
 				{
-					ClientScript1Instruction ins = def.clientScripts[i][j];
-					len++;
-					if (ins.operands != null)
-					{
-						len += ins.operands.length;
-					}
+					@out.writeByte(def.alternateOperators[i]);
+					@out.writeShort(def.alternateRhs[i]);
 				}
-				out.writeShort(len);
-				for (int j = 0; j < def.clientScripts[i].length; ++j)
+			}
+			else
+			{
+				@out.writeByte(0);
+			}
+			if (def.clientScripts != null)
+			{
+				@out.writeByte(def.clientScripts.Length);
+				for (int i = 0; i < def.clientScripts.Length; ++i)
 				{
-					ClientScript1Instruction ins = def.clientScripts[i][j];
-					out.writeShort(ins.opcode.ordinal());
-					if (ins.operands != null)
+					int len = 0;
+					for (int j = 0; j < def.clientScripts[i].Length; ++j)
 					{
-						for (int op : ins.operands)
+						ClientScript1Instruction ins = def.clientScripts[i][j];
+						len++;
+						if (ins.operands != null)
 						{
-							out.writeShort(op);
+							len += ins.operands.Length;
+						}
+					}
+					@out.writeShort(len);
+					for (int j = 0; j < def.clientScripts[i].Length; ++j)
+					{
+						ClientScript1Instruction ins = def.clientScripts[i][j];
+						@out.writeShort(ins.opcode.ordinal());
+						if (ins.operands != null)
+						{
+							foreach (int op in ins.operands)
+							{
+								@out.writeShort(op);
+							}
 						}
 					}
 				}
 			}
-		}
-		else
-		{
-			out.writeByte(0);
-		}
-		if (def.type == 0)
-		{
-			out.writeShort(def.scrollHeight);
-			out.writeByte(def.isHidden ? 1 : 0);
-		}
-		if (def.type == 1)
-		{
-			out.writeShort(0);
-			out.writeByte(0);
-		}
-		if (def.type == 2)
-		{
-			out.writeByte((def.clickMask & 268435456) != 0 ? 1 : 0);
-			out.writeByte((def.clickMask & 1073741824) != 0 ? 1 : 0);
-			out.writeByte((def.clickMask & Integer.MIN_VALUE) != 0 ? 1 : 0);
-			out.writeByte((def.clickMask & 536870912) != 0 ? 1 : 0);
-			out.writeByte(def.xPitch);
-			out.writeByte(def.yPitch);
-			for (int i = 0; i < 20; ++i)
+			else
 			{
-				if (def.sprites[i] != -1)
+				@out.writeByte(0);
+			}
+			if (def.type == 0)
+			{
+				@out.writeShort(def.scrollHeight);
+				@out.writeByte(def.isHidden ? 1 : 0);
+			}
+			if (def.type == 1)
+			{
+				@out.writeShort(0);
+				@out.writeByte(0);
+			}
+			if (def.type == 2)
+			{
+				@out.writeByte((def.clickMask & 268435456) != 0 ? 1 : 0);
+				@out.writeByte((def.clickMask & 1073741824) != 0 ? 1 : 0);
+				@out.writeByte((def.clickMask & int.MinValue) != 0 ? 1 : 0);
+				@out.writeByte((def.clickMask & 536870912) != 0 ? 1 : 0);
+				@out.writeByte(def.xPitch);
+				@out.writeByte(def.yPitch);
+				for (int i = 0; i < 20; ++i)
 				{
-					out.writeByte(1);
-					out.writeShort(def.xOffsets[i]);
-					out.writeShort(def.yOffsets[i]);
-					out.writeShort(def.sprites[i]);
+					if (def.sprites[i] != -1)
+					{
+						@out.writeByte(1);
+						@out.writeShort(def.xOffsets[i]);
+						@out.writeShort(def.yOffsets[i]);
+						@out.writeShort(def.sprites[i]);
+					}
+					else
+					{
+						@out.writeByte(0);
+					}
 				}
-				else
+				for (int i = 0; i < 5; ++i)
 				{
-					out.writeByte(0);
+					if (!string.ReferenceEquals(def.configActions[i], null))
+					{
+						@out.writeString(def.configActions[i]);
+					}
+					else
+					{
+						@out.writeString("");
+					}
 				}
 			}
-			for (int i = 0; i < 5; ++i)
+			if (def.type == 3)
 			{
-				if (def.configActions[i] != null)
+				@out.writeByte(def.filled ? 1 : 0);
+			}
+			if (def.type == 4 || def.type == 1)
+			{
+				@out.writeByte(def.xTextAlignment);
+				@out.writeByte(def.yTextAlignment);
+				@out.writeByte(def.lineHeight);
+				@out.writeShort(def.fontId);
+				@out.writeByte(def.textShadowed ? 1 : 0);
+			}
+			if (def.type == 4)
+			{
+				@out.writeString(def.text);
+				@out.writeString(def.alternateText);
+			}
+			if (def.type == 1 || def.type == 3 || def.type == 4)
+			{
+				@out.writeInt(def.textColor);
+			}
+			if (def.type == 3 || def.type == 4)
+			{
+				@out.writeInt(def.alternateTextColor);
+				@out.writeInt(def.hoveredTextColor);
+				@out.writeInt(def.alternateHoveredTextColor);
+			}
+			if (def.type == 5)
+			{
+				@out.writeInt(def.spriteId);
+				@out.writeInt(def.alternateSpriteId);
+			}
+			if (def.type == 6)
+			{
+				@out.writeShort(def.modelId);
+				@out.writeShort(def.alternateModelId);
+				@out.writeShort(def.animation);
+				@out.writeShort(def.alternateAnimation);
+				@out.writeShort(def.modelZoom);
+				@out.writeShort(def.rotationX);
+				@out.writeShort(def.rotationZ);
+			}
+			if (def.type == 7)
+			{
+				@out.writeByte(def.xTextAlignment);
+				@out.writeShort(def.fontId);
+				@out.writeByte(def.textShadowed ? 1 : 0);
+				@out.writeInt(def.textColor);
+				@out.writeShort(def.xPitch);
+				@out.writeShort(def.yPitch);
+				@out.writeByte((def.clickMask & 1073741824) != 0 ? 1 : 0);
+				for (int i = 0; i < 5; ++i)
 				{
-					out.writestring(def.configActions[i]);
-				}
-				else
-				{
-					out.writestring("");
+					@out.writeString(def.configActions[i]);
 				}
 			}
-		}
-		if (def.type == 3)
-		{
-			out.writeByte(def.filled ? 1 : 0);
-		}
-		if (def.type == 4 || def.type == 1)
-		{
-			out.writeByte(def.xTextAlignment);
-			out.writeByte(def.yTextAlignment);
-			out.writeByte(def.lineHeight);
-			out.writeShort(def.fontId);
-			out.writeByte(def.textShadowed ? 1 : 0);
-		}
-		if (def.type == 4)
-		{
-			out.writestring(def.text);
-			out.writestring(def.alternateText);
-		}
-		if (def.type == 1 || def.type == 3 || def.type == 4)
-		{
-			out.writeInt(def.textColor);
-		}
-		if (def.type == 3 || def.type == 4)
-		{
-			out.writeInt(def.alternateTextColor);
-			out.writeInt(def.hoveredTextColor);
-			out.writeInt(def.alternateHoveredTextColor);
-		}
-		if (def.type == 5)
-		{
-			out.writeInt(def.spriteId);
-			out.writeInt(def.alternateSpriteId);
-		}
-		if (def.type == 6)
-		{
-			out.writeShort(def.modelId);
-			out.writeShort(def.alternateModelId);
-			out.writeShort(def.animation);
-			out.writeShort(def.alternateAnimation);
-			out.writeShort(def.modelZoom);
-			out.writeShort(def.rotationX);
-			out.writeShort(def.rotationZ);
-		}
-		if (def.type == 7)
-		{
-			out.writeByte(def.xTextAlignment);
-			out.writeShort(def.fontId);
-			out.writeByte(def.textShadowed ? 1 : 0);
-			out.writeInt(def.textColor);
-			out.writeShort(def.xPitch);
-			out.writeShort(def.yPitch);
-			out.writeByte((def.clickMask & 1073741824) != 0 ? 1 : 0);
-			for (int i = 0; i < 5; ++i)
+			if (def.type == 8)
 			{
-				out.writestring(def.configActions[i]);
+				@out.writeString(def.text);
 			}
+			if (def.menuType == 2 || def.type == 2)
+			{
+				@out.writeString(def.targetVerb);
+				@out.writeString(def.spellName);
+				@out.writeShort(((int)((uint)def.clickMask >> 11)) & 63);
+			}
+			if (def.menuType == 1 || def.menuType == 4 || def.menuType == 5 || def.menuType == 6)
+			{
+				@out.writeString(def.tooltip);
+			}
+			return @out.flip();
 		}
-		if (def.type == 8)
-		{
-			out.writestring(def.text);
-		}
-		if (def.menuType == 2 || def.type == 2)
-		{
-			out.writestring(def.targetVerb);
-			out.writestring(def.spellName);
-			out.writeShort((def.clickMask >>> 11) & 63);
-		}
-		if (def.menuType == 1 || def.menuType == 4 || def.menuType == 5 || def.menuType == 6)
-		{
-			out.writestring(def.tooltip);
-		}
-		return out.flip();
 	}
+
 }

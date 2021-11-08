@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,53 +22,58 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.savers;
-
-using OSRSCache.definitions.MapDefinition;
-using OSRSCache.definitions.MapDefinition.Tile;
-using OSRSCache.io.OutputStream;
-using OSRSCache.region.Region.X;
-using OSRSCache.region.Region.Y;
-using OSRSCache.region.Region.Z;
-
-public class MapSaver
+namespace net.runelite.cache.definitions.savers
 {
-	public byte[] save(MapDefinition map)
+	using MapDefinition = net.runelite.cache.definitions.MapDefinition;
+	using Tile = net.runelite.cache.definitions.MapDefinition.Tile;
+	using OutputStream = net.runelite.cache.io.OutputStream;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.region.Region.X;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.region.Region.Y;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.region.Region.Z;
+
+	public class MapSaver
 	{
-		MapDefinition.Tile[][][] tiles = map.getTiles();
-		OutputStream out = new OutputStream();
-		for (int z = 0; z < Z; z++)
+		public virtual sbyte[] save(MapDefinition map)
 		{
-			for (int x = 0; x < X; x++)
+			MapDefinition.Tile[][][] tiles = map.getTiles();
+			OutputStream @out = new OutputStream();
+			for (int z = 0; z < Z; z++)
 			{
-				for (int y = 0; y < Y; y++)
+				for (int x = 0; x < X; x++)
 				{
-					MapDefinition.Tile tile = tiles[z][x][y];
-					if (tile.attrOpcode != 0)
+					for (int y = 0; y < Y; y++)
 					{
-						out.writeByte(tile.attrOpcode);
-						out.writeByte(tile.overlayId);
-					}
-					if (tile.settings != 0)
-					{
-						out.writeByte(tile.settings + 49);
-					}
-					if (tile.underlayId != 0)
-					{
-						out.writeByte(tile.underlayId + 81);
-					}
-					if (tile.height == null)
-					{
-						out.writeByte(0);
-					}
-					else
-					{
-						out.writeByte(1);
-						out.writeByte(tile.height);
+						MapDefinition.Tile tile = tiles[z][x][y];
+						if (tile.attrOpcode != 0)
+						{
+							@out.writeByte(tile.attrOpcode);
+							@out.writeByte(tile.overlayId);
+						}
+						if (tile.settings != 0)
+						{
+							@out.writeByte(tile.settings + 49);
+						}
+						if (tile.underlayId != 0)
+						{
+							@out.writeByte(tile.underlayId + 81);
+						}
+						if (tile.height == null)
+						{
+							@out.writeByte(0);
+						}
+						else
+						{
+							@out.writeByte(1);
+							@out.writeByte(tile.height.Value);
+						}
 					}
 				}
 			}
+			return @out.flip();
 		}
-		return out.flip();
 	}
+
 }

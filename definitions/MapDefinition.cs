@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,30 +22,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class MapDefinition
+namespace net.runelite.cache.definitions
 {
-	public const int X = 64;
-	public const int Y = 64;
-	public const int Z = 4;
+	using Data = lombok.Data;
 
-	@Data
-	public static class Tile
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class MapDefinition
+	public class MapDefinition
 	{
-		public Integer height;
-		public int attrOpcode;
-		public byte settings;
-		public byte overlayId;
-		public byte overlayPath;
-		public byte overlayRotation;
-		public byte underlayId;
+		public const int X = 64;
+		public const int Y = 64;
+		public const int Z = 4;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public static class Tile
+		public class Tile
+		{
+			public int? height;
+			public int attrOpcode;
+			public sbyte settings;
+			public sbyte overlayId;
+			public sbyte overlayPath;
+			public sbyte overlayRotation;
+			public sbyte underlayId;
+		}
+
+		private int regionX;
+		private int regionY;
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: private Tile[][][] tiles = new Tile[Z][X][Y];
+		private Tile[][][] tiles = RectangularArrays.RectangularTileArray(Z, X, Y);
 	}
 
-	private int regionX;
-	private int regionY;
-	private Tile[][][] tiles = new Tile[Z][X][Y];
 }

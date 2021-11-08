@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,70 +24,74 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.savers;
-
-// import java.util.Map;
-// import java.util.Map.Entry;
-using OSRSCache.definitions.ScriptDefinition;
-using OSRSCache.io.OutputStream;
-using OSRSCache.script.Opcodes.SCONST;
-using OSRSCache.script.Opcodes.POP_INT;
-using OSRSCache.script.Opcodes.POP_string;
-using OSRSCache.script.Opcodes.RETURN;
-
-public class ScriptSaver
+namespace net.runelite.cache.definitions.savers
 {
-	public byte[] save(ScriptDefinition script)
-	{
-		int[] instructions = script.getInstructions();
-		int[] intOperands = script.getIntOperands();
-		string[] stringOperands = script.getstringOperands();
-		Map<Integer, Integer>[] switches = script.getSwitches();
+	using ScriptDefinition = net.runelite.cache.definitions.ScriptDefinition;
+	using OutputStream = net.runelite.cache.io.OutputStream;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.script.Opcodes.SCONST;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.script.Opcodes.POP_INT;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.script.Opcodes.POP_STRING;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static net.runelite.cache.script.Opcodes.RETURN;
 
-		OutputStream out = new OutputStream();
-		out.writeByte(0); // null string
-		for (int i = 0; i < instructions.length; ++i)
+	public class ScriptSaver
+	{
+		public virtual sbyte[] save(ScriptDefinition script)
 		{
-			int opcode = instructions[i];
-			out.writeShort(opcode);
-			if (opcode == SCONST)
+			int[] instructions = script.getInstructions();
+			int[] intOperands = script.getIntOperands();
+			string[] stringOperands = script.getStringOperands();
+			IDictionary<int, int>[] switches = script.getSwitches();
+
+			OutputStream @out = new OutputStream();
+			@out.writeByte(0); // null string
+			for (int i = 0; i < instructions.Length; ++i)
 			{
-				out.writestring(stringOperands[i]);
+				int opcode = instructions[i];
+				@out.writeShort(opcode);
+				if (opcode == SCONST)
+				{
+					@out.writeString(stringOperands[i]);
+				}
+				else if (opcode < 100 && opcode != RETURN && opcode != POP_INT && opcode != POP_STRING)
+				{
+					@out.writeInt(intOperands[i]);
+				}
+				else
+				{
+					@out.writeByte(intOperands[i]);
+				}
 			}
-			else if (opcode < 100 && opcode != RETURN && opcode != POP_INT && opcode != POP_string)
+			@out.writeInt(instructions.Length);
+			@out.writeShort(script.getLocalIntCount());
+			@out.writeShort(script.getLocalStringCount());
+			@out.writeShort(script.getIntStackCount());
+			@out.writeShort(script.getStringStackCount());
+			int switchStart = @out.Offset;
+			if (switches == null)
 			{
-				out.writeInt(intOperands[i]);
+				@out.writeByte(0);
 			}
 			else
 			{
-				out.writeByte(intOperands[i]);
-			}
-		}
-		out.writeInt(instructions.length);
-		out.writeShort(script.getLocalIntCount());
-		out.writeShort(script.getLocalstringCount());
-		out.writeShort(script.getIntStackCount());
-		out.writeShort(script.getstringStackCount());
-		int switchStart = out.getOffset();
-		if (switches == null)
-		{
-			out.writeByte(0);
-		}
-		else
-		{
-			out.writeByte(switches.length);
-			for (Map<Integer, Integer> s : switches)
-			{
-				out.writeShort(s.size());
-				for (Entry<Integer, Integer> e : s.entrySet())
+				@out.writeByte(switches.Length);
+				foreach (IDictionary<int, int> s in switches)
 				{
-					out.writeInt(e.getKey());
-					out.writeInt(e.getValue());
+					@out.writeShort(s.Count);
+					foreach (KeyValuePair<int, int> e in s.SetOfKeyValuePairs())
+					{
+						@out.writeInt(e.Key);
+						@out.writeInt(e.Value);
+					}
 				}
 			}
+			int switchLength = @out.Offset - switchStart;
+			@out.writeShort(switchLength);
+			return @out.flip();
 		}
-		int switchLength = out.getOffset() - switchStart;
-		out.writeShort(switchLength);
-		return out.flip();
 	}
+
 }

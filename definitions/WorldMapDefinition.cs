@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,28 +22,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.Generic;
-
-namespace OSRSCache.definitions;
-
-// import java.util.List;
-// import lombok.Data;
-using OSRSCache.region.Position;
-
-@Data
-public class WorldMapDefinition
+namespace net.runelite.cache.definitions
 {
-	public string name;
-	public int field450;
-	public int defaultZoom;
-	public int fileId;
-	public int field453;
-	public int field454;
-	public int field456;
-	public bool isSurface;
-	public List<> regionList;
-	public string safeName;
-	public Position position;
-	public int field463;
+	using Data = lombok.Data;
+	using Position = net.runelite.cache.region.Position;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class WorldMapDefinition
+	public class WorldMapDefinition
+	{
+		public string name;
+		public int field450;
+		public int defaultZoom;
+		public int fileId;
+		public int field453;
+		public int field454;
+		public int field456;
+		public bool isSurface;
+		public System.Collections.IList regionList;
+		public string safeName;
+		public Position position;
+		public int field463;
+	}
+
 }

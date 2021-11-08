@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,21 +22,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class WorldMapType1 // , WorldMapTypeBase
+namespace net.runelite.cache.definitions
 {
-	public int numberOfPlanes;
-	public int xLowerLeft;
-	public int yLowerLeft;
-	public int xLowerRight;
-	public int yLowerRight;
-	public int xUpperLeft;
-	public int yUpperLeft;
-	public int xUpperRight;
-	public int plane;
-	public int yUpperRight;
+	using Data = lombok.Data;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class WorldMapType1 implements WorldMapTypeBase
+	public class WorldMapType1 : WorldMapTypeBase
+	{
+		public int numberOfPlanes;
+		public int xLowerLeft;
+		public int yLowerLeft;
+		public int xLowerRight;
+		public int yLowerRight;
+		public int xUpperLeft;
+		public int yUpperLeft;
+		public int xUpperRight;
+		public int plane;
+		public int yUpperRight;
+	}
+
 }

@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,161 +24,159 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.Generic;
-
-namespace OSRSCache.definitions.loaders;
-
-// import java.util.LinkedList;
-using OSRSCache.definitions.WorldMapDefinition;
-using OSRSCache.definitions.WorldMapType0;
-using OSRSCache.definitions.WorldMapType1;
-using OSRSCache.definitions.WorldMapType2;
-using OSRSCache.definitions.WorldMapType3;
-using OSRSCache.definitions.WorldMapTypeBase;
-using OSRSCache.io.InputStream;
-using OSRSCache.region.Position;
-
-public class WorldMapLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public WorldMapDefinition load(byte[] b, int fileId)
+	using WorldMapDefinition = net.runelite.cache.definitions.WorldMapDefinition;
+	using WorldMapType0 = net.runelite.cache.definitions.WorldMapType0;
+	using WorldMapType1 = net.runelite.cache.definitions.WorldMapType1;
+	using WorldMapType2 = net.runelite.cache.definitions.WorldMapType2;
+	using WorldMapType3 = net.runelite.cache.definitions.WorldMapType3;
+	using WorldMapTypeBase = net.runelite.cache.definitions.WorldMapTypeBase;
+	using InputStream = net.runelite.cache.io.InputStream;
+	using Position = net.runelite.cache.region.Position;
+
+	public class WorldMapLoader
 	{
-		WorldMapDefinition def = new WorldMapDefinition();
-		InputStream in = new InputStream(b);
-
-		def.fileId = fileId;
-		def.safeName = in.readstring();
-		def.name = in.readstring();
-
-		int packedPos = in.readInt();
-		if (packedPos == -1)
+		public virtual WorldMapDefinition load(sbyte[] b, int fileId)
 		{
-			def.position = new Position(-1, -1, -1);
+			WorldMapDefinition def = new WorldMapDefinition();
+			InputStream @in = new InputStream(b);
+
+			def.fileId = fileId;
+			def.safeName = @in.readString();
+			def.name = @in.readString();
+
+			int packedPos = @in.readInt();
+			if (packedPos == -1)
+			{
+				def.position = new Position(-1, -1, -1);
+			}
+			else
+			{
+				int y = packedPos >> 28 & 3;
+				int x = packedPos >> 14 & 16383;
+				int z = packedPos & 16383;
+				def.position = new Position(x, y, z);
+			}
+
+			def.field450 = @in.readInt();
+			@in.readUnsignedByte();
+			def.isSurface = @in.readUnsignedByte() == 1;
+			def.defaultZoom = @in.readUnsignedByte();
+			int var3 = @in.readUnsignedByte();
+			def.regionList = new LinkedList();
+
+			for (int var4 = 0; var4 < var3; ++var4)
+			{
+				def.regionList.Add(this.loadType(@in));
+			}
+
+			return def;
 		}
-		else
+
+		private WorldMapTypeBase loadType(InputStream var1)
 		{
-			int y = packedPos >> 28 & 3;
-			int x = packedPos >> 14 & 16383;
-			int z = packedPos & 16383;
-			def.position = new Position(x, y, z);
+			int var2 = var1.readUnsignedByte();
+			//      field397 = new class27(1, (byte)0);
+			//      field390 = new class27(2, (byte)1);
+			//      field399 = new class27(3, (byte)2);
+			//      field393 = new class27(0, (byte)3);
+			WorldMapTypeBase @base;
+			switch (var2)
+			{
+				case 0:
+					// type 1
+					@base = load1(var1);
+					break;
+				case 1:
+					// type 2
+					@base = load2(var1);
+					break;
+				case 2:
+					// type 3
+					@base = load3(var1);
+					break;
+				case 3:
+					// type 0
+					@base = load0(var1);
+					break;
+				default:
+					throw new System.InvalidOperationException();
+			}
+			return @base;
 		}
 
-		def.field450 = in.readInt();
-		in.readUnsignedByte();
-		def.isSurface = in.readUnsignedByte() == 1;
-		def.defaultZoom = in.readUnsignedByte();
-		int var3 = in.readUnsignedByte();
-		def.regionList = new LinkedList<>();
-
-		for (int var4 = 0; var4 < var3; ++var4)
+		private WorldMapTypeBase load0(InputStream @in)
 		{
-			def.regionList.add(this.loadType(in));
+			WorldMapType0 wm = new WorldMapType0();
+
+			wm.plane = @in.readUnsignedByte();
+			wm.numberOfPlanes = @in.readUnsignedByte();
+			wm.xLow = @in.readUnsignedShort();
+			wm.chunk_xLow = @in.readUnsignedByte();
+			wm.yLow = @in.readUnsignedShort();
+			wm.chunk_yLow = @in.readUnsignedByte();
+			wm.xHigh = @in.readUnsignedShort();
+			wm.chunk_xHigh = @in.readUnsignedByte();
+			wm.yHigh = @in.readUnsignedShort();
+			wm.chunk_yHigh = @in.readUnsignedByte();
+
+			return wm;
 		}
 
-		return def;
-	}
-
-	private WorldMapTypeBase loadType(InputStream var1)
-	{
-		int var2 = var1.readUnsignedByte();
-		//      field397 = new class27(1, (byte)0);
-		//      field390 = new class27(2, (byte)1);
-		//      field399 = new class27(3, (byte)2);
-		//      field393 = new class27(0, (byte)3);
-		WorldMapTypeBase base;
-		switch (var2)
+		private WorldMapTypeBase load1(InputStream @in)
 		{
-			case 0:
-				// type 1
-				base = load1(var1);
-				break;
-			case 1:
-				// type 2
-				base = load2(var1);
-				break;
-			case 2:
-				// type 3
-				base = load3(var1);
-				break;
-			case 3:
-				// type 0
-				base = load0(var1);
-				break;
-			default:
-				throw new IllegalStateException();
+			WorldMapType1 wm = new WorldMapType1();
+
+			wm.plane = @in.readUnsignedByte();
+			wm.numberOfPlanes = @in.readUnsignedByte();
+			wm.xLowerLeft = @in.readUnsignedShort();
+			wm.yLowerLeft = @in.readUnsignedShort();
+			wm.xLowerRight = @in.readUnsignedShort();
+			wm.yUpperLeft = @in.readUnsignedShort();
+			wm.xUpperLeft = @in.readUnsignedShort();
+			wm.yLowerRight = @in.readUnsignedShort();
+			wm.xUpperRight = @in.readUnsignedShort();
+			wm.yUpperRight = @in.readUnsignedShort();
+
+			return wm;
 		}
-		return base;
+
+		private WorldMapTypeBase load2(InputStream @in)
+		{
+			WorldMapType2 wm = new WorldMapType2();
+
+			wm.plane = @in.readUnsignedByte();
+			wm.numberOfPlanes = @in.readUnsignedByte();
+			wm.xLow = @in.readUnsignedShort();
+			wm.yLow = @in.readUnsignedShort();
+			wm.xHigh = @in.readUnsignedShort();
+			wm.yHigh = @in.readUnsignedShort();
+
+			return wm;
+		}
+
+		private WorldMapTypeBase load3(InputStream @in)
+		{
+			WorldMapType3 wm = new WorldMapType3();
+
+			wm.oldPlane = @in.readUnsignedByte();
+			wm.numberOfPlanes = @in.readUnsignedByte();
+			wm.oldX = @in.readUnsignedShort();
+			wm.chunk_oldXLow = @in.readUnsignedByte();
+			wm.chunk_oldXHigh = @in.readUnsignedByte();
+			wm.oldY = @in.readUnsignedShort();
+			wm.chunk_oldYLow = @in.readUnsignedByte();
+			wm.chunk_oldYHigh = @in.readUnsignedByte();
+			wm.newX = @in.readUnsignedShort();
+			wm.chunk_newXLow = @in.readUnsignedByte();
+			wm.chunk_newXHigh = @in.readUnsignedByte();
+			wm.newY = @in.readUnsignedShort();
+			wm.chunk_newYLow = @in.readUnsignedByte();
+			wm.chunk_newYHigh = @in.readUnsignedByte();
+
+			return wm;
+		}
 	}
 
-	private WorldMapTypeBase load0(InputStream in)
-	{
-		WorldMapType0 wm = new WorldMapType0();
-
-		wm.plane = in.readUnsignedByte();
-		wm.numberOfPlanes = in.readUnsignedByte();
-		wm.xLow = in.readUnsignedShort();
-		wm.chunk_xLow = in.readUnsignedByte();
-		wm.yLow = in.readUnsignedShort();
-		wm.chunk_yLow = in.readUnsignedByte();
-		wm.xHigh = in.readUnsignedShort();
-		wm.chunk_xHigh = in.readUnsignedByte();
-		wm.yHigh = in.readUnsignedShort();
-		wm.chunk_yHigh = in.readUnsignedByte();
-
-		return wm;
-	}
-
-	private WorldMapTypeBase load1(InputStream in)
-	{
-		WorldMapType1 wm = new WorldMapType1();
-
-		wm.plane = in.readUnsignedByte();
-		wm.numberOfPlanes = in.readUnsignedByte();
-		wm.xLowerLeft = in.readUnsignedShort();
-		wm.yLowerLeft = in.readUnsignedShort();
-		wm.xLowerRight = in.readUnsignedShort();
-		wm.yUpperLeft = in.readUnsignedShort();
-		wm.xUpperLeft = in.readUnsignedShort();
-		wm.yLowerRight = in.readUnsignedShort();
-		wm.xUpperRight = in.readUnsignedShort();
-		wm.yUpperRight = in.readUnsignedShort();
-
-		return wm;
-	}
-
-	private WorldMapTypeBase load2(InputStream in)
-	{
-		WorldMapType2 wm = new WorldMapType2();
-
-		wm.plane = in.readUnsignedByte();
-		wm.numberOfPlanes = in.readUnsignedByte();
-		wm.xLow = in.readUnsignedShort();
-		wm.yLow = in.readUnsignedShort();
-		wm.xHigh = in.readUnsignedShort();
-		wm.yHigh = in.readUnsignedShort();
-
-		return wm;
-	}
-
-	private WorldMapTypeBase load3(InputStream in)
-	{
-		WorldMapType3 wm = new WorldMapType3();
-
-		wm.oldPlane = in.readUnsignedByte();
-		wm.numberOfPlanes = in.readUnsignedByte();
-		wm.oldX = in.readUnsignedShort();
-		wm.chunk_oldXLow = in.readUnsignedByte();
-		wm.chunk_oldXHigh = in.readUnsignedByte();
-		wm.oldY = in.readUnsignedShort();
-		wm.chunk_oldYLow = in.readUnsignedByte();
-		wm.chunk_oldYHigh = in.readUnsignedByte();
-		wm.newX = in.readUnsignedShort();
-		wm.chunk_newXLow = in.readUnsignedByte();
-		wm.chunk_newXHigh = in.readUnsignedByte();
-		wm.newY = in.readUnsignedShort();
-		wm.chunk_newYLow = in.readUnsignedByte();
-		wm.chunk_newYHigh = in.readUnsignedByte();
-
-		return wm;
-	}
 }

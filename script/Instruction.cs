@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,30 +22,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.script;
-
-public class Instruction
+namespace net.runelite.cache.script
 {
-	private readonly int opcode;
-	private string name;
-
-	public Instruction(int opcode)
+	public class Instruction
 	{
-		this.opcode = opcode;
+		private readonly int opcode;
+		private string name;
+
+		public Instruction(int opcode)
+		{
+			this.opcode = opcode;
+		}
+
+		public virtual int Opcode
+		{
+			get
+			{
+				return opcode;
+			}
+		}
+
+		public virtual string Name
+		{
+			get
+			{
+				return name;
+			}
+			set
+			{
+				this.name = value;
+			}
+		}
+
 	}
 
-	public int getOpcode()
-	{
-		return opcode;
-	}
-
-	public string getName()
-	{
-		return name;
-	}
-
-	public void setName(string name)
-	{
-		this.name = name;
-	}
 }

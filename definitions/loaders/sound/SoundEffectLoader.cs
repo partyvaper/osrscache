@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,41 +22,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders.sound;
-
-using OSRSCache.definitions.sound.SoundEffectDefinition;
-using OSRSCache.definitions.sound.SoundEffect1Definition;
-using OSRSCache.io.InputStream;
-
-public class SoundEffectLoader
+namespace net.runelite.cache.definitions.loaders.sound
 {
-	public SoundEffectDefinition load(byte[] b)
+	using SoundEffectDefinition = net.runelite.cache.definitions.sound.SoundEffectDefinition;
+	using SoundEffect1Definition = net.runelite.cache.definitions.sound.SoundEffect1Definition;
+	using InputStream = net.runelite.cache.io.InputStream;
+
+	public class SoundEffectLoader
 	{
-		SoundEffectDefinition se = new SoundEffectDefinition();
-		InputStream in = new InputStream(b);
-
-		load(se, in);
-
-		return se;
-	}
-
-	private void load(SoundEffectDefinition se, InputStream var1)
-	{
-		for (int var2 = 0; var2 < 10; ++var2)
+		public virtual SoundEffectDefinition load(sbyte[] b)
 		{
-			int var3 = var1.readUnsignedByte();
-			if (var3 != 0)
-			{
-				var1.setOffset(var1.getOffset() - 1);
+			SoundEffectDefinition se = new SoundEffectDefinition();
+			InputStream @in = new InputStream(b);
 
-				SoundEffect1Loader se1Loader = new SoundEffect1Loader();
-				SoundEffect1Definition se1 = se1Loader.load(var1);
+			load(se, @in);
 
-				se.field1008[var2] = se1;
-			}
+			return se;
 		}
 
-		se.field1006 = var1.readUnsignedShort();
-		se.field1009 = var1.readUnsignedShort();
+		private void load(SoundEffectDefinition se, InputStream var1)
+		{
+			for (int var2 = 0; var2 < 10; ++var2)
+			{
+				int var3 = var1.readUnsignedByte();
+				if (var3 != 0)
+				{
+					var1.Offset = var1.Offset - 1;
+
+					SoundEffect1Loader se1Loader = new SoundEffect1Loader();
+					SoundEffect1Definition se1 = se1Loader.load(var1);
+
+					se.field1008[var2] = se1;
+				}
+			}
+
+			se.field1006 = var1.readUnsignedShort();
+			se.field1009 = var1.readUnsignedShort();
+		}
 	}
+
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,11 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.fs.jagex;
-
-public class CompressionType
+namespace net.runelite.cache.fs.jagex
 {
-	public const int NONE = 0;
-	public const int BZ2  = 1;
-	public const int GZ   = 2;
+	public class CompressionType
+	{
+		public const int NONE = 0;
+		public const int BZ2 = 1;
+		public const int GZ = 2;
+	}
+
 }

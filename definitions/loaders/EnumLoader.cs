@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,92 +22,95 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.EnumDefinition;
-using OSRSCache.io.InputStream;
-using OSRSCache.util.ScriptVarType;
-
-public class EnumLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public EnumDefinition load(int id, byte[] b)
+	using EnumDefinition = net.runelite.cache.definitions.EnumDefinition;
+	using InputStream = net.runelite.cache.io.InputStream;
+	using ScriptVarType = net.runelite.cache.util.ScriptVarType;
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
+
+	public class EnumLoader
 	{
-		if (b.length == 1 && b[0] == 0)
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(EnumLoader));
+
+		public virtual EnumDefinition load(int id, sbyte[] b)
 		{
-			return null;
-		}
-
-		EnumDefinition def = new EnumDefinition();
-		InputStream is = new InputStream(b);
-
-		def.setId(id);
-
-		for (;;)
-		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			if (b.Length == 1 && b[0] == 0)
 			{
-				break;
+				return null;
 			}
 
-			processOp(opcode, def, is);
+			EnumDefinition def = new EnumDefinition();
+			InputStream @is = new InputStream(b);
+
+			def.setId(id);
+
+			for (;;)
+			{
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				processOp(opcode, def, @is);
+			}
+
+			return def;
 		}
 
-		return def;
+		private void processOp(int opcode, EnumDefinition def, InputStream @is)
+		{
+			switch (opcode)
+			{
+				case 1:
+					def.setKeyType(ScriptVarType.forCharKey((char) @is.readUnsignedByte()));
+					break;
+				case 2:
+					def.setValType(ScriptVarType.forCharKey((char) @is.readUnsignedByte()));
+					break;
+				case 3:
+					def.setDefaultString(@is.readString());
+					break;
+				case 4:
+					def.setDefaultInt(@is.readInt());
+					break;
+				case 5:
+				{
+					int size = @is.readUnsignedShort();
+					int[] keys = new int[size];
+					string[] stringVals = new string[size];
+					for (int index = 0; index < size; ++index)
+					{
+						keys[index] = @is.readInt();
+						stringVals[index] = @is.readString();
+					}
+					def.setSize(size);
+					def.setKeys(keys);
+					def.setStringVals(stringVals);
+					break;
+				}
+				case 6:
+				{
+					int size = @is.readUnsignedShort();
+					int[] keys = new int[size];
+					int[] intVals = new int[size];
+					for (int index = 0; index < size; ++index)
+					{
+						keys[index] = @is.readInt();
+						intVals[index] = @is.readInt();
+					}
+					def.setSize(size);
+					def.setKeys(keys);
+					def.setIntVals(intVals);
+					break;
+				}
+				default:
+					logger.warn("Unrecognized opcode {}", opcode);
+					break;
+			}
+		}
 	}
 
-	private void processOp(int opcode, EnumDefinition def, InputStream is)
-	{
-		switch (opcode)
-		{
-			case 1:
-				def.setKeyType(ScriptVarType.forCharKey((char) is.readUnsignedByte()));
-				break;
-			case 2:
-				def.setValType(ScriptVarType.forCharKey((char) is.readUnsignedByte()));
-				break;
-			case 3:
-				def.setDefaultstring(is.readstring());
-				break;
-			case 4:
-				def.setDefaultInt(is.readInt());
-				break;
-			case 5:
-			{
-				int size = is.readUnsignedShort();
-				int[] keys = new int[size];
-				string[] stringVals = new string[size];
-				for (int index = 0; index < size; ++index)
-				{
-					keys[index] = is.readInt();
-					stringVals[index] = is.readstring();
-				}
-				def.setSize(size);
-				def.setKeys(keys);
-				def.setstringVals(stringVals);
-				break;
-			}
-			case 6:
-			{
-				int size = is.readUnsignedShort();
-				int[] keys = new int[size];
-				int[] intVals = new int[size];
-				for (int index = 0; index < size; ++index)
-				{
-					keys[index] = is.readInt();
-					intVals[index] = is.readInt();
-				}
-				def.setSize(size);
-				def.setKeys(keys);
-				def.setIntVals(intVals);
-				break;
-			}
-			default:
-				Console.WriteLine("Unrecognized opcode {}", opcode);
-				break;
-		}
-	}
 }

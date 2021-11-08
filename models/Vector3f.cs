@@ -1,105 +1,113 @@
-using System;
-
-namespace OSRSCache.models;
-
-public class Vector3f
+﻿namespace net.runelite.cache.models
 {
-	public float x;
-	public float y;
-	public float z;
-
-	public Vector3f()
+	public class Vector3f
 	{
-	}
+		public float x;
+		public float y;
+		public float z;
 
-	public Vector3f(float x, float y, float z)
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	public Vector3f(Vector3f other)
-	{
-		this.x = other.x;
-		this.y = other.y;
-		this.z = other.z;
-	}
-
-	// @Override
-	public string tostring()
-	{
-		return "Vector3f{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
-	}
-
-	// @Override
-	public int hashCode()
-	{
-		int hash = 7;
-		hash = 23 * hash + Float.floatToIntBits(this.x);
-		hash = 23 * hash + Float.floatToIntBits(this.y);
-		hash = 23 * hash + Float.floatToIntBits(this.z);
-		return hash;
-	}
-
-	// @Override
-	public bool equals(Object obj)
-	{
-		if (this == obj)
+		public Vector3f()
 		{
+		}
+
+		public Vector3f(float x, float y, float z)
+		{
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+
+		public Vector3f(Vector3f other)
+		{
+			this.x = other.x;
+			this.y = other.y;
+			this.z = other.z;
+		}
+
+		public override string ToString()
+		{
+			return "Vector3f{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+		}
+
+		public override int GetHashCode()
+		{
+			int hash = 7;
+			hash = 23 * hash + Float.floatToIntBits(this.x);
+			hash = 23 * hash + Float.floatToIntBits(this.y);
+			hash = 23 * hash + Float.floatToIntBits(this.z);
+			return hash;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			if (obj == null)
+			{
+				return false;
+			}
+			if (this.GetType() != obj.GetType())
+			{
+				return false;
+			}
+//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+//ORIGINAL LINE: final Vector3f other = (Vector3f) obj;
+			Vector3f other = (Vector3f) obj;
+			if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x))
+			{
+				return false;
+			}
+			if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y))
+			{
+				return false;
+			}
+			if (Float.floatToIntBits(this.z) != Float.floatToIntBits(other.z))
+			{
+				return false;
+			}
 			return true;
 		}
-		if (obj == null)
+
+		public virtual float X
 		{
-			return false;
+			get
+			{
+				return x;
+			}
+			set
+			{
+				this.x = value;
+			}
 		}
-		if (getClass() != obj.getClass())
+
+
+		public virtual float Y
 		{
-			return false;
+			get
+			{
+				return y;
+			}
+			set
+			{
+				this.y = value;
+			}
 		}
-		final Vector3f other = (Vector3f) obj;
-		if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x))
+
+
+		public virtual float Z
 		{
-			return false;
+			get
+			{
+				return z;
+			}
+			set
+			{
+				this.z = value;
+			}
 		}
-		if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y))
-		{
-			return false;
-		}
-		if (Float.floatToIntBits(this.z) != Float.floatToIntBits(other.z))
-		{
-			return false;
-		}
-		return true;
+
 	}
 
-	public float getX()
-	{
-		return x;
-	}
-
-	public void setX(float x)
-	{
-		this.x = x;
-	}
-
-	public float getY()
-	{
-		return y;
-	}
-
-	public void setY(float y)
-	{
-		this.y = y;
-	}
-
-	public float getZ()
-	{
-		return z;
-	}
-
-	public void setZ(float z)
-	{
-		this.z = z;
-	}
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,11 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.providers;
-
-using OSRSCache.definitions.UnderlayDefinition;
-
-public interface UnderlayProvider
+namespace net.runelite.cache.definitions.providers
 {
-	UnderlayDefinition provide(int underlayId);
+	using UnderlayDefinition = net.runelite.cache.definitions.UnderlayDefinition;
+
+	public interface UnderlayProvider
+	{
+		UnderlayDefinition provide(int underlayId);
+	}
+
 }

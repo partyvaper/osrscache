@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,37 +22,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.UnderlayDefinition;
-using OSRSCache.io.InputStream;
-
-public class UnderlayLoader
+namespace net.runelite.cache.definitions.loaders
 {
-	public UnderlayDefinition load(int id, byte[] b)
+	using UnderlayDefinition = net.runelite.cache.definitions.UnderlayDefinition;
+	using InputStream = net.runelite.cache.io.InputStream;
+	using Logger = org.slf4j.Logger;
+	using LoggerFactory = org.slf4j.LoggerFactory;
+
+	public class UnderlayLoader
 	{
-		UnderlayDefinition def = new UnderlayDefinition();
-		InputStream is = new InputStream(b);
+		private static readonly Logger logger = LoggerFactory.getLogger(typeof(UnderlayLoader));
 
-		def.setId(id);
-
-		for (;;)
+		public virtual UnderlayDefinition load(int id, sbyte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			UnderlayDefinition def = new UnderlayDefinition();
+			InputStream @is = new InputStream(b);
+
+			def.setId(id);
+
+			for (;;)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				if (opcode == 1)
+				{
+					int color = @is.read24BitInt();
+					def.setColor(color);
+				}
 			}
 
-			if (opcode == 1)
-			{
-				int color = is.read24BitInt();
-				def.setColor(color);
-			}
+			def.calculateHsl();
+
+			return def;
 		}
-
-		def.calculateHsl();
-
-		return def;
 	}
+
 }

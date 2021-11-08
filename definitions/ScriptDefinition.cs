@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,21 +24,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import java.util.Map;
-// import lombok.Data;
-
-@Data
-public class ScriptDefinition
+namespace net.runelite.cache.definitions
 {
-	private int id;
-	private int[] instructions;
-	private int[] intOperands;
-	private string[] stringOperands;
-	private int intStackCount;
-	private int stringStackCount;
-	private int localIntCount;
-	private int localstringCount;
-	private Map<Integer, Integer>[] switches;
+	using Data = lombok.Data;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class ScriptDefinition
+	public class ScriptDefinition
+	{
+		private int id;
+		private int[] instructions;
+		private int[] intOperands;
+		private string[] stringOperands;
+		private int intStackCount;
+		private int stringStackCount;
+		private int localIntCount;
+		private int localStringCount;
+		private IDictionary<int, int>[] switches;
+	}
+
 }

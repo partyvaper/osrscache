@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,12 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.sound;
-
-public class SoundEffect3Definition
+namespace net.runelite.cache.definitions.sound
 {
-	public int[][][] field1154 = new int[2][2][4];
-	public int[] field1155 = new int[2];
-	public int[] field1156 = new int[2];
-	public int[][][] field1159 = new int[2][2][4];
+	public class SoundEffect3Definition
+	{
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: public int[][][] field1154 = new int[2][2][4];
+		public int[][][] field1154 = RectangularArrays.RectangularIntArray(2, 2, 4);
+		public int[] field1155 = new int[2];
+		public int[] field1156 = new int[2];
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: public int[][][] field1159 = new int[2][2][4];
+		public int[][][] field1159 = RectangularArrays.RectangularIntArray(2, 2, 4);
+	}
+
 }

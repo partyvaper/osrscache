@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,64 +24,60 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.ObjectModel;
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.io.IOException;
-// import java.util.Collection;
-// import java.util.Collections;
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.OverlayDefinition;
-using OSRSCache.definitions.loaders.OverlayLoader;
-using OSRSCache.definitions.providers.OverlayProvider;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-
-public class OverlayManager // , OverlayProvider
+namespace net.runelite.cache
 {
-	private readonly Store store;
-	private readonly Map<Integer, OverlayDefinition> overlays = new HashMap<>();
+	using OverlayDefinition = net.runelite.cache.definitions.OverlayDefinition;
+	using OverlayLoader = net.runelite.cache.definitions.loaders.OverlayLoader;
+	using OverlayProvider = net.runelite.cache.definitions.providers.OverlayProvider;
+	using Archive = net.runelite.cache.fs.Archive;
+	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
+	using FSFile = net.runelite.cache.fs.FSFile;
+	using Index = net.runelite.cache.fs.Index;
+	using Storage = net.runelite.cache.fs.Storage;
+	using Store = net.runelite.cache.fs.Store;
 
-	public OverlayManager(Store store)
+	public class OverlayManager : OverlayProvider
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly IDictionary<int, OverlayDefinition> overlays = new Dictionary<int, OverlayDefinition>();
 
-	public void load() // throws IOException
-	{
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.CONFIGS);
-		Archive archive = index.getArchive(ConfigType.OVERLAY.getId());
-
-		byte[] archiveData = storage.loadArchive(archive);
-		ArchiveFiles files = archive.getFiles(archiveData);
-
-		for (FSFile file : files.getFiles())
+		public OverlayManager(Store store)
 		{
-			OverlayLoader loader = new OverlayLoader();
-			OverlayDefinition overlay = loader.load(file.getFileId(), file.getContents());
+			this.store = store;
+		}
 
-			overlays.put(overlay.getId(), overlay);
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
+		{
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.CONFIGS);
+			Archive archive = index.getArchive(ConfigType.OVERLAY.getId());
+
+			sbyte[] archiveData = storage.loadArchive(archive);
+			ArchiveFiles files = archive.getFiles(archiveData);
+
+			foreach (FSFile file in files.Files)
+			{
+				OverlayLoader loader = new OverlayLoader();
+				OverlayDefinition overlay = loader.load(file.FileId, file.Contents);
+
+				overlays[overlay.getId()] = overlay;
+			}
+		}
+
+		public virtual ICollection<OverlayDefinition> Overlays
+		{
+			get
+			{
+				return Collections.unmodifiableCollection(overlays.Values);
+			}
+		}
+
+		public virtual OverlayDefinition provide(int overlayId)
+		{
+			return overlays[overlayId];
 		}
 	}
 
-	public Collection<OverlayDefinition> getOverlays()
-	{
-		return Collections.unmodifiableCollection(overlays.values());
-	}
-
-	// @Override
-	public OverlayDefinition provide(int overlayId)
-	{
-		return overlays.get(overlayId);
-	}
 }
