@@ -33,8 +33,8 @@ using OSRSCache.definitions.InterfaceDefinition;
 
 public class InterfaceExporter
 {
-	private final InterfaceDefinition item;
-	private final Gson gson;
+	private readonly InterfaceDefinition item;
+	private readonly Gson gson;
 
 	public InterfaceExporter(InterfaceDefinition item)
 	{

@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.definitions;
 
 // import lombok.Data;
@@ -30,7 +33,7 @@ namespace OSRSCache.definitions;
 public class InterfaceDefinition
 {
 	public int id = -1;
-	public boolean isIf3 = false;
+	public bool isIf3 = false;
 	public int type;
 	public int contentType;
 	public int originalX;
@@ -42,18 +45,18 @@ public class InterfaceDefinition
 	public int xPositionMode;
 	public int yPositionMode;
 	public int parentId = -1;
-	public boolean isHidden;
+	public bool isHidden;
 	public int scrollWidth;
 	public int scrollHeight;
-	public boolean noClickThrough;
+	public bool noClickThrough;
 	public int spriteId = -1;
 	public int textureId;
-	public boolean spriteTiling;
+	public bool spriteTiling;
 	public int opacity;
 	public int borderType;
 	public int shadowColor;
-	public boolean flippedVertically;
-	public boolean flippedHorizontally;
+	public bool flippedVertically;
+	public bool flippedHorizontally;
 	public int modelType = 1;
 	public int modelId = -1;
 	public int offsetX2d;
@@ -63,24 +66,24 @@ public class InterfaceDefinition
 	public int rotationZ;
 	public int modelZoom = 100;
 	public int animation = -1;
-	public boolean orthogonal;
+	public bool orthogonal;
 	public int modelHeightOverride;
 	public int fontId = -1;
 	public string text = "";
 	public int lineHeight;
 	public int xTextAlignment;
 	public int yTextAlignment;
-	public boolean textShadowed;
+	public bool textShadowed;
 	public int textColor;
-	public boolean filled;
+	public bool filled;
 	public int lineWidth = 1;
-	public boolean lineDirection;
+	public bool lineDirection;
 	public int clickMask;
 	public string name = "";
 	public string[] actions;
 	public int dragDeadZone;
 	public int dragDeadTime;
-	public boolean dragRenderBehavior;
+	public bool dragRenderBehavior;
 	public string targetVerb = "";
 	public Object[] onLoadListener;
 	public Object[] onMouseOverListener;
@@ -103,7 +106,7 @@ public class InterfaceDefinition
 	public int[] varTransmitTriggers;
 	public int[] invTransmitTriggers;
 	public int[] statTransmitTriggers;
-	public boolean hasListener;
+	public bool hasListener;
 	
 	public int menuType;
 	// This is set to a siblings' child id when that widget should get a hover effect when this one is hovered

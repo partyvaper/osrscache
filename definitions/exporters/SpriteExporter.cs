@@ -32,7 +32,7 @@ using OSRSCache.definitions.SpriteDefinition;
 
 public class SpriteExporter
 {
-	private final SpriteDefinition sprite;
+	private readonly SpriteDefinition sprite;
 
 	public SpriteExporter(SpriteDefinition sprite)
 	{

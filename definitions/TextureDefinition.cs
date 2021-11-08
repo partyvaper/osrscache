@@ -23,6 +23,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+
 namespace OSRSCache.definitions;
 
 // import lombok.Data;
@@ -32,7 +34,7 @@ using OSRSCache.definitions.providers.SpriteProvider;
 public class TextureDefinition
 {
 	public int field1777;
-	public boolean field1778;
+	public bool field1778;
 	private int id;
 	private int[] fileIds;
 	public int[] field1780;
@@ -43,7 +45,7 @@ public class TextureDefinition
 
 	public transient int[] pixels;
 
-	public boolean method2680(double var1, int var3, SpriteProvider spriteProvider)
+	public bool method2680(double var1, int var3, SpriteProvider spriteProvider)
 	{
 		int var5 = var3 * var3;
 		this.pixels = new int[var5];

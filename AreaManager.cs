@@ -22,6 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.ObjectModel;
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.io.IOException;
@@ -40,8 +45,8 @@ using OSRSCache.fs.Store;
 
 public class AreaManager
 {
-	private final Store store;
-	private final Map<Integer, AreaDefinition> areas = new HashMap<>();
+	private readonly Store store;
+	private readonly Map<Integer, AreaDefinition> areas = new HashMap<>();
 
 	public AreaManager(Store store)
 	{

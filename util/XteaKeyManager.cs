@@ -22,6 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using System.IO;
+
 namespace OSRSCache.util;
 
 // import java.io.IOException;
@@ -30,14 +34,10 @@ namespace OSRSCache.util;
 // import net.runelite.http.api.RuneLiteAPI;
 // import net.runelite.http.api.xtea.XteaClient;
 // import net.runelite.http.api.xtea.XteaKey;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class XteaKeyManager
 {
-	private const Logger logger = LoggerFactory.getLogger(XteaKeyManager.class);
-
-	private final Map<Integer, int[]> keys = new HashMap<>();
+	private readonly Map<Integer, int[]> keys = new HashMap<>();
 
 	public void loadKeys()
 	{
@@ -53,11 +53,11 @@ public class XteaKeyManager
 		catch (IOException ex)
 		{
 			// happens on release when it is not deployed yet
-			logger.debug("unable to load xtea keys", ex);
+			Console.WriteLine("unable to load xtea keys", ex);
 			return;
 		}
 
-		logger.info("Loaded {} keys", keys.size());
+		Console.WriteLine("Loaded {} keys", keys.size());
 	}
 
 	public int[] getKeys(int region)

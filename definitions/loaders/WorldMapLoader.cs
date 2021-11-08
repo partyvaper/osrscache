@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.Generic;
+
 namespace OSRSCache.definitions.loaders;
 
 // import java.util.LinkedList;
@@ -63,7 +66,7 @@ public class WorldMapLoader
 		def.isSurface = in.readUnsignedByte() == 1;
 		def.defaultZoom = in.readUnsignedByte();
 		int var3 = in.readUnsignedByte();
-		def.regionList = new LinkedList();
+		def.regionList = new LinkedList<>();
 
 		for (int var4 = 0; var4 < var3; ++var4)
 		{

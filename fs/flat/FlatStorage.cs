@@ -22,6 +22,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using OSRSCache.fs;
+
 namespace OSRSCache.fs.flat;
 
 // import java.io.BufferedReader;
@@ -50,12 +56,12 @@ using OSRSCache.index.FileData;
  * A Storage that stores the cache as a series of flat files, designed
  * to be git revisioned.
  */
-public class FlatStorage, Storage
+public class FlatStorage // , Storage
 {
 	protected const string EXTENSION = ".flatcache";
 
-	private final File directory;
-	private final Map<Long, byte[]> data = new HashMap<>();
+	private readonly File directory;
+	private readonly Map<Long, byte[]> data = new HashMap<>();
 
 	public FlatStorage(File directory) // throws IOException
 	{
@@ -82,7 +88,7 @@ public class FlatStorage, Storage
 		return directory.list((dir, name) -> name.endsWith(EXTENSION));
 	}
 
-	@Override
+	// @Override
 	public void init(Store store) // throws IOException
 	{
 		string[] idxs = listFlatcacheFiles();
@@ -93,12 +99,12 @@ public class FlatStorage, Storage
 		}
 	}
 
-	@Override
+	// @Override
 	public void close() // throws IOException
 	{
 	}
 
-	@Override
+	// @Override
 	public void load(Store store) // throws IOException
 	{
 		for (Index idx : store.getIndexes())
@@ -207,7 +213,7 @@ public class FlatStorage, Storage
 		}
 	}
 
-	@Override
+	// @Override
 	public void save(Store store) // throws IOException
 	{
 		store.getIndexes().sort(Comparator.comparing(Index::getId));
@@ -255,13 +261,13 @@ public class FlatStorage, Storage
 		}
 	}
 
-	@Override
+	// @Override
 	public byte[] loadArchive(Archive archive) // throws IOException
 	{
 		return data.get((long) archive.getIndex().getId() << 32 | archive.getArchiveId());
 	}
 
-	@Override
+	// @Override
 	public void saveArchive(Archive archive, byte[] bytes) // throws IOException
 	{
 		data.put((long) archive.getIndex().getId() << 32 | archive.getArchiveId(), bytes);

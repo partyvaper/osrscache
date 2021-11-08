@@ -27,7 +27,7 @@ namespace OSRSCache.definitions;
 // import lombok.Data;
 
 @Data
-public class WorldMapType3, WorldMapTypeBase
+public class WorldMapType3 // , WorldMapTypeBase
 {
 	public int chunk_oldXHigh;
 	public int numberOfPlanes;

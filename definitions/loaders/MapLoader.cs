@@ -44,7 +44,7 @@ public class MapLoader
 
 	private void loadTerrain(MapDefinition map, byte[] buf)
 	{
-		Tile[][][] tiles = map.getTiles();
+		MapDefinition.Tile[][][] tiles = map.getTiles();
 
 		InputStream in = new InputStream(buf);
 
@@ -54,7 +54,7 @@ public class MapLoader
 			{
 				for (int y = 0; y < Y; y++)
 				{
-					Tile tile = tiles[z][x][y] = new Tile();
+					MapDefinition.Tile tile = tiles[z][x][y] = new MapDefinition.Tile();
 					while (true)
 					{
 						int attribute = in.readUnsignedByte();

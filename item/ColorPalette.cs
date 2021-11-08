@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.item;
 
 // import lombok.Getter;
@@ -29,7 +32,7 @@ namespace OSRSCache.item;
 public class ColorPalette
 {
 	@Getter
-	private final int[] colorPalette;
+	private readonly int[] colorPalette;
 
 	public ColorPalette(double brightness, int var2, int var3)
 	{

@@ -23,6 +23,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+
 namespace OSRSCache.definitions;
 
 // import java.util.Map;
@@ -48,11 +50,11 @@ public class NpcDefinition
 	public short[] retextureToFind;
 	public short[] retextureToReplace;
 	public string[] actions = new string[5];
-	public boolean isMinimapVisible = true;
+	public bool isMinimapVisible = true;
 	public int combatLevel = -1;
 	public int widthScale = 128;
 	public int heightScale = 128;
-	public boolean hasRenderPriority;
+	public bool hasRenderPriority;
 	public int ambient;
 	public int contrast;
 	public int headIcon = -1;
@@ -60,9 +62,9 @@ public class NpcDefinition
 	public int[] configs;
 	public int varbitId = -1;
 	public int varpIndex = -1;
-	public boolean isInteractable = true;
-	public boolean rotationFlag = true;
-	public boolean isPet;
+	public bool isInteractable = true;
+	public bool rotationFlag = true;
+	public bool isPet;
 	public Map<Integer, Object> params;
 	public int category;
 }

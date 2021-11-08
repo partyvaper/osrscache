@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.item;
 
 class Model extends Renderable
@@ -67,7 +70,7 @@ class Model extends Renderable
 	int[] field1844;
 	int[] field1865;
 	int[] field1846;
-	public boolean isItemModel;
+	public bool isItemModel;
 	int boundsType;
 	int bottomY;
 	int XYZMag;
@@ -219,7 +222,7 @@ class Model extends Renderable
 	}
 
 
-	private void method0(Graphics3D graphics, boolean var1, boolean var3, int var4)
+	private void method0(Graphics3D graphics, bool var1, bool var3, int var4)
 	{
 		if (this.diameter < 1600)
 		{

@@ -22,6 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.io.IOException;
@@ -38,10 +42,10 @@ using OSRSCache.fs.Index;
 using OSRSCache.fs.Storage;
 using OSRSCache.fs.Store;
 
-public class StructManager, StructProvider
+public class StructManager // , StructProvider
 {
-	private final Store store;
-	private final Map<Integer, StructDefinition> structs = new HashMap<>();
+	private readonly Store store;
+	private readonly Map<Integer, StructDefinition> structs = new HashMap<>();
 
 	public StructManager(Store store)
 	{
@@ -76,7 +80,7 @@ public class StructManager, StructProvider
 		return structs.get(structId);
 	}
 
-	@Override
+	// @Override
 	public StructDefinition provide(int structId)
 	{
 		return getStruct(structId);

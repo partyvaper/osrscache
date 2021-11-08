@@ -1,23 +1,22 @@
 // import java.io.Closeable;
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 // import java.io.FileNotFoundException;
 // import java.io.IOException;
 // import java.util.ArrayList;
 // import java.util.List;
 // import java.util.Objects;
-using OSRSCache.IndexType;
+using OSRSCache;
 using OSRSCache.fs.jagex.DiskStorage;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 namespace OSRSCache.fs {
 
-	public sealed class Store, Closeable
+	public sealed class Store // , Closeable
 	{
-		private const Logger logger = LoggerFactory.getLogger(Store.class);
-
-		private final Storage storage;
-		private final List<Index> indexes = new ArrayList<>();
+		private readonly Storage storage;
+		private readonly List<Index> indexes = new ArrayList<>();
 
 		public Store(File folder) // throws IOException
 		{
@@ -37,13 +36,13 @@ namespace OSRSCache.fs {
 			return storage;
 		}
 
-		@Override
+		// @Override
 		public void close() // throws IOException
 		{
 			storage.close();
 		}
 
-		@Override
+		// @Override
 		public int hashCode()
 		{
 			int hash = 5;
@@ -51,8 +50,8 @@ namespace OSRSCache.fs {
 			return hash;
 		}
 
-		@Override
-		public boolean equals(Object obj)
+		// @Override
+		public bool equals(Object obj)
 		{
 			if (obj == null)
 			{
@@ -102,26 +101,26 @@ namespace OSRSCache.fs {
 			storage.save(this);
 		}
 
-		public List<Index> getIndexes()
-		{
-			return indexes;
-		}
+		// public List<Index> getIndexes()
+		// {
+		// 	return indexes;
+		// }
 
-		public Index getIndex(IndexType type)
-		{
-			return findIndex(type.getNumber());
-		}
+		// public Index getIndex(IndexType type)
+		// {
+		// 	return findIndex(type.getNumber());
+		// }
 
-		public Index findIndex(int id)
-		{
-			for (Index i : indexes)
-			{
-				if (i.getId() == id)
-				{
-					return i;
-				}
-			}
-			return null;
-		}
+		// public Index findIndex(int id)
+		// {
+		// 	for (Index i : indexes)
+		// 	{
+		// 		if (i.getId() == id)
+		// 		{
+		// 			return i;
+		// 		}
+		// 	}
+		// 	return null;
+		// }
 	}
 }

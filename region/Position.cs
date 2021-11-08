@@ -23,13 +23,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+
 namespace OSRSCache.region;
 
 public class Position
 {
-	private final int x;
-	private final int y;
-	private final int z;
+	private readonly int x;
+	private readonly int y;
+	private readonly int z;
 
 	public Position(int x, int y, int z)
 	{
@@ -38,13 +40,13 @@ public class Position
 		this.z = z;
 	}
 
-	@Override
+	// @Override
 	public string tostring()
 	{
 		return "Position{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
 	}
 
-	@Override
+	// @Override
 	public int hashCode()
 	{
 		int hash = 7;
@@ -54,8 +56,8 @@ public class Position
 		return hash;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	// @Override
+	public bool equals(Object obj)
 	{
 		if (this == obj)
 		{

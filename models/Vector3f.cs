@@ -1,3 +1,5 @@
+using System;
+
 namespace OSRSCache.models;
 
 public class Vector3f
@@ -24,13 +26,13 @@ public class Vector3f
 		this.z = other.z;
 	}
 
-	@Override
+	// @Override
 	public string tostring()
 	{
 		return "Vector3f{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
 	}
 
-	@Override
+	// @Override
 	public int hashCode()
 	{
 		int hash = 7;
@@ -40,8 +42,8 @@ public class Vector3f
 		return hash;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	// @Override
+	public bool equals(Object obj)
 	{
 		if (this == obj)
 		{

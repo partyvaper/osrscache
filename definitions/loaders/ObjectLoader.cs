@@ -22,19 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.definitions.loaders;
 
 // import java.util.HashMap;
 // import java.util.Map;
 using OSRSCache.definitions.ObjectDefinition;
 using OSRSCache.io.InputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class ObjectLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(ObjectLoader.class);
-
 	public ObjectDefinition load(int id, byte[] b)
 	{
 		ObjectDefinition def = new ObjectDefinition();
@@ -381,7 +380,7 @@ public class ObjectLoader
 		}
 		else
 		{
-			logger.warn("Unrecognized opcode {}", opcode);
+			Console.WriteLine("Unrecognized opcode {}", opcode);
 		}
 	}
 

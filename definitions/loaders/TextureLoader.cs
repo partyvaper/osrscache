@@ -26,13 +26,9 @@ namespace OSRSCache.definitions.loaders;
 
 using OSRSCache.definitions.TextureDefinition;
 using OSRSCache.io.InputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class TextureLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(TextureLoader.class);
-
 	public TextureDefinition load(int id, byte[] b)
 	{
 		TextureDefinition def = new TextureDefinition();

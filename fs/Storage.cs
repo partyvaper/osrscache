@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using OSRSCache.fs;
+
 namespace OSRSCache.fs;
 
 // import java.io.IOException;
@@ -30,7 +33,7 @@ public interface Storage extends AutoCloseable
 {
 	void init(Store store) // throws IOException;
 
-	@Override
+	// @Override
 	void close() // throws IOException;
 
 	void load(Store store) // throws IOException;

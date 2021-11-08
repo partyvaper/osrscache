@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.fs.jagex;
 
 // import java.io.Closeable;
@@ -30,19 +33,15 @@ namespace OSRSCache.fs.jagex;
 // import java.io.IOException;
 // import java.io.RandomAccessFile;
 // import java.util.Objects;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
-public class IndexFile, Closeable
+public class IndexFile // , Closeable
 {
-	private const Logger logger = LoggerFactory.getLogger(IndexFile.class);
-
 	private const int INDEX_ENTRY_LEN = 6;
 
-	private final int indexFileId;
-	private final File file;
-	private final RandomAccessFile idx;
-	private final byte[] buffer = new byte[INDEX_ENTRY_LEN];
+	private readonly int indexFileId;
+	private readonly File file;
+	private readonly RandomAccessFile idx;
+	private readonly byte[] buffer = new byte[INDEX_ENTRY_LEN];
 
 	public IndexFile(int indexFileId, File file) throws FileNotFoundException
 	{
@@ -51,7 +50,7 @@ public class IndexFile, Closeable
 		this.idx = new RandomAccessFile(file, "rw");
 	}
 
-	@Override
+	// @Override
 	public void close() // throws IOException
 	{
 		idx.close();
@@ -62,7 +61,7 @@ public class IndexFile, Closeable
 		idx.setLength(0L);
 	}
 
-	@Override
+	// @Override
 	public int hashCode()
 	{
 		int hash = 3;
@@ -70,8 +69,8 @@ public class IndexFile, Closeable
 		return hash;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	// @Override
+	public bool equals(Object obj)
 	{
 		if (obj == null)
 		{
@@ -115,7 +114,7 @@ public class IndexFile, Closeable
 		int i = idx.read(buffer);
 		if (i != INDEX_ENTRY_LEN)
 		{
-			logger.debug("short read for id {} on index {}: {}", id, indexFileId, i);
+			Console.WriteLine("short read for id {} on index {}: {}", id, indexFileId, i);
 			return null;
 		}
 
@@ -124,7 +123,7 @@ public class IndexFile, Closeable
 
 		if (length <= 0 || sector <= 0)
 		{
-			logger.debug("invalid length or sector {}/{}", length, sector);
+			Console.WriteLine("invalid length or sector {}/{}", length, sector);
 			return null;
 		}
 

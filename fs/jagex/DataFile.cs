@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.fs.jagex;
 
 // import java.io.Closeable;
@@ -30,23 +33,19 @@ namespace OSRSCache.fs.jagex;
 // import java.io.IOException;
 // import java.io.RandomAccessFile;
 // import java.nio.ByteBuffer;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
-public class DataFile, Closeable
+public class DataFile // , Closeable
 {
-	private const Logger logger = LoggerFactory.getLogger(DataFile.class);
-
 	private const int SECTOR_SIZE = 520;
 
-	private final RandomAccessFile dat;
+	private readonly RandomAccessFile dat;
 
 	public DataFile(File file) throws FileNotFoundException
 	{
 		this.dat = new RandomAccessFile(file, "rw");
 	}
 
-	@Override
+	// @Override
 	public void close() // throws IOException
 	{
 		dat.close();
@@ -70,7 +69,7 @@ public class DataFile, Closeable
 	{
 		if (sector <= 0L || dat.length() / SECTOR_SIZE < (long) sector)
 		{
-			logger.warn("bad read, dat length {}, requested sector {}", dat.length(), sector);
+			Console.WriteLine("bad read, dat length {}, requested sector {}", dat.length(), sector);
 			return null;
 		}
 
@@ -83,7 +82,7 @@ public class DataFile, Closeable
 		{
 			if (sector == 0)
 			{
-				logger.warn("Unexpected end of file");
+				Console.WriteLine("Unexpected end of file");
 				return null;
 			}
 
@@ -105,7 +104,7 @@ public class DataFile, Closeable
 				int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
 				if (i != headerSize + dataBlockSize)
 				{
-					logger.warn("Short read when reading file data for {}/{}", indexId, archiveId);
+					Console.WriteLine("Short read when reading file data for {}/{}", indexId, archiveId);
 					return null;
 				}
 
@@ -130,7 +129,7 @@ public class DataFile, Closeable
 				int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
 				if (i != headerSize + dataBlockSize)
 				{
-					logger.warn("short read");
+					Console.WriteLine("short read");
 					return null;
 				}
 
@@ -146,7 +145,7 @@ public class DataFile, Closeable
 
 			if (archiveId != currentArchive || currentPart != part || indexId != currentIndex)
 			{
-				logger.warn("data mismatch {} != {}, {} != {}, {} != {}",
+				Console.WriteLine("data mismatch {} != {}, {} != {}, {} != {}",
 					archiveId, currentArchive,
 					part, currentPart,
 					indexId, currentIndex);
@@ -155,7 +154,7 @@ public class DataFile, Closeable
 
 			if (nextSector < 0 || dat.length() / SECTOR_SIZE < (long) nextSector)
 			{
-				logger.warn("Invalid next sector");
+				Console.WriteLine("Invalid next sector");
 				return null;
 			}
 

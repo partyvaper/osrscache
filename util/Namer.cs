@@ -23,6 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.Generic;
+
 namespace OSRSCache.util;
 
 // import java.util.HashSet;
@@ -30,7 +33,7 @@ namespace OSRSCache.util;
 
 public class Namer
 {
-	private final Set<string> used = new HashSet<>();
+	private readonly Set<string> used = new HashSet<>();
 
 	public string name(string name, int id)
 	{

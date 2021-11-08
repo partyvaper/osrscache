@@ -26,13 +26,9 @@ namespace OSRSCache.definitions.loaders;
 
 using OSRSCache.definitions.OverlayDefinition;
 using OSRSCache.io.InputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class OverlayLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(OverlayLoader.class);
-
 	public OverlayDefinition load(int id, byte[] b)
 	{
 		OverlayDefinition def = new OverlayDefinition();

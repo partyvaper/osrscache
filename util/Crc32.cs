@@ -29,7 +29,7 @@ namespace OSRSCache.util;
 
 public class Crc32
 {
-	private final CRC32 crc32 = new CRC32();
+	private readonly CRC32 crc32 = new CRC32();
 
 	public void update(byte[] data, int offset, int length)
 	{

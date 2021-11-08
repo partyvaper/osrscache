@@ -29,10 +29,10 @@ namespace OSRSCache.script;
 // import java.util.HashMap;
 // import java.util.Map;
 
-public class Instructions, Opcodes
+public class Instructions // , Opcodes
 {
-	private final Map<Integer, Instruction> instructions = new HashMap<>();
-	private final Map<string, Instruction> instructionsByName = new HashMap<>();
+	private readonly Map<Integer, Instruction> instructions = new HashMap<>();
+	private readonly Map<string, Instruction> instructionsByName = new HashMap<>();
 
 	public void init()
 	{

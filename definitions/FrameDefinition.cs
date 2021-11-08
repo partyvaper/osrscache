@@ -36,5 +36,5 @@ public class FrameDefinition
 	public int[] translator_z;
 	public int translatorCount = -1;
 	public int[] indexFrameIds;
-	public boolean showing;
+	public bool showing;
 }

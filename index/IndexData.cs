@@ -31,7 +31,7 @@ public class IndexData
 {
 	private int protocol;
 	private int revision;
-	private boolean named;
+	private bool named;
 	private ArchiveData[] archives;
 
 	public void load(byte[] data)
@@ -276,7 +276,7 @@ public class IndexData
 		this.revision = revision;
 	}
 
-	public boolean isNamed()
+	public bool isNamed()
 	{
 		return named;
 	}

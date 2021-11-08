@@ -29,14 +29,14 @@ namespace OSRSCache.definitions;
 @Data
 public class SequenceDefinition
 {
-	private final int id;
+	private readonly int id;
 	public int[] frameIDs; // top 16 bits are FrameDefinition ids
 	public int[] chatFrameIds;
 	public int[] frameLenghts;
 	public int[] frameSounds;
 	public int frameStep = -1;
 	public int[] interleaveLeave;
-	public boolean stretches = false;
+	public bool stretches = false;
 	public int forcedPriority = 5;
 	public int leftHandItem = -1;
 	public int rightHandItem = -1;

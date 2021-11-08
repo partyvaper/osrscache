@@ -22,6 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.awt.Color;
@@ -30,17 +34,13 @@ namespace OSRSCache;
 using OSRSCache.fs.Store;
 using OSRSCache.region.Region;
 using OSRSCache.region.RegionLoader;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class HeightMapDumper
 {
-	private const Logger logger = LoggerFactory.getLogger(HeightMapDumper.class);
-
 	private const int MAP_SCALE = 1;
 	private const float MAX_HEIGHT = 2048f;
 
-	private final Store store;
+	private readonly Store store;
 	private RegionLoader regionLoader;
 
 	public HeightMapDumper(Store store)
@@ -69,7 +69,7 @@ public class HeightMapDumper
 		dimX *= MAP_SCALE;
 		dimY *= MAP_SCALE;
 
-		logger.info("Map image dimensions: {}px x {}px, {}px per map square ({} MB)", dimX, dimY, MAP_SCALE, (dimX * dimY / 1024 / 1024));
+		Console.WriteLine("Map image dimensions: {}px x {}px, {}px per map square ({} MB)", dimX, dimY, MAP_SCALE, (dimX * dimY / 1024 / 1024));
 
 		BufferedImage image = new BufferedImage(dimX, dimY, BufferedImage.TYPE_INT_RGB);
 		draw(image, z);

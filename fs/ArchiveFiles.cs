@@ -22,6 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using System.Collections.Generic;
+
 namespace OSRSCache.fs;
 
 // import com.google.common.base.Preconditions;
@@ -33,17 +37,13 @@ namespace OSRSCache.fs;
 // import java.util.Objects;
 using OSRSCache.io.InputStream;
 using OSRSCache.io.OutputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class ArchiveFiles
 {
-	private const Logger logger = LoggerFactory.getLogger(ArchiveFiles.class);
+	private readonly List<FSFile> files = new ArrayList<>();
+	private readonly Map<Integer, FSFile> fileMap = new HashMap<>();
 
-	private final List<FSFile> files = new ArrayList<>();
-	private final Map<Integer, FSFile> fileMap = new HashMap<>();
-
-	@Override
+	// @Override
 	public int hashCode()
 	{
 		int hash = 7;
@@ -51,8 +51,8 @@ public class ArchiveFiles
 		return hash;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	// @Override
+	public bool equals(Object obj)
 	{
 		if (obj == null)
 		{
@@ -101,7 +101,7 @@ public class ArchiveFiles
 
 	public void loadContents(byte[] data)
 	{
-		logger.trace("Loading contents of archive ({} files)", files.size());
+		Console.WriteLine("Loading contents of archive ({} files)", files.size());
 
 		assert !this.getFiles().isEmpty();
 
@@ -202,7 +202,7 @@ public class ArchiveFiles
 
 		byte[] fileData = stream.flip();
 
-		logger.trace("Saved contents of archive ({} files), {} bytes", files.size(), fileData.length);
+		Console.WriteLine("Saved contents of archive ({} files), {} bytes", files.size(), fileData.length);
 		return fileData;
 	}
 }

@@ -23,13 +23,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+
 namespace OSRSCache.fs;
 
 // import java.util.Arrays;
 
 public class FSFile
 {
-	private final int fileId;
+	private readonly int fileId;
 	private int nameHash;
 	private byte[] contents;
 
@@ -38,7 +40,7 @@ public class FSFile
 		this.fileId = fileId;
 	}
 
-	@Override
+	// @Override
 	public int hashCode()
 	{
 		int hash = 7;
@@ -48,8 +50,8 @@ public class FSFile
 		return hash;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	// @Override
+	public bool equals(Object obj)
 	{
 		if (obj == null)
 		{

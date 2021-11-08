@@ -22,6 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.io.File;
@@ -40,9 +44,9 @@ using OSRSCache.util.Namer;
 
 public class InterfaceManager
 {
-	private final Store store;
+	private readonly Store store;
 	private InterfaceDefinition[][] interfaces;
-	private final Namer namer = new Namer();
+	private readonly Namer namer = new Namer();
 
 	public InterfaceManager(Store store)
 	{

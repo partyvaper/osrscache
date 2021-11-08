@@ -26,13 +26,9 @@ namespace OSRSCache.definitions.loaders;
 
 using OSRSCache.definitions.SpotAnimDefinition;
 using OSRSCache.io.InputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class SpotAnimLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(SpotAnimLoader.class);
-
 	public SpotAnimDefinition load(int id, byte[] b)
 	{
 		SpotAnimDefinition def = new SpotAnimDefinition();

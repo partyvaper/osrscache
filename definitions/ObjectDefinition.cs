@@ -23,6 +23,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+
 namespace OSRSCache.definitions;
 
 // import java.util.Map;
@@ -34,7 +36,7 @@ public class ObjectDefinition
 	private int id;
 	private short[] retextureToFind;
 	private int decorDisplacement = 16;
-	private boolean isHollow = false;
+	private bool isHollow = false;
 	private string name = "null";
 	private int[] objectModels;
 	private int[] objectTypes;
@@ -46,7 +48,7 @@ public class ObjectDefinition
 	private int anInt2083 = 0;
 	private int[] ambientSoundIds;
 	private int offsetX = 0;
-	private boolean mergeNormals = false;
+	private bool mergeNormals = false;
 	private int wallOrDoor = -1;
 	private int animationID = -1;
 	private int varbitID = -1;
@@ -57,25 +59,25 @@ public class ObjectDefinition
 	private int mapSceneID = -1;
 	private int blockingMask = 0;
 	private short[] recolorToReplace;
-	private boolean shadow = true;
+	private bool shadow = true;
 	private int modelSizeX = 128;
 	private int modelSizeHeight = 128;
 	private int modelSizeY = 128;
 	private int objectID;
 	private int offsetHeight = 0;
 	private int offsetY = 0;
-	private boolean obstructsGround = false;
+	private bool obstructsGround = false;
 	private int contouredGround = -1;
 	private int supportsItems = -1;
 	private int[] configChangeDest;
 	private int category;
-	private boolean isRotated = false;
+	private bool isRotated = false;
 	private int varpID = -1;
 	private int ambientSoundId = -1;
-	private boolean aBool2111 = false;
+	private bool aBool2111 = false;
 	private int anInt2112 = 0;
 	private int anInt2113 = 0;
-	private boolean blocksProjectile = true;
-	private boolean randomizeAnimStart;
+	private bool blocksProjectile = true;
+	private bool randomizeAnimStart;
 	private Map<Integer, Object> params = null;
 }

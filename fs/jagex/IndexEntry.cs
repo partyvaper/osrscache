@@ -23,14 +23,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+
 namespace OSRSCache.fs.jagex;
 
 // import java.util.Objects;
 
 public class IndexEntry
 {
-	private final IndexFile indexFile;
-	private final int id, sector, length;
+	private readonly IndexFile indexFile;
+	private readonly int id, sector, length;
 
 	public IndexEntry(IndexFile indexFile, int id, int sector, int length)
 	{
@@ -60,7 +62,7 @@ public class IndexEntry
 		return length;
 	}
 
-	@Override
+	// @Override
 	public int hashCode()
 	{
 		int hash = 7;
@@ -71,8 +73,8 @@ public class IndexEntry
 		return hash;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	// @Override
+	public bool equals(Object obj)
 	{
 		if (obj == null)
 		{

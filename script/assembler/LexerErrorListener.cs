@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.script.assembler;
 
 // import org.antlr.v4.runtime.BaseErrorListener;
@@ -32,7 +35,7 @@ public class LexerErrorListener extends BaseErrorListener
 {
 	private int errors;
 
-	@Override
+	// @Override
 	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
 	{
 		++errors;

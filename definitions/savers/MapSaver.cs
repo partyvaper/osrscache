@@ -35,7 +35,7 @@ public class MapSaver
 {
 	public byte[] save(MapDefinition map)
 	{
-		Tile[][][] tiles = map.getTiles();
+		MapDefinition.Tile[][][] tiles = map.getTiles();
 		OutputStream out = new OutputStream();
 		for (int z = 0; z < Z; z++)
 		{
@@ -43,7 +43,7 @@ public class MapSaver
 			{
 				for (int y = 0; y < Y; y++)
 				{
-					Tile tile = tiles[z][x][y];
+					MapDefinition.Tile tile = tiles[z][x][y];
 					if (tile.attrOpcode != 0)
 					{
 						out.writeByte(tile.attrOpcode);

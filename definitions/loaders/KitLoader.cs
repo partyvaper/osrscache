@@ -26,13 +26,9 @@ namespace OSRSCache.definitions.loaders;
 
 using OSRSCache.definitions.KitDefinition;
 using OSRSCache.io.InputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class KitLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(KitLoader.class);
-
 	public KitDefinition load(int id, byte[] b)
 	{
 		KitDefinition def = new KitDefinition(id);

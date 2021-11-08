@@ -33,8 +33,8 @@ using OSRSCache.definitions.NpcDefinition;
 
 public class NpcExporter
 {
-	private final NpcDefinition npc;
-	private final Gson gson;
+	private readonly NpcDefinition npc;
+	private readonly Gson gson;
 
 	public NpcExporter(NpcDefinition npc)
 	{

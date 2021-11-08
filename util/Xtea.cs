@@ -33,7 +33,7 @@ public class Xtea
 
 	private const int ROUNDS = 32;
 
-	private final int[] key;
+	private readonly int[] key;
 
 	public Xtea(int[] key)
 	{

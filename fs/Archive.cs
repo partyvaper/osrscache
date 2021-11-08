@@ -22,20 +22,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using System.IO;
+
 namespace OSRSCache.fs;
 
 // import java.io.IOException;
 using OSRSCache.index.FileData;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class Archive
 {
-	private const Logger logger = LoggerFactory.getLogger(Archive.class);
+	private readonly Index index; // member of this index
 
-	private final Index index; // member of this index
-
-	private final int archiveId;
+	private readonly int archiveId;
 	private int nameHash;
 	private int crc;
 	private int revision;
@@ -49,7 +49,7 @@ public class Archive
 		this.archiveId = id;
 	}
 
-	@Override
+	// @Override
 	public int hashCode()
 	{
 		int hash = 7;
@@ -59,8 +59,8 @@ public class Archive
 		return hash;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	// @Override
+	public bool equals(Object obj)
 	{
 		if (obj == null)
 		{
@@ -108,7 +108,7 @@ public class Archive
 		Container container = Container.decompress(encryptedData, keys);
 		if (container == null)
 		{
-			logger.warn("Unable to decrypt archive {}", this);
+			Console.WriteLine("Unable to decrypt archive {}", this);
 			return null;
 		}
 
@@ -116,14 +116,14 @@ public class Archive
 
 		if (this.crc != container.crc)
 		{
-			logger.warn("crc mismatch for archive {}/{}", index.getId(), this.getArchiveId());
+			Console.WriteLine("crc mismatch for archive {}/{}", index.getId(), this.getArchiveId());
 			throw new IOException("CRC mismatch for " + index.getId() + "/" + this.getArchiveId());
 		}
 
 		if (container.revision != -1 && this.getRevision() != container.revision)
 		{
 			// compressed data doesn't always include a revision, but check it if it does
-			logger.warn("revision mismatch for archive {}/{}, expected {} was {}",
+			Console.WriteLine("revision mismatch for archive {}/{}, expected {} was {}",
 				index.getId(), this.getArchiveId(),
 				this.getRevision(), container.revision);
 			// I've seen this happen with vanilla caches where the

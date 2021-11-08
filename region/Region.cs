@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.Generic;
+
 namespace OSRSCache.region;
 
 // import java.util.ArrayList;
@@ -37,18 +40,18 @@ public class Region
 	public const int Y = 64;
 	public const int Z = 4;
 
-	private final int regionID;
-	private final int baseX;
-	private final int baseY;
+	private readonly int regionID;
+	private readonly int baseX;
+	private readonly int baseY;
 
-	private final int[][][] tileHeights = new int[Z][X][Y];
-	private final byte[][][] tileSettings = new byte[Z][X][Y];
-	private final byte[][][] overlayIds = new byte[Z][X][Y];
-	private final byte[][][] overlayPaths = new byte[Z][X][Y];
-	private final byte[][][] overlayRotations = new byte[Z][X][Y];
-	private final byte[][][] underlayIds = new byte[Z][X][Y];
+	private readonly int[][][] tileHeights = new int[Z][X][Y];
+	private readonly byte[][][] tileSettings = new byte[Z][X][Y];
+	private readonly byte[][][] overlayIds = new byte[Z][X][Y];
+	private readonly byte[][][] overlayPaths = new byte[Z][X][Y];
+	private readonly byte[][][] overlayRotations = new byte[Z][X][Y];
+	private readonly byte[][][] underlayIds = new byte[Z][X][Y];
 
-	private final List<Location> locations = new ArrayList<>();
+	private readonly List<Location> locations = new ArrayList<>();
 
 	public Region(int id)
 	{
@@ -66,14 +69,14 @@ public class Region
 
 	public void loadTerrain(MapDefinition map)
 	{
-		Tile[][][] tiles = map.getTiles();
+		MapDefinition.Tile[][][] tiles = map.getTiles();
 		for (int z = 0; z < Z; z++)
 		{
 			for (int x = 0; x < X; x++)
 			{
 				for (int y = 0; y < Y; y++)
 				{
-					Tile tile = tiles[z][x][y];
+					MapDefinition.Tile tile = tiles[z][x][y];
 
 					if (tile.height == null)
 					{

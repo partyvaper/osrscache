@@ -30,7 +30,7 @@ using OSRSCache.definitions.providers.TextureProvider;
 
 public class RSTextureProvider
 {
-	private final SpriteProvider spriteProvider;
+	private readonly SpriteProvider spriteProvider;
 	TextureDefinition[] textures;
 	int maxSize;
 	int size;
@@ -88,13 +88,13 @@ public class RSTextureProvider
 	}
 
 
-	public boolean vmethod3057(int var1)
+	public bool vmethod3057(int var1)
 	{
 		return this.textures[var1].field1778;
 	}
 
 
-	public boolean vmethod3066(int var1)
+	public bool vmethod3066(int var1)
 	{
 		return this.width == 64;
 	}

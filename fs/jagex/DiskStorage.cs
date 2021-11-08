@@ -22,6 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using System.Collections.Generic;
+using OSRSCache.fs;
+
 namespace OSRSCache.fs.jagex;
 
 // import com.google.common.primitives.Ints;
@@ -38,21 +43,17 @@ using OSRSCache.fs.Store;
 using OSRSCache.index.ArchiveData;
 using OSRSCache.index.IndexData;
 using OSRSCache.util.Crc32;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
-public class DiskStorage, Storage
+public class DiskStorage // , Storage
 {
-	private const Logger logger = LoggerFactory.getLogger(DiskStorage.class);
-
 	private const string MAIN_FILE_CACHE_DAT = "main_file_cache.dat2";
 	private const string MAIN_FILE_CACHE_IDX = "main_file_cache.idx";
 
-	private final File folder;
+	private readonly File folder;
 
-	private final DataFile data;
-	private final IndexFile index255;
-	private final List<IndexFile> indexFiles = new ArrayList<>();
+	private readonly DataFile data;
+	private readonly IndexFile index255;
+	private readonly List<IndexFile> indexFiles = new ArrayList<>();
 
 	public DiskStorage(File folder) // throws IOException
 	{
@@ -62,7 +63,7 @@ public class DiskStorage, Storage
 		this.index255 = new IndexFile(255, new File(folder, MAIN_FILE_CACHE_IDX + "255"));
 	}
 
-	@Override
+	// @Override
 	public void init(Store store) // throws IOException
 	{
 		for (int i = 0; i < index255.getIndexCount(); ++i)
@@ -74,7 +75,7 @@ public class DiskStorage, Storage
 		assert store.getIndexes().size() == indexFiles.size();
 	}
 
-	@Override
+	// @Override
 	public void close() // throws IOException
 	{
 		data.close();
@@ -100,7 +101,7 @@ public class DiskStorage, Storage
 		return indexFile;
 	}
 
-	@Override
+	// @Override
 	public void load(Store store) // throws IOException
 	{
 		for (Index index : store.getIndexes())
@@ -123,7 +124,7 @@ public class DiskStorage, Storage
 
 	private void loadIndex(Index index) // throws IOException
 	{
-		logger.trace("Loading index {}", index.getId());
+		Console.WriteLine("Loading index {}", index.getId());
 
 		byte[] indexData = readIndex(index.getId());
 		if (indexData == null)
@@ -157,7 +158,7 @@ public class DiskStorage, Storage
 		assert res.revision == -1;
 	}
 
-	@Override
+	// @Override
 	public byte[] loadArchive(Archive archive) // throws IOException
 	{
 		Index index = archive.getIndex();
@@ -168,23 +169,23 @@ public class DiskStorage, Storage
 		IndexEntry entry = indexFile.read(archive.getArchiveId());
 		if (entry == null)
 		{
-			logger.debug("can't read archive " + archive.getArchiveId() + " from index " + index.getId());
+			Console.WriteLine("can't read archive " + archive.getArchiveId() + " from index " + index.getId());
 			return null;
 		}
 
 		assert entry.getId() == archive.getArchiveId();
 
-		logger.trace("Loading archive {} for index {} from sector {} length {}",
+		Console.WriteLine("Loading archive {} for index {} from sector {} length {}",
 			archive.getArchiveId(), index.getId(), entry.getSector(), entry.getLength());
 
 		byte[] archiveData = data.read(index.getId(), entry.getId(), entry.getSector(), entry.getLength());
 		return archiveData;
 	}
 
-	@Override
+	// @Override
 	public void save(Store store) // throws IOException
 	{
-		logger.debug("Saving store");
+		Console.WriteLine("Saving store");
 
 		for (Index i : store.getIndexes())
 		{
@@ -209,7 +210,7 @@ public class DiskStorage, Storage
 		index.setCrc(crc.getHash());
 	}
 
-	@Override
+	// @Override
 	public void saveArchive(Archive a, byte[] archiveData) // throws IOException
 	{
 		Index index = a.getIndex();
@@ -233,7 +234,7 @@ public class DiskStorage, Storage
 		crc.update(archiveData, 0, length);
 		a.setCrc(crc.getHash());
 
-		logger.trace("Saved archive {}/{} at sector {}, compressed length {}",
+		Console.WriteLine("Saved archive {}/{} at sector {}, compressed length {}",
 			index.getId(), a.getArchiveId(), res.sector, res.compressedLength);
 	}
 }

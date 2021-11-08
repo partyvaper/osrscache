@@ -30,7 +30,7 @@ using OSRSCache.io.InputStream;
 
 public class SoundEffect3Loader
 {
-	private final SoundEffect2Loader se2Loader = new SoundEffect2Loader();
+	private readonly SoundEffect2Loader se2Loader = new SoundEffect2Loader();
 
 	public SoundEffect3Definition load(InputStream in, SoundEffect2Definition var2)
 	{

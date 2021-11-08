@@ -37,7 +37,7 @@ using OSRSCache.script.assembler.rs2asmParser.ProgContext;
 
 public class Assembler
 {
-	private final Instructions instructions;
+	private readonly Instructions instructions;
 
 	public Assembler(Instructions instructions)
 	{

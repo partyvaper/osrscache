@@ -24,9 +24,9 @@
  */
 namespace OSRSCache.script;
 
-public class RuneLiteInstructions extends Instructions, RuneLiteOpcodes
+public class RuneLiteInstructions  // , Instructions, RuneLiteOpcodes
 {
-	@Override
+	// @Override
 	public void init()
 	{
 		super.init();

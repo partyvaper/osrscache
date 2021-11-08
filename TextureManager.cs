@@ -22,6 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.Generic;
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.io.IOException;
@@ -37,10 +42,10 @@ using OSRSCache.fs.Index;
 using OSRSCache.fs.Storage;
 using OSRSCache.fs.Store;
 
-public class TextureManager, TextureProvider
+public class TextureManager // , TextureProvider
 {
-	private final Store store;
-	private final List<TextureDefinition> textures = new ArrayList<>();
+	private readonly Store store;
+	private readonly List<TextureDefinition> textures = new ArrayList<>();
 
 	public TextureManager(Store store)
 	{
@@ -82,7 +87,7 @@ public class TextureManager, TextureProvider
 		return null;
 	}
 
-	@Override
+	// @Override
 	public TextureDefinition[] provide()
 	{
 		return textures.toArray(new TextureDefinition[textures.size()]);

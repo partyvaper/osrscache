@@ -33,8 +33,8 @@ using OSRSCache.definitions.ObjectDefinition;
 
 public class ObjectExporter
 {
-	private final ObjectDefinition object;
-	private final Gson gson;
+	private readonly ObjectDefinition object;
+	private readonly Gson gson;
 
 	public ObjectExporter(ObjectDefinition object)
 	{

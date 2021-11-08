@@ -22,33 +22,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.script.assembler;
 
 // import java.util.HashMap;
 // import java.util.Map;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class LabelVisitor extends rs2asmBaseListener
 {
-	private const Logger logger = LoggerFactory.getLogger(LabelVisitor.class);
-
 	private int pos;
-	private final Map<string, Integer> map = new HashMap<>();
+	private readonly Map<string, Integer> map = new HashMap<>();
 
-	@Override
+	// @Override
 	public void exitInstruction(rs2asmParser.InstructionContext ctx)
 	{
 		++pos;
 	}
 
-	@Override
+	// @Override
 	public void enterLabel(rs2asmParser.LabelContext ctx)
 	{
 		string text = ctx.getText();
 		text = text.substring(0, text.length() - 1); // remove trailing :
 
-		logger.debug("Label {} is on instruction {}", text, pos);
+		Console.WriteLine("Label {} is on instruction {}", text, pos);
 
 		map.put(text, pos);
 	}

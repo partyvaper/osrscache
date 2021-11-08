@@ -22,6 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.ObjectModel;
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.io.File;
@@ -43,8 +48,8 @@ using OSRSCache.util.IDClass;
 
 public class ObjectManager
 {
-	private final Store store;
-	private final Map<Integer, ObjectDefinition> objects = new HashMap<>();
+	private readonly Store store;
+	private readonly Map<Integer, ObjectDefinition> objects = new HashMap<>();
 
 	public ObjectManager(Store store)
 	{

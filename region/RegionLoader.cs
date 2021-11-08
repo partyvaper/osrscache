@@ -22,6 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using System.Collections.ObjectModel;
+using System.IO;
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache.region;
 
 // import java.io.IOException;
@@ -38,20 +45,16 @@ using OSRSCache.fs.Index;
 using OSRSCache.fs.Storage;
 using OSRSCache.fs.Store;
 using OSRSCache.util.XteaKeyManager;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class RegionLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(RegionLoader.class);
-
 	private const int MAX_REGION = 32768;
 
-	private final Store store;
-	private final Index index;
-	private final XteaKeyManager keyManager;
+	private readonly Store store;
+	private readonly Index index;
+	private readonly XteaKeyManager keyManager;
 
-	private final Map<Integer, Region> regions = new HashMap<>();
+	private readonly Map<Integer, Region> regions = new HashMap<>();
 	private Region lowestX = null, lowestY = null;
 	private Region highestX = null, highestY = null;
 
@@ -109,7 +112,7 @@ public class RegionLoader
 			}
 			catch (IOException ex)
 			{
-				logger.debug("Can't decrypt region " + i, ex);
+				Console.WriteLine("Can't decrypt region " + i, ex);
 			}
 		}
 

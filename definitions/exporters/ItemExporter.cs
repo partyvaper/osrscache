@@ -33,8 +33,8 @@ using OSRSCache.definitions.ItemDefinition;
 
 public class ItemExporter
 {
-	private final ItemDefinition item;
-	private final Gson gson;
+	private readonly ItemDefinition item;
+	private readonly Gson gson;
 
 	public ItemExporter(ItemDefinition item)
 	{

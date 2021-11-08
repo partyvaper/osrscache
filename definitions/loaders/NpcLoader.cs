@@ -22,18 +22,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.definitions.loaders;
 
 // import java.util.HashMap;
 using OSRSCache.definitions.NpcDefinition;
 using OSRSCache.io.InputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class NpcLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(NpcLoader.class);
-
 	public NpcDefinition load(int id, byte[] b)
 	{
 		NpcDefinition def = new NpcDefinition(id);
@@ -285,7 +284,7 @@ public class NpcLoader
 		}
 		else
 		{
-			logger.warn("Unrecognized opcode {}", opcode);
+			Console.WriteLine("Unrecognized opcode {}", opcode);
 		}
 	}
 }

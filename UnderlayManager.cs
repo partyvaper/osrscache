@@ -22,6 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.ObjectModel;
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.io.IOException;
@@ -39,10 +44,10 @@ using OSRSCache.fs.Index;
 using OSRSCache.fs.Storage;
 using OSRSCache.fs.Store;
 
-public class UnderlayManager, UnderlayProvider
+public class UnderlayManager // , UnderlayProvider
 {
-	private final Store store;
-	private final Map<Integer, UnderlayDefinition> underlays = new HashMap<>();
+	private readonly Store store;
+	private readonly Map<Integer, UnderlayDefinition> underlays = new HashMap<>();
 
 	public UnderlayManager(Store store)
 	{
@@ -72,7 +77,7 @@ public class UnderlayManager, UnderlayProvider
 		return Collections.unmodifiableCollection(underlays.values());
 	}
 
-	@Override
+	// @Override
 	public UnderlayDefinition provide(int underlayId)
 	{
 		return underlays.get(underlayId);

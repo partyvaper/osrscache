@@ -33,13 +33,9 @@ namespace OSRSCache.util;
 // import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 // import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 // import org.apache.commons.compress.utils.IOUtils;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class BZip2
 {
-	private const Logger logger = LoggerFactory.getLogger(BZip2.class);
-
 	private const byte[] BZIP_HEADER = new byte[]
 	{
 		'B', 'Z', // magic

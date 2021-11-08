@@ -30,8 +30,8 @@ namespace OSRSCache.region;
 @Value
 public class Location
 {
-	private final int id;
-	private final int type;
-	private final int orientation;
-	private final Position position;
+	private readonly int id;
+	private readonly int type;
+	private readonly int orientation;
+	private readonly Position position;
 }

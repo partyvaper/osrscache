@@ -33,13 +33,9 @@ namespace OSRSCache.util;
 // import java.util.zip.GZIPInputStream;
 // import java.util.zip.GZIPOutputStream;
 // import org.apache.commons.compress.utils.IOUtils;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class GZip
 {
-	private const Logger logger = LoggerFactory.getLogger(GZip.class);
-
 	public static byte[] compress(byte[] bytes) // throws IOException
 	{
 		InputStream is = new ByteArrayInputStream(bytes);

@@ -54,18 +54,20 @@ namespace OSRSCache {
 		public static void Main(string[] args) // throws IOException
 		{
 			Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(o => {
-				Console.WriteLine($"Verbose set to: {o.Verbose}");
-
 				string cacheDir = o.Cache;
 				if (cacheDir == null) {
 					cacheDir = "cache";
 				}
 
 				string outDir = "dumps";
-
-				// TODO: flatcache
 				
-				Store store = loadStore(cacheDir);
+				Console.WriteLine($"Verbose: {o.Verbose}, cache dir: {cacheDir}, out dir: {outDir}");
+
+				// TODO: flatcache?
+				
+				// Store store = loadStore(cacheDir);
+				Store store = new Store(new File(cacheDir));
+				store.load();
 				
 				if (o.Items)
 				{
@@ -100,12 +102,12 @@ namespace OSRSCache {
 			});
 		}
 
-		private static Store loadStore(string cache) // throws IOException
-		{
-			Store store = new Store(new File(cache));
-			store.load();
-			return store;
-		}
+		// private static Store loadStore(string cache) // throws IOException
+		// {
+		// 	Store store = new Store(new File(cache));
+		// 	store.load();
+		// 	return store;
+		// }
 
 		private static void dumpItems(Store store, File itemdir) // throws IOException
 		{

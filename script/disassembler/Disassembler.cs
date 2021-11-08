@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.script.disassembler;
 
 // import com.google.common.escape.Escaper;
@@ -33,25 +36,22 @@ using OSRSCache.definitions.ScriptDefinition;
 using OSRSCache.script.Instruction;
 using OSRSCache.script.Instructions;
 using OSRSCache.script.Opcodes;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class Disassembler
 {
-	private const Logger logger = LoggerFactory.getLogger(Disassembler.class);
 	private const Escaper ESCAPER = Escapers.builder()
 		.addEscape('"', "\\\"")
 		.addEscape('\\', "\\\\")
 		.build();
 
-	private final Instructions instructions = new Instructions();
+	private readonly Instructions instructions = new Instructions();
 
 	public Disassembler()
 	{
 		instructions.init();
 	}
 
-	private boolean isJump(int opcode)
+	private bool isJump(int opcode)
 	{
 		switch (opcode)
 		{
@@ -136,7 +136,7 @@ public class Disassembler
 			Instruction ins = this.instructions.find(opcode);
 			if (ins == null)
 			{
-				logger.warn("Unknown instruction {} in script {}", opcode, script.getId());
+				Console.WriteLine("Unknown instruction {} in script {}", opcode, script.getId());
 			}
 
 			if (jumps[i])
@@ -194,7 +194,7 @@ public class Disassembler
 		return writer.tostring();
 	}
 
-	private boolean shouldWriteIntOperand(int opcode, int operand)
+	private bool shouldWriteIntOperand(int opcode, int operand)
 	{
 		if (opcode == Opcodes.SWITCH)
 		{

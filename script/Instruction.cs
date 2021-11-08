@@ -26,7 +26,7 @@ namespace OSRSCache.script;
 
 public class Instruction
 {
-	private final int opcode;
+	private readonly int opcode;
 	private string name;
 
 	public Instruction(int opcode)

@@ -22,6 +22,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using System.Net.Mime;
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.awt.Color;
@@ -53,13 +59,9 @@ using OSRSCache.region.Location;
 using OSRSCache.region.Region;
 using OSRSCache.region.RegionLoader;
 using OSRSCache.util.Djb2;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class MapImageDumper
 {
-	private const Logger logger = LoggerFactory.getLogger(MapImageDumper.class);
-
 	private const int MAP_SCALE = 4; // this squared is the number of pixels per map square
 	private const int MAPICON_MAX_WIDTH = 5; // scale minimap icons down to this size so they fit..
 	private const int MAPICON_MAX_HEIGHT = 6;
@@ -70,28 +72,28 @@ public class MapImageDumper
 	private static int[][] TILE_SHAPE_2D = new int[][]{{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1}, {0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1}, {1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1}};
 	private static int[][] TILE_ROTATION_2D = new int[][]{{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, {12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3}, {15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, {3, 7, 11, 15, 2, 6, 10, 14, 1, 5, 9, 13, 0, 4, 8, 12}};
 
-	private final int wallColor = (238 + (int) (Math.random() * 20.0D) - 10 << 16) + (238 + (int) (Math.random() * 20.0D) - 10 << 8) + (238 + (int) (Math.random() * 20.0D) - 10);
-	private final int doorColor = 238 + (int) (Math.random() * 20.0D) - 10 << 16;
+	private readonly int wallColor = (238 + (int) (Math.random() * 20.0D) - 10 << 16) + (238 + (int) (Math.random() * 20.0D) - 10 << 8) + (238 + (int) (Math.random() * 20.0D) - 10);
+	private readonly int doorColor = 238 + (int) (Math.random() * 20.0D) - 10 << 16;
 
-	private final Store store;
+	private readonly Store store;
 
-	private final Map<Integer, UnderlayDefinition> underlays = new HashMap<>();
-	private final Map<Integer, OverlayDefinition> overlays = new HashMap<>();
-	private final Map<Integer, Image> scaledMapIcons = new HashMap<>();
+	private readonly Map<Integer, UnderlayDefinition> underlays = new HashMap<>();
+	private readonly Map<Integer, OverlayDefinition> overlays = new HashMap<>();
+	private readonly Map<Integer, MediaTypeNames.Image> scaledMapIcons = new HashMap<>();
 
 	private RegionLoader regionLoader;
-	private final AreaManager areas;
-	private final SpriteManager sprites;
+	private readonly AreaManager areas;
+	private readonly SpriteManager sprites;
 	private RSTextureProvider rsTextureProvider;
-	private final ObjectManager objectManager;
+	private readonly ObjectManager objectManager;
 
 	@Getter
 	@Setter
-	private boolean labelRegions;
+	private bool labelRegions;
 
 	@Getter
 	@Setter
-	private boolean outlineRegions;
+	private bool outlineRegions;
 
 	public MapImageDumper(Store store)
 	{
@@ -131,7 +133,7 @@ public class MapImageDumper
 		int pixelsX = dimX * MAP_SCALE;
 		int pixelsY = dimY * MAP_SCALE;
 
-		logger.info("Map image dimensions: {}px x {}px, {}px per map square ({} MB). Max memory: {}mb", pixelsX, pixelsY,
+		Console.WriteLine("Map image dimensions: {}px x {}px, {}px per map square ({} MB). Max memory: {}mb", pixelsX, pixelsY,
 			MAP_SCALE, (pixelsX * pixelsY * 3 / 1024 / 1024),
 			Runtime.getRuntime().maxMemory() / 1024L / 1024L);
 
@@ -545,7 +547,7 @@ public class MapImageDumper
 
 				if (object.getMapSceneID() != -1)
 				{
-					Image spriteImage = scaledMapIcons.get(object.getMapSceneID());
+					MediaTypeNames.Image spriteImage = scaledMapIcons.get(object.getMapSceneID());
 					graphics.drawImage(spriteImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
 				}
 				else
@@ -639,7 +641,7 @@ public class MapImageDumper
 			{
 				if (object.getMapSceneID() != -1)
 				{
-					Image spriteImage = scaledMapIcons.get(object.getMapSceneID());
+					MediaTypeNames.Image spriteImage = scaledMapIcons.get(object.getMapSceneID());
 					graphics.drawImage(spriteImage, drawX, drawY, null);
 					continue;
 				}
@@ -681,7 +683,7 @@ public class MapImageDumper
 				// ground object
 				if (object.getMapSceneID() != -1)
 				{
-					Image spriteImage = scaledMapIcons.get(object.getMapSceneID());
+					MediaTypeNames.Image spriteImage = scaledMapIcons.get(object.getMapSceneID());
 					graphics.drawImage(spriteImage, drawX, drawY, null);
 				}
 			}
@@ -897,10 +899,10 @@ public class MapImageDumper
 		regionLoader.loadRegions();
 		regionLoader.calculateBounds();
 
-		logger.info("North most region: {}", regionLoader.getLowestY().getBaseY());
-		logger.info("South most region: {}", regionLoader.getHighestY().getBaseY());
-		logger.info("West most region:  {}", regionLoader.getLowestX().getBaseX());
-		logger.info("East most region:  {}", regionLoader.getHighestX().getBaseX());
+		Console.WriteLine("North most region: {}", regionLoader.getLowestY().getBaseY());
+		Console.WriteLine("South most region: {}", regionLoader.getHighestY().getBaseY());
+		Console.WriteLine("West most region:  {}", regionLoader.getLowestX().getBaseX());
+		Console.WriteLine("East most region:  {}", regionLoader.getHighestX().getBaseX());
 	}
 
 	private void loadUnderlays(Store store) // throws IOException
@@ -975,7 +977,7 @@ public class MapImageDumper
 					spriteImage.setRGB(0, 0, sprite.getWidth(), sprite.getHeight(), sprite.getPixels(), 0, sprite.getWidth());
 
 					// scale image down so it fits
-					Image scaledImage = spriteImage.getScaledInstance(MAPICON_MAX_WIDTH, MAPICON_MAX_HEIGHT, 0);
+					MediaTypeNames.Image scaledImage = spriteImage.getScaledInstance(MAPICON_MAX_WIDTH, MAPICON_MAX_HEIGHT, 0);
 
 					assert scaledMapIcons.containsKey(sprite.getFrame()) == false;
 					scaledMapIcons.put(sprite.getFrame(), scaledImage);

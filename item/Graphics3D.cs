@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.item;
 
 class Graphics3D extends Rasterizer2D
@@ -54,11 +57,11 @@ class Graphics3D extends Rasterizer2D
 		}
 	}
 
-	private final RSTextureProvider textureProvider;
+	private readonly RSTextureProvider textureProvider;
 	boolean rasterClipEnable;
 	boolean field1909;
 	boolean lowMem;
-	public boolean rasterGouraudLowRes = true;
+	public bool rasterGouraudLowRes = true;
 	int rasterAlpha;
 	public int Rasterizer3D_zoom = 512;
 	int centerX;

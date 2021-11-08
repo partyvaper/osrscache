@@ -34,7 +34,7 @@ public class OverlayDefinition
 	private int rgbColor = 0;
 	private int texture = -1;
 	private int secondaryRgbColor = -1;
-	private boolean hideUnderlay = true;
+	private bool hideUnderlay = true;
 
 	private transient int hue;
 	private transient int saturation;

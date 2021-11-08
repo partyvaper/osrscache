@@ -22,6 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.ObjectModel;
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import com.google.common.collect.LinkedListMultimap;
@@ -40,10 +45,10 @@ using OSRSCache.fs.Index;
 using OSRSCache.fs.Storage;
 using OSRSCache.fs.Store;
 
-public class SpriteManager, SpriteProvider
+public class SpriteManager // , SpriteProvider
 {
-	private final Store store;
-	private final Multimap<Integer, SpriteDefinition> sprites = LinkedListMultimap.create();
+	private readonly Store store;
+	private readonly Multimap<Integer, SpriteDefinition> sprites = LinkedListMultimap.create();
 
 	public SpriteManager(Store store)
 	{
@@ -110,7 +115,7 @@ public class SpriteManager, SpriteProvider
 		}
 	}
 
-	@Override
+	// @Override
 	public SpriteDefinition provide(int spriteId, int frameId)
 	{
 		return findSprite(spriteId, frameId);

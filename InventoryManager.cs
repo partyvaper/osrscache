@@ -22,6 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.Generic;
+using OSRSCache;
+using OSRSCache.fs;
+
 namespace OSRSCache;
 
 // import java.io.IOException;
@@ -39,8 +44,8 @@ using OSRSCache.fs.Store;
 
 public class InventoryManager
 {
-	private final Store store;
-	private final List<InventoryDefinition> inventories = new ArrayList<>();
+	private readonly Store store;
+	private readonly List<InventoryDefinition> inventories = new ArrayList<>();
 
 	public InventoryManager(Store store)
 	{

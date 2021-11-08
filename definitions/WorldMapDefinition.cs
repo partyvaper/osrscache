@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.Generic;
+
 namespace OSRSCache.definitions;
 
 // import java.util.List;
@@ -38,8 +41,8 @@ public class WorldMapDefinition
 	public int field453;
 	public int field454;
 	public int field456;
-	public boolean isSurface;
-	public List regionList;
+	public bool isSurface;
+	public List<> regionList;
 	public string safeName;
 	public Position position;
 	public int field463;

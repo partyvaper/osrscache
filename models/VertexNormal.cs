@@ -1,3 +1,5 @@
+using System;
+
 namespace OSRSCache.models;
 
 public class VertexNormal

@@ -29,7 +29,7 @@ namespace OSRSCache.definitions;
 @Data
 public class KitDefinition
 {
-	private final int id;
+	private readonly int id;
 	public short[] recolorToReplace;
 	public short[] recolorToFind;
 	public short[] retextureToFind;
@@ -40,5 +40,5 @@ public class KitDefinition
 	{
 		-1, -1, -1, -1, -1
 	};
-	public boolean nonSelectable = false;
+	public bool nonSelectable = false;
 }

@@ -1,3 +1,5 @@
+using System;
+
 namespace OSRSCache.definitions;
 
 // import java.util.Arrays;

@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.definitions;
 
 // import java.util.Map;
@@ -44,10 +47,10 @@ public class ItemDefinition
 	public int zan2d = 0;
 
 	public int cost = 1;
-	public boolean isTradeable;
+	public bool isTradeable;
 	public int stackable = 0;
 	public int inventoryModel;
-	public boolean members = false;
+	public bool members = false;
 
 	public short[] colorFind;
 	public short[] colorReplace;

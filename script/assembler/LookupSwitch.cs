@@ -22,6 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System.Collections.Generic;
+
 namespace OSRSCache.script.assembler;
 
 // import java.util.ArrayList;
@@ -29,7 +32,7 @@ namespace OSRSCache.script.assembler;
 
 public class LookupSwitch
 {
-	private final List<LookupCase> cases = new ArrayList<>();
+	private readonly List<LookupCase> cases = new ArrayList<>();
 
 	public List<LookupCase> getCases()
 	{

@@ -48,7 +48,7 @@ public enum ConfigType
 	STRUCT(34),
 	AREA(35);
 
-	private final int id;
+	private readonly int id;
 
 	ConfigType(int id)
 	{

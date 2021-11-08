@@ -31,7 +31,7 @@ using OSRSCache.util.ScriptVarType;
 public class ParamDefinition
 {
 	private ScriptVarType type;
-	private boolean isMembers = true;
+	private bool isMembers = true;
 	private int defaultInt;
 	private string defaultstring;
 }

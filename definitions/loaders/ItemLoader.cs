@@ -23,19 +23,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+
 namespace OSRSCache.definitions.loaders;
 
 using OSRSCache.definitions.ItemDefinition;
 using OSRSCache.io.InputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
-
 // import java.util.HashMap;
 
 public class ItemLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(ItemLoader.class);
-
 	public ItemDefinition load(int id, byte[] b)
 	{
 		ItemDefinition def = new ItemDefinition(id);
@@ -291,7 +288,7 @@ public class ItemLoader
 		}
 		else
 		{
-			logger.warn("Unrecognized opcode {}", opcode);
+			Console.WriteLine("Unrecognized opcode {}", opcode);
 		}
 	}
 }

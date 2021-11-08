@@ -22,20 +22,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.util;
 
 // import java.io.IOException;
 // import java.util.HashMap;
 // import java.util.Map;
 // import java.util.Properties;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class Djb2Manager
 {
-	private const Logger logger = LoggerFactory.getLogger(Djb2Manager.class);
-
-	private final Map<Integer, string> hashes = new HashMap<>();
+	private readonly Map<Integer, string> hashes = new HashMap<>();
 
 	public void load() // throws IOException
 	{
@@ -50,7 +49,7 @@ public class Djb2Manager
 			hashes.put(hash, value);
 		}
 
-		logger.info("Loaded {} djb2 hashes", hashes.size());
+		Console.WriteLine("Loaded {} djb2 hashes", hashes.size());
 	}
 
 	public string getName(int hash)

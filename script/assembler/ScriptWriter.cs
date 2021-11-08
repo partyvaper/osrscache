@@ -22,6 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+using System.Collections.Generic;
+
 namespace OSRSCache.script.assembler;
 
 // import java.util.ArrayList;
@@ -33,15 +37,11 @@ using OSRSCache.definitions.ScriptDefinition;
 using OSRSCache.script.Instruction;
 using OSRSCache.script.Instructions;
 using OSRSCache.script.Opcodes;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class ScriptWriter extends rs2asmBaseListener
 {
-	private const Logger logger = LoggerFactory.getLogger(ScriptWriter.class);
-
-	private final Instructions instructions;
-	private final LabelVisitor labelVisitor;
+	private readonly Instructions instructions;
+	private readonly LabelVisitor labelVisitor;
 
 	private int id;
 	private int pos;
@@ -60,55 +60,55 @@ public class ScriptWriter extends rs2asmBaseListener
 		this.labelVisitor = labelVisitor;
 	}
 
-	@Override
+	// @Override
 	public void enterId_value(rs2asmParser.Id_valueContext ctx)
 	{
 		int value = Integer.parseInt(ctx.getText());
 		id = value;
 	}
 
-	@Override
+	// @Override
 	public void enterInt_stack_value(rs2asmParser.Int_stack_valueContext ctx)
 	{
 		int value = Integer.parseInt(ctx.getText());
 		intStackCount = value;
 	}
 
-	@Override
+	// @Override
 	public void enterstring_stack_value(rs2asmParser.string_stack_valueContext ctx)
 	{
 		int value = Integer.parseInt(ctx.getText());
 		stringStackCount = value;
 	}
 
-	@Override
+	// @Override
 	public void enterInt_var_value(rs2asmParser.Int_var_valueContext ctx)
 	{
 		int value = Integer.parseInt(ctx.getText());
 		localIntCount = value;
 	}
 
-	@Override
+	// @Override
 	public void enterstring_var_value(rs2asmParser.string_var_valueContext ctx)
 	{
 		int value = Integer.parseInt(ctx.getText());
 		localstringCount = value;
 	}
 
-	@Override
+	// @Override
 	public void exitInstruction(rs2asmParser.InstructionContext ctx)
 	{
 		++pos;
 	}
 
-	@Override
+	// @Override
 	public void enterName_string(rs2asmParser.Name_stringContext ctx)
 	{
 		string text = ctx.getText();
 		Instruction i = instructions.find(text);
 		if (i == null)
 		{
-			logger.warn("Unknown instruction {}", text);
+			Console.WriteLine("Unknown instruction {}", text);
 			throw new RuntimeException("Unknown instruction " + text);
 		}
 
@@ -116,7 +116,7 @@ public class ScriptWriter extends rs2asmBaseListener
 		addOpcode(opcode);
 	}
 
-	@Override
+	// @Override
 	public void enterName_opcode(rs2asmParser.Name_opcodeContext ctx)
 	{
 		string text = ctx.getText();
@@ -137,7 +137,7 @@ public class ScriptWriter extends rs2asmBaseListener
 		switches.add(null);
 	}
 
-	@Override
+	// @Override
 	public void enterOperand_int(rs2asmParser.Operand_intContext ctx)
 	{
 		string text = ctx.getText();
@@ -145,7 +145,7 @@ public class ScriptWriter extends rs2asmBaseListener
 		iops.set(pos, value);
 	}
 
-	@Override
+	// @Override
 	public void enterOperand_qstring(rs2asmParser.Operand_qstringContext ctx)
 	{
 		string text = ctx.getText();
@@ -153,7 +153,7 @@ public class ScriptWriter extends rs2asmBaseListener
 		sops.set(pos, text);
 	}
 
-	@Override
+	// @Override
 	public void enterOperand_label(rs2asmParser.Operand_labelContext ctx)
 	{
 		string text = ctx.getText();
@@ -167,7 +167,7 @@ public class ScriptWriter extends rs2asmBaseListener
 		iops.set(pos, target);
 	}
 
-	@Override
+	// @Override
 	public void enterSwitch_lookup(rs2asmParser.Switch_lookupContext ctx)
 	{
 		if (switches.get(pos - 1) != null)
@@ -179,7 +179,7 @@ public class ScriptWriter extends rs2asmBaseListener
 		switches.set(pos - 1, ls);
 	}
 
-	@Override
+	// @Override
 	public void exitSwitch_key(rs2asmParser.Switch_keyContext ctx)
 	{
 		string text = ctx.getText();
@@ -194,7 +194,7 @@ public class ScriptWriter extends rs2asmBaseListener
 		ls.getCases().add(scase);
 	}
 
-	@Override
+	// @Override
 	public void exitSwitch_value(rs2asmParser.Switch_valueContext ctx)
 	{
 		string text = ctx.getText();

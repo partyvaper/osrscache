@@ -39,7 +39,7 @@ public class InputStream extends java.io.InputStream
 			'\u017e', '\u0178'
 		};
 
-	private final ByteBuffer buffer;
+	private readonly ByteBuffer buffer;
 
 	public InputStream(byte[] buffer)
 	{
@@ -52,7 +52,7 @@ public class InputStream extends java.io.InputStream
 		return buffer.array();
 	}
 
-	@Override
+	// @Override
 	public string tostring()
 	{
 		return "InputStream{" + "buffer=" + buffer + '}';
@@ -245,7 +245,7 @@ public class InputStream extends java.io.InputStream
 		return b;
 	}
 
-	@Override
+	// @Override
 	public int read() // throws IOException
 	{
 		return this.readUnsignedByte();

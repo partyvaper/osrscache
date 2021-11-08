@@ -193,7 +193,7 @@ public sealed class OutputStream extends java.io.OutputStream
 		return b;
 	}
 
-	@Override
+	// @Override
 	public void write(int b) // throws IOException
 	{
 		buffer.put((byte) b);

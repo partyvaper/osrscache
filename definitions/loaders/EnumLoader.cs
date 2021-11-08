@@ -22,18 +22,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+using System;
+
 namespace OSRSCache.definitions.loaders;
 
 using OSRSCache.definitions.EnumDefinition;
 using OSRSCache.io.InputStream;
 using OSRSCache.util.ScriptVarType;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class EnumLoader
 {
-	private const Logger logger = LoggerFactory.getLogger(EnumLoader.class);
-
 	public EnumDefinition load(int id, byte[] b)
 	{
 		if (b.length == 1 && b[0] == 0)
@@ -107,7 +106,7 @@ public class EnumLoader
 				break;
 			}
 			default:
-				logger.warn("Unrecognized opcode {}", opcode);
+				Console.WriteLine("Unrecognized opcode {}", opcode);
 				break;
 		}
 	}

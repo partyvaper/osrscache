@@ -33,8 +33,8 @@ public class ObjExporter
 {
 	private const double BRIGHTNESS = JagexColor.BRIGTHNESS_MIN;
 
-	private final TextureManager textureManager;
-	private final ModelDefinition model;
+	private readonly TextureManager textureManager;
+	private readonly ModelDefinition model;
 
 	public ObjExporter(TextureManager textureManager, ModelDefinition model)
 	{
