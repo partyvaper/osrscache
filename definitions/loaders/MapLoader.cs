@@ -22,40 +22,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using MapDefinition = net.runelite.cache.definitions.MapDefinition;
-	using Tile = net.runelite.cache.definitions.MapDefinition.Tile;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using MapDefinition = OSRSCache.definitions.MapDefinition;
+	using Tile = OSRSCache.definitions.MapDefinition.Tile;
+	using InputStream = OSRSCache.io.InputStream;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.region.Region.X;
+//	import static OSRSCache.region.Region.X;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.region.Region.Y;
+//	import static OSRSCache.region.Region.Y;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.region.Region.Z;
+//	import static OSRSCache.region.Region.Z;
 
 	public class MapLoader
 	{
 		public virtual MapDefinition load(int regionX, int regionY, sbyte[] b)
 		{
 			MapDefinition map = new MapDefinition();
-			map.setRegionX(regionX);
-			map.setRegionY(regionY);
+			map.regionX = regionX;
+			map.regionY = regionY;
 			loadTerrain(map, b);
 			return map;
 		}
 
 		private void loadTerrain(MapDefinition map, sbyte[] buf)
 		{
-			MapDefinition.Tile[][][] tiles = map.getTiles();
+			MapDefinition.Tile[][][] tiles = map.tiles;
 
 			InputStream @in = new InputStream(buf);
 
-			for (int z = 0; z < Z; z++)
+			for (int z = 0; z < MapDefinition.Z; z++)
 			{
-				for (int x = 0; x < X; x++)
+				for (int x = 0; x < MapDefinition.X; x++)
 				{
-					for (int y = 0; y < Y; y++)
+					for (int y = 0; y < MapDefinition.Y; y++)
 					{
 						MapDefinition.Tile tile = tiles[z][x][y] = new MapDefinition.Tile();
 						while (true)

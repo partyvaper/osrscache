@@ -22,10 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions
+namespace OSRSCache.definitions
 {
-	using Data = lombok.Data;
-	using Position = net.runelite.cache.region.Position;
+	using Position = OSRSCache.region.Position;
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Data public class WorldMapDefinition

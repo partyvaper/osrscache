@@ -22,20 +22,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using LocationsDefinition = net.runelite.cache.definitions.LocationsDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using Location = net.runelite.cache.region.Location;
-	using Position = net.runelite.cache.region.Position;
+	using LocationsDefinition = OSRSCache.definitions.LocationsDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+	using Location = OSRSCache.region.Location;
+	using Position = OSRSCache.region.Position;
 
 	public class LocationsLoader
 	{
 		public virtual LocationsDefinition load(int regionX, int regionY, sbyte[] b)
 		{
 			LocationsDefinition loc = new LocationsDefinition();
-			loc.setRegionX(regionX);
-			loc.setRegionY(regionY);
+			loc.regionX = regionX;
+			loc.regionY = regionY;
 			loadLocations(loc, b);
 			return loc;
 		}
@@ -66,7 +66,7 @@ namespace net.runelite.cache.definitions.loaders
 					int type = attributes >> 2;
 					int orientation = attributes & 0x3;
 
-					loc.getLocations().add(new Location(id, type, orientation, new Position(localX, localY, height)));
+					loc.locations.Add(new Location(id, type, orientation, new Position(localX, localY, height)));
 				}
 			}
 		}

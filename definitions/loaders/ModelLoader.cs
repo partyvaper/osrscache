@@ -1,7 +1,7 @@
-﻿namespace net.runelite.cache.definitions.loaders
+﻿namespace OSRSCache.definitions.loaders
 {
-	using ModelDefinition = net.runelite.cache.definitions.ModelDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using ModelDefinition = OSRSCache.definitions.ModelDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class ModelLoader
 	{

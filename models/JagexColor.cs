@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.models
+namespace OSRSCache.models
 {
 	public sealed class JagexColor
 	{
@@ -33,8 +33,8 @@ namespace net.runelite.cache.models
 		public const double BRIGHTNESS_LOW = .8;
 		public const double BRIGTHNESS_MIN = .9;
 
-		private static readonly double HUE_OFFSET = (.5 / 64.D);
-		private static readonly double SATURATION_OFFSET = (.5 / 8.D);
+		private static readonly double HUE_OFFSET = (.5 / 64.0);
+		private static readonly double SATURATION_OFFSET = (.5 / 8.0);
 
 		private JagexColor()
 		{
@@ -62,23 +62,23 @@ namespace net.runelite.cache.models
 
 		public static string formatHSL(short hsl)
 		{
-			return string.Format("{0:X2}h{1:X}s{2:X2}l", unpackHue(hsl), unpackSaturation(hsl), unpackLuminance(hsl));
+			return $"{unpackHue(hsl):X2}h{unpackSaturation(hsl):X}s{unpackLuminance(hsl):X2}l";
 		}
 
 		public static int HSLtoRGB(short hsl, double brightness)
 		{
-			double hue = (double) unpackHue(hsl) / 64.D + HUE_OFFSET;
-			double saturation = (double) unpackSaturation(hsl) / 8.D + SATURATION_OFFSET;
-			double luminance = (double) unpackLuminance(hsl) / 128.D;
+			double hue = (double) unpackHue(hsl) / 64.0 + HUE_OFFSET;
+			double saturation = (double) unpackSaturation(hsl) / 8.0 + SATURATION_OFFSET;
+			double luminance = (double) unpackLuminance(hsl) / 128.0;
 
 			// This is just a standard hsl to rgb transform
 			// the only difference is the offsets above and the brightness transform below
-			double chroma = (1.D - Math.Abs((2.D * luminance) - 1.D)) * saturation;
-			double x = chroma * (1 - Math.Abs(((hue * 6.D) % 2.D) - 1.D));
+			double chroma = (1.0 - Math.Abs((2.0 * luminance) - 1.0)) * saturation;
+			double x = chroma * (1 - Math.Abs(((hue * 6.0) % 2.0) - 1.0));
 			double lightness = luminance - (chroma / 2);
 
 			double r = lightness, g = lightness, b = lightness;
-			switch ((int)(hue * 6.D))
+			switch ((int)(hue * 6.0))
 			{
 				case 0:
 					r += chroma;

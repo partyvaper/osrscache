@@ -22,18 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+
+using System;
+
+namespace OSRSCache.definitions.loaders
 {
-	using EnumDefinition = net.runelite.cache.definitions.EnumDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using ScriptVarType = net.runelite.cache.util.ScriptVarType;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using EnumDefinition = OSRSCache.definitions.EnumDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+	using ScriptVarType = OSRSCache.util.ScriptVarType;
+
 
 	public class EnumLoader
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(EnumLoader));
-
 		public virtual EnumDefinition load(int id, sbyte[] b)
 		{
 			if (b.Length == 1 && b[0] == 0)
@@ -44,7 +44,7 @@ namespace net.runelite.cache.definitions.loaders
 			EnumDefinition def = new EnumDefinition();
 			InputStream @is = new InputStream(b);
 
-			def.setId(id);
+			def.id = id;
 
 			for (;;)
 			{
@@ -65,16 +65,16 @@ namespace net.runelite.cache.definitions.loaders
 			switch (opcode)
 			{
 				case 1:
-					def.setKeyType(ScriptVarType.forCharKey((char) @is.readUnsignedByte()));
+					def.keyType = ScriptVarType.forCharKey((char) @is.readUnsignedByte());
 					break;
 				case 2:
-					def.setValType(ScriptVarType.forCharKey((char) @is.readUnsignedByte()));
+					def.valType = ScriptVarType.forCharKey((char) @is.readUnsignedByte());
 					break;
 				case 3:
-					def.setDefaultString(@is.readString());
+					def.defaultString = @is.readString();
 					break;
 				case 4:
-					def.setDefaultInt(@is.readInt());
+					def.defaultInt = @is.readInt();
 					break;
 				case 5:
 				{
@@ -86,9 +86,10 @@ namespace net.runelite.cache.definitions.loaders
 						keys[index] = @is.readInt();
 						stringVals[index] = @is.readString();
 					}
-					def.setSize(size);
-					def.setKeys(keys);
-					def.setStringVals(stringVals);
+
+					def.size = size;
+					def.keys = keys;
+					def.stringVals = stringVals;
 					break;
 				}
 				case 6:
@@ -101,13 +102,13 @@ namespace net.runelite.cache.definitions.loaders
 						keys[index] = @is.readInt();
 						intVals[index] = @is.readInt();
 					}
-					def.setSize(size);
-					def.setKeys(keys);
-					def.setIntVals(intVals);
+					def.size = size;
+					def.keys = keys;
+					def.intVals = intVals;
 					break;
 				}
 				default:
-					logger.warn("Unrecognized opcode {}", opcode);
+					Console.WriteLine("EnumLoader: unrecognized opcode {}", opcode);
 					break;
 			}
 		}

@@ -24,11 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.region
+namespace OSRSCache.region
 {
-	using LocationsDefinition = net.runelite.cache.definitions.LocationsDefinition;
-	using MapDefinition = net.runelite.cache.definitions.MapDefinition;
-	using Tile = net.runelite.cache.definitions.MapDefinition.Tile;
+	using LocationsDefinition = OSRSCache.definitions.LocationsDefinition;
+	using MapDefinition = OSRSCache.definitions.MapDefinition;
+	using Tile = OSRSCache.definitions.MapDefinition.Tile;
 
 	public class Region
 	{
@@ -78,7 +78,7 @@ namespace net.runelite.cache.region
 
 		public virtual void loadTerrain(MapDefinition map)
 		{
-			MapDefinition.Tile[][][] tiles = map.getTiles();
+			MapDefinition.Tile[][][] tiles = map.tiles;
 			for (int z = 0; z < Z; z++)
 			{
 				for (int x = 0; x < X; x++)
@@ -100,7 +100,7 @@ namespace net.runelite.cache.region
 						}
 						else
 						{
-							int height = tile.getHeight();
+							int height = (int) tile.height;
 							if (height == 1)
 							{
 								height = 0;
@@ -116,12 +116,12 @@ namespace net.runelite.cache.region
 							}
 						}
 
-						overlayIds[z][x][y] = tile.getOverlayId();
-						overlayPaths[z][x][y] = tile.getOverlayPath();
-						overlayRotations[z][x][y] = tile.getOverlayRotation();
+						overlayIds[z][x][y] = tile.overlayId;
+						overlayPaths[z][x][y] = tile.overlayPath;
+						overlayRotations[z][x][y] = tile.overlayRotation;
 
-						tileSettings[z][x][y] = tile.getSettings();
-						underlayIds[z][x][y] = tile.getUnderlayId();
+						tileSettings[z][x][y] = tile.settings;
+						underlayIds[z][x][y] = tile.underlayId;
 					}
 				}
 			}
@@ -129,9 +129,9 @@ namespace net.runelite.cache.region
 
 		public virtual void loadLocations(LocationsDefinition locs)
 		{
-			foreach (Location loc in locs.getLocations())
+			foreach (Location loc in locs.locations)
 			{
-				Location newLoc = new Location(loc.getId(), loc.getType(), loc.getOrientation(), new Position(BaseX + loc.getPosition().getX(), BaseY + loc.getPosition().getY(), loc.getPosition().getZ()));
+				Location newLoc = new Location(loc.id, loc.type, loc.orientation, new Position(BaseX + loc.position.X, BaseY + loc.position.Y, loc.position.Z));
 				locations.Add(newLoc);
 			}
 		}

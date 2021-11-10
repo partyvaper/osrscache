@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Mime;
 
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
@@ -25,37 +27,32 @@ using System.Diagnostics;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache
+namespace OSRSCache
 {
-	using Getter = lombok.Getter;
-	using Setter = lombok.Setter;
-	using AreaDefinition = net.runelite.cache.definitions.AreaDefinition;
-	using ObjectDefinition = net.runelite.cache.definitions.ObjectDefinition;
-	using OverlayDefinition = net.runelite.cache.definitions.OverlayDefinition;
-	using SpriteDefinition = net.runelite.cache.definitions.SpriteDefinition;
-	using UnderlayDefinition = net.runelite.cache.definitions.UnderlayDefinition;
-	using OverlayLoader = net.runelite.cache.definitions.loaders.OverlayLoader;
-	using SpriteLoader = net.runelite.cache.definitions.loaders.SpriteLoader;
-	using UnderlayLoader = net.runelite.cache.definitions.loaders.UnderlayLoader;
-	using Archive = net.runelite.cache.fs.Archive;
-	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
-	using FSFile = net.runelite.cache.fs.FSFile;
-	using Index = net.runelite.cache.fs.Index;
-	using Storage = net.runelite.cache.fs.Storage;
-	using Store = net.runelite.cache.fs.Store;
-	using ColorPalette = net.runelite.cache.item.ColorPalette;
-	using RSTextureProvider = net.runelite.cache.item.RSTextureProvider;
-	using Location = net.runelite.cache.region.Location;
-	using Region = net.runelite.cache.region.Region;
-	using RegionLoader = net.runelite.cache.region.RegionLoader;
-	using Djb2 = net.runelite.cache.util.Djb2;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using AreaDefinition = OSRSCache.definitions.AreaDefinition;
+	using ObjectDefinition = OSRSCache.definitions.ObjectDefinition;
+	using OverlayDefinition = OSRSCache.definitions.OverlayDefinition;
+	using SpriteDefinition = OSRSCache.definitions.SpriteDefinition;
+	using UnderlayDefinition = OSRSCache.definitions.UnderlayDefinition;
+	using OverlayLoader = OSRSCache.definitions.loaders.OverlayLoader;
+	using SpriteLoader = OSRSCache.definitions.loaders.SpriteLoader;
+	using UnderlayLoader = OSRSCache.definitions.loaders.UnderlayLoader;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	using ColorPalette = OSRSCache.item.ColorPalette;
+	using RSTextureProvider = OSRSCache.item.RSTextureProvider;
+	using Location = OSRSCache.region.Location;
+	using Region = OSRSCache.region.Region;
+	using RegionLoader = OSRSCache.region.RegionLoader;
+	using Djb2 = OSRSCache.util.Djb2;
+
 
 	public class MapImageDumper
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(MapImageDumper));
-
 		private const int MAP_SCALE = 4; // this squared is the number of pixels per map square
 		private const int MAPICON_MAX_WIDTH = 5; // scale minimap icons down to this size so they fit..
 		private const int MAPICON_MAX_HEIGHT = 6;
@@ -94,7 +91,7 @@ namespace net.runelite.cache
 
 		private readonly IDictionary<int, UnderlayDefinition> underlays = new Dictionary<int, UnderlayDefinition>();
 		private readonly IDictionary<int, OverlayDefinition> overlays = new Dictionary<int, OverlayDefinition>();
-		private readonly IDictionary<int, Image> scaledMapIcons = new Dictionary<int, Image>();
+		private readonly IDictionary<int, MediaTypeNames.Image> scaledMapIcons = new Dictionary<int, MediaTypeNames.Image>();
 
 		private RegionLoader regionLoader;
 		private readonly AreaManager areas;
@@ -102,13 +99,9 @@ namespace net.runelite.cache
 		private RSTextureProvider rsTextureProvider;
 		private readonly ObjectManager objectManager;
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Getter @Setter private boolean labelRegions;
-		private bool labelRegions;
+		public bool labelRegions; // TODO: Used to be private with getter and setter
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Getter @Setter private boolean outlineRegions;
-		private bool outlineRegions;
+		public bool outlineRegions; // TODO: Used to be private with getter and setter
 
 		public MapImageDumper(Store store)
 		{
@@ -118,8 +111,6 @@ namespace net.runelite.cache
 			objectManager = new ObjectManager(store);
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public void load() throws java.io.IOException
 		public virtual void load()
 		{
 			loadUnderlays(store);
@@ -150,7 +141,7 @@ namespace net.runelite.cache
 			int pixelsX = dimX * MAP_SCALE;
 			int pixelsY = dimY * MAP_SCALE;
 
-			logger.info("Map image dimensions: {}px x {}px, {}px per map square ({} MB). Max memory: {}mb", pixelsX, pixelsY, MAP_SCALE, (pixelsX * pixelsY * 3 / 1024 / 1024), Runtime.getRuntime().maxMemory() / 1024L / 1024L);
+			Console.WriteLine("Map image dimensions: {}px x {}px, {}px per map square ({} MB). Max memory: {}mb", pixelsX, pixelsY, MAP_SCALE, (pixelsX * pixelsY * 3 / 1024 / 1024), Runtime.getRuntime().maxMemory() / 1024L / 1024L);
 
 			BufferedImage image = new BufferedImage(pixelsX, pixelsY, BufferedImage.TYPE_INT_RGB);
 
@@ -271,10 +262,10 @@ namespace net.runelite.cache
 							if (underlayId > 0)
 							{
 								UnderlayDefinition underlay = findUnderlay(underlayId - 1);
-								hues[yi + BLEND] += underlay.getHue();
-								sats[yi + BLEND] += underlay.getSaturation();
-								light[yi + BLEND] += underlay.getLightness();
-								mul[yi + BLEND] += underlay.getHueMultiplier();
+								hues[yi + BLEND] += underlay.hue;
+								sats[yi + BLEND] += underlay.saturation;
+								light[yi + BLEND] += underlay.lightness;
+								mul[yi + BLEND] += underlay.hueMultiplier;
 								num[yi + BLEND]++;
 							}
 						}
@@ -290,10 +281,10 @@ namespace net.runelite.cache
 							if (underlayId > 0)
 							{
 								UnderlayDefinition underlay = findUnderlay(underlayId - 1);
-								hues[yi + BLEND] -= underlay.getHue();
-								sats[yi + BLEND] -= underlay.getSaturation();
-								light[yi + BLEND] -= underlay.getLightness();
-								mul[yi + BLEND] -= underlay.getHueMultiplier();
+								hues[yi + BLEND] -= underlay.hue;
+								sats[yi + BLEND] -= underlay.saturation;
+								light[yi + BLEND] -= underlay.lightness;
+								mul[yi + BLEND] -= underlay.hueMultiplier;
 								num[yi + BLEND]--;
 							}
 						}
@@ -379,21 +370,21 @@ namespace net.runelite.cache
 										rotation = r.getOverlayRotation(z, convert(xi), convert(yi));
 
 										OverlayDefinition overlayDefinition = findOverlay(overlayId - 1);
-										int overlayTexture = overlayDefinition.getTexture();
+										int overlayTexture = overlayDefinition.texture;
 										int rgb;
 
 										if (overlayTexture >= 0)
 										{
 											rgb = rsTextureProvider.getAverageTextureRGB(overlayTexture);
 										}
-										else if (overlayDefinition.getRgbColor() == 0xFF_00FF)
+										else if (overlayDefinition.rgbColor == 0xFF_00FF)
 										{
 											rgb = -2;
 										}
 										else
 										{
 											// randomness added here
-											int overlayHsl = packHsl(overlayDefinition.getHue(), overlayDefinition.getSaturation(), overlayDefinition.getLightness());
+											int overlayHsl = packHsl(overlayDefinition.hue, overlayDefinition.saturation, overlayDefinition.lightness);
 											rgb = overlayHsl;
 										}
 
@@ -404,11 +395,11 @@ namespace net.runelite.cache
 											overlayRgb = colorPalette[var0];
 										}
 
-										if (overlayDefinition.getSecondaryRgbColor() != -1)
+										if (overlayDefinition.secondaryRgbColor != -1)
 										{
-											int hue = overlayDefinition.getOtherHue();
-											int sat = overlayDefinition.getOtherSaturation();
-											int olight = overlayDefinition.getOtherLightness();
+											int hue = overlayDefinition.otherHue;
+											int sat = overlayDefinition.otherSaturation;
+											int olight = overlayDefinition.otherLightness;
 											rgb = packHsl(hue, sat, olight);
 											int var0 = adjustHSLListness0(rgb, 96);
 											overlayRgb = colorPalette[var0];
@@ -510,22 +501,22 @@ namespace net.runelite.cache
 			foreach (Location location in region.Locations)
 			{
 
-				int rotation = location.getOrientation();
-				int type = location.getType();
+				int rotation = location.orientation;
+				int type = location.type;
 
-				int localX = location.getPosition().getX() - region.BaseX;
-				int localY = location.getPosition().getY() - region.BaseY;
+				int localX = location.position.X - region.BaseX;
+				int localY = location.position.Y - region.BaseY;
 
 				bool isBridge = (region.getTileSetting(1, localX, localY) & 2) != 0;
 
-				if (location.getPosition().getZ() == z + 1)
+				if (location.position.Z == z + 1)
 				{
 					if (!isBridge)
 					{
 						continue;
 					}
 				}
-				else if (location.getPosition().getZ() == z)
+				else if (location.position.Z == z)
 				{
 					if (isBridge)
 					{
@@ -542,7 +533,7 @@ namespace net.runelite.cache
 					continue;
 				}
 
-				ObjectDefinition @object = findObject(location.getId());
+				ObjectDefinition @object = findObject(location.id);
 
 				int drawX = (drawBaseX + localX) * MAP_SCALE;
 				int drawY = (drawBaseY + (Region.Y - 1 - localY)) * MAP_SCALE;
@@ -550,8 +541,8 @@ namespace net.runelite.cache
 				if (type >= 0 && type <= 3)
 				{
 					// this is a wall
-					int hash = (localY << 7) + localX + (location.getId() << 14) + 0x4000_0000;
-					if (@object.getWallOrDoor() == 0)
+					int hash = (localY << 7) + localX + (location.id << 14) + 0x4000_0000;
+					if (@object.wallOrDoor == 0)
 					{
 						hash -= int.MinValue;
 					}
@@ -562,9 +553,9 @@ namespace net.runelite.cache
 						rgb = doorColor;
 					}
 
-					if (@object.getMapSceneID() != -1)
+					if (@object.mapSceneID != -1)
 					{
-						Image spriteImage = scaledMapIcons[@object.getMapSceneID()];
+						MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
 						graphics.drawImage(spriteImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
 					}
 					else
@@ -656,15 +647,15 @@ namespace net.runelite.cache
 				}
 				else if (type == 9)
 				{
-					if (@object.getMapSceneID() != -1)
+					if (@object.mapSceneID != -1)
 					{
-						Image spriteImage = scaledMapIcons[@object.getMapSceneID()];
+						MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
 						graphics.drawImage(spriteImage, drawX, drawY, null);
 						continue;
 					}
 
-					int hash = (localY << 7) + localX + (location.getId() << 14) + 0x4000_0000;
-					if (@object.getWallOrDoor() == 0)
+					int hash = (localY << 7) + localX + (location.id << 14) + 0x4000_0000;
+					if (@object.wallOrDoor == 0)
 					{
 						hash -= int.MinValue;
 					}
@@ -698,9 +689,9 @@ namespace net.runelite.cache
 				else if (type == 22 || (type >= 9 && type <= 11))
 				{
 					// ground object
-					if (@object.getMapSceneID() != -1)
+					if (@object.mapSceneID != -1)
 					{
-						Image spriteImage = scaledMapIcons[@object.getMapSceneID()];
+						MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
 						graphics.drawImage(spriteImage, drawX, drawY, null);
 					}
 				}
@@ -877,26 +868,26 @@ namespace net.runelite.cache
 		{
 			foreach (Location location in region.Locations)
 			{
-				int localZ = location.getPosition().getZ();
+				int localZ = location.position.Z;
 				if (z != 0 && localZ != z)
 				{
 					// draw all icons on z=0
 					continue;
 				}
 
-				ObjectDefinition od = findObject(location.getId());
+				ObjectDefinition od = findObject(location.id);
 
 				Debug.Assert(od != null);
 
-				int localX = location.getPosition().getX() - region.BaseX;
-				int localY = location.getPosition().getY() - region.BaseY;
+				int localX = location.position.X - region.BaseX;
+				int localY = location.position.Y - region.BaseY;
 
 				int drawX = drawBaseX + localX;
 				int drawY = drawBaseY + (Region.Y - 1 - localY);
 
-				if (od.getMapAreaId() != -1)
+				if (od.mapAreaId != -1)
 				{
-					AreaDefinition area = areas.getArea(od.getMapAreaId());
+					AreaDefinition area = areas.getArea(od.mapAreaId);
 					Debug.Assert(area != null);
 
 					int spriteId = area.spriteId;
@@ -911,26 +902,26 @@ namespace net.runelite.cache
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void loadRegions(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: private void loadRegions(OSRSCache.fs.Store store) throws java.io.IOException
 		private void loadRegions(Store store)
 		{
 			regionLoader = new RegionLoader(store);
 			regionLoader.loadRegions();
 			regionLoader.calculateBounds();
 
-			logger.info("North most region: {}", regionLoader.LowestY.BaseY);
-			logger.info("South most region: {}", regionLoader.HighestY.BaseY);
-			logger.info("West most region:  {}", regionLoader.LowestX.BaseX);
-			logger.info("East most region:  {}", regionLoader.HighestX.BaseX);
+			Console.WriteLine("North most region: {}", regionLoader.LowestY.BaseY);
+			Console.WriteLine("South most region: {}", regionLoader.HighestY.BaseY);
+			Console.WriteLine("West most region:  {}", regionLoader.LowestX.BaseX);
+			Console.WriteLine("East most region:  {}", regionLoader.HighestX.BaseX);
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void loadUnderlays(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: private void loadUnderlays(OSRSCache.fs.Store store) throws java.io.IOException
 		private void loadUnderlays(Store store)
 		{
 			Storage storage = store.Storage;
 			Index index = store.getIndex(IndexType.CONFIGS);
-			Archive archive = index.getArchive(ConfigType.UNDERLAY.getId());
+			Archive archive = index.getArchive(ConfigType.UNDERLAY.Id);
 
 			sbyte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
@@ -940,7 +931,7 @@ namespace net.runelite.cache
 				UnderlayLoader loader = new UnderlayLoader();
 				UnderlayDefinition underlay = loader.load(file.FileId, file.Contents);
 
-				underlays[underlay.getId()] = underlay;
+				underlays[underlay.id] = underlay;
 			}
 		}
 
@@ -950,12 +941,12 @@ namespace net.runelite.cache
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void loadOverlays(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: private void loadOverlays(OSRSCache.fs.Store store) throws java.io.IOException
 		private void loadOverlays(Store store)
 		{
 			Storage storage = store.Storage;
 			Index index = store.getIndex(IndexType.CONFIGS);
-			Archive archive = index.getArchive(ConfigType.OVERLAY.getId());
+			Archive archive = index.getArchive(ConfigType.OVERLAY.Id);
 
 			sbyte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
@@ -965,7 +956,7 @@ namespace net.runelite.cache
 				OverlayLoader loader = new OverlayLoader();
 				OverlayDefinition overlay = loader.load(file.FileId, file.Contents);
 
-				overlays[overlay.getId()] = overlay;
+				overlays[overlay.id] = overlay;
 			}
 		}
 
@@ -981,7 +972,7 @@ namespace net.runelite.cache
 			Storage storage = store.Storage;
 			Index index = store.getIndex(IndexType.SPRITES);
 //JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final int mapsceneHash = net.runelite.cache.util.Djb2.hash("mapscene");
+//ORIGINAL LINE: final int mapsceneHash = OSRSCache.util.Djb2.hash("mapscene");
 			int mapsceneHash = Djb2.hash("mapscene");
 
 			foreach (Archive a in index.Archives)
@@ -993,21 +984,21 @@ namespace net.runelite.cache
 
 				foreach (SpriteDefinition sprite in sprites)
 				{
-					if (sprite.getHeight() <= 0 || sprite.getWidth() <= 0)
+					if (sprite.height <= 0 || sprite.width <= 0)
 					{
 						continue;
 					}
 
 					if (a.NameHash == mapsceneHash)
 					{
-						BufferedImage spriteImage = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
-						spriteImage.setRGB(0, 0, sprite.getWidth(), sprite.getHeight(), sprite.getPixels(), 0, sprite.getWidth());
+						BufferedImage spriteImage = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
+						spriteImage.setRGB(0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
 
 						// scale image down so it fits
-						Image scaledImage = spriteImage.getScaledInstance(MAPICON_MAX_WIDTH, MAPICON_MAX_HEIGHT, 0);
+						MediaTypeNames.Image scaledImage = spriteImage.getScaledInstance(MAPICON_MAX_WIDTH, MAPICON_MAX_HEIGHT, 0);
 
-						Debug.Assert(scaledMapIcons.ContainsKey(sprite.getFrame()) == false);
-						scaledMapIcons[sprite.getFrame()] = scaledImage;
+						Debug.Assert(scaledMapIcons.ContainsKey(sprite.frame) == false);
+						scaledMapIcons[sprite.frame] = scaledImage;
 					}
 				}
 			}

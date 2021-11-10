@@ -25,23 +25,20 @@ using System.Diagnostics;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.fs
+namespace OSRSCache.fs
 {
-	using IndexType = net.runelite.cache.IndexType;
-	using DiskStorage = net.runelite.cache.fs.jagex.DiskStorage;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using IndexType = OSRSCache.IndexType;
+	using DiskStorage = OSRSCache.fs.jagex.DiskStorage;
+
 
 	public sealed class Store : System.IDisposable
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(Store));
-
 		private readonly Storage storage;
 		private readonly IList<Index> indexes = new List<Index>();
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public Store(java.io.File folder) throws java.io.IOException
-		public Store(File folder)
+		public Store(string folder)
 		{
 			storage = new DiskStorage(folder);
 			storage.init(this);
@@ -146,7 +143,7 @@ namespace net.runelite.cache.fs
 
 		public Index getIndex(IndexType type)
 		{
-			return findIndex(type.getNumber());
+			return findIndex(type.Number);
 		}
 
 		public Index findIndex(int id)

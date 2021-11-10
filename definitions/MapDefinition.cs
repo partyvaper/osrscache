@@ -22,23 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions
+namespace OSRSCache.definitions
 {
-	using Data = lombok.Data;
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Data public class MapDefinition
 	public class MapDefinition
 	{
 		public const int X = 64;
 		public const int Y = 64;
 		public const int Z = 4;
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Data public static class Tile
 		public class Tile
 		{
-			public int? height;
+			public int? height; // public int? height;
 			public int attrOpcode;
 			public sbyte settings;
 			public sbyte overlayId;
@@ -47,11 +42,9 @@ namespace net.runelite.cache.definitions
 			public sbyte underlayId;
 		}
 
-		private int regionX;
-		private int regionY;
-//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-//ORIGINAL LINE: private Tile[][][] tiles = new Tile[Z][X][Y];
-		private Tile[][][] tiles = RectangularArrays.RectangularTileArray(Z, X, Y);
+		public int regionX; // was private, is now public
+		public int regionY; // was private, is now public
+		public Tile[][][] tiles = RectangularArrays.RectangularTileArray(Z, X, Y); // was private, is now public
 	}
 
 }

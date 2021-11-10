@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 /*
@@ -25,28 +26,25 @@ using System.Diagnostics;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.fs.jagex
+namespace OSRSCache.fs.jagex
 {
 	using Ints = com.google.common.primitives.Ints;
-	using Archive = net.runelite.cache.fs.Archive;
-	using Container = net.runelite.cache.fs.Container;
-	using Index = net.runelite.cache.fs.Index;
-	using Storage = net.runelite.cache.fs.Storage;
-	using Store = net.runelite.cache.fs.Store;
-	using ArchiveData = net.runelite.cache.index.ArchiveData;
-	using IndexData = net.runelite.cache.index.IndexData;
-	using Crc32 = net.runelite.cache.util.Crc32;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using Archive = OSRSCache.fs.Archive;
+	using Container = OSRSCache.fs.Container;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	using ArchiveData = OSRSCache.index.ArchiveData;
+	using IndexData = OSRSCache.index.IndexData;
+	using Crc32 = OSRSCache.util.Crc32;
+
 
 	public class DiskStorage : Storage
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(DiskStorage));
-
 		private const string MAIN_FILE_CACHE_DAT = "main_file_cache.dat2";
 		private const string MAIN_FILE_CACHE_IDX = "main_file_cache.idx";
 
-		private readonly File folder;
+		private readonly string folder;
 
 		private readonly DataFile data;
 		private readonly IndexFile index255;
@@ -54,16 +52,16 @@ namespace net.runelite.cache.fs.jagex
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public DiskStorage(java.io.File folder) throws java.io.IOException
-		public DiskStorage(File folder)
+		public DiskStorage(string folder)
 		{
 			this.folder = folder;
 
-			this.data = new DataFile(new File(folder, MAIN_FILE_CACHE_DAT));
-			this.index255 = new IndexFile(255, new File(folder, MAIN_FILE_CACHE_IDX + "255"));
+			this.data = new DataFile($"{folder}/{MAIN_FILE_CACHE_DAT}");
+			this.index255 = new IndexFile(255, $"{folder}/{MAIN_FILE_CACHE_IDX}255");
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void init(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: @Override public void init(OSRSCache.fs.Store store) throws java.io.IOException
 		public virtual void init(Store store)
 		{
 			for (int i = 0; i < index255.IndexCount; ++i)
@@ -99,13 +97,13 @@ namespace net.runelite.cache.fs.jagex
 				}
 			}
 
-			IndexFile indexFile = new IndexFile(i, new File(folder, MAIN_FILE_CACHE_IDX + i));
-			indexFiles.Add(indexFile);
-			return indexFile;
+			IndexFile _indexFile = new IndexFile(i, $"{folder}/{MAIN_FILE_CACHE_IDX}{i}"); 
+			indexFiles.Add(_indexFile);
+			return _indexFile;
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void load(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: @Override public void load(OSRSCache.fs.Store store) throws java.io.IOException
 		public virtual void load(Store store)
 		{
 			foreach (Index index in store.Indexes)
@@ -129,10 +127,10 @@ namespace net.runelite.cache.fs.jagex
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void loadIndex(net.runelite.cache.fs.Index index) throws java.io.IOException
+//ORIGINAL LINE: private void loadIndex(OSRSCache.fs.Index index) throws java.io.IOException
 		private void loadIndex(Index index)
 		{
-			logger.trace("Loading index {}", index.Id);
+			Console.WriteLine("Loading index {}", index.Id);
 
 			sbyte[] indexData = readIndex(index.Id);
 			if (indexData == null)
@@ -167,7 +165,7 @@ namespace net.runelite.cache.fs.jagex
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public byte[] loadArchive(net.runelite.cache.fs.Archive archive) throws java.io.IOException
+//ORIGINAL LINE: @Override public byte[] loadArchive(OSRSCache.fs.Archive archive) throws java.io.IOException
 		public virtual sbyte[] loadArchive(Archive archive)
 		{
 			Index index = archive.Index;
@@ -178,23 +176,23 @@ namespace net.runelite.cache.fs.jagex
 			IndexEntry entry = indexFile.read(archive.ArchiveId);
 			if (entry == null)
 			{
-				logger.debug("can't read archive " + archive.ArchiveId + " from index " + index.Id);
+				Console.WriteLine("can't read archive " + archive.ArchiveId + " from index " + index.Id);
 				return null;
 			}
 
 			Debug.Assert(entry.Id == archive.ArchiveId);
 
-			logger.trace("Loading archive {} for index {} from sector {} length {}", archive.ArchiveId, index.Id, entry.Sector, entry.Length);
+			Console.WriteLine("Loading archive {} for index {} from sector {} length {}", archive.ArchiveId, index.Id, entry.Sector, entry.Length);
 
 			sbyte[] archiveData = data.read(index.Id, entry.Id, entry.Sector, entry.Length);
 			return archiveData;
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void save(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: @Override public void save(OSRSCache.fs.Store store) throws java.io.IOException
 		public virtual void save(Store store)
 		{
-			logger.debug("Saving store");
+			Console.WriteLine("Saving store");
 
 			foreach (Index i in store.Indexes)
 			{
@@ -203,7 +201,7 @@ namespace net.runelite.cache.fs.jagex
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void saveIndex(net.runelite.cache.fs.Index index) throws java.io.IOException
+//ORIGINAL LINE: private void saveIndex(OSRSCache.fs.Index index) throws java.io.IOException
 		private void saveIndex(Index index)
 		{
 			IndexData indexData = index.toIndexData();
@@ -222,7 +220,7 @@ namespace net.runelite.cache.fs.jagex
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void saveArchive(net.runelite.cache.fs.Archive a, byte[] archiveData) throws java.io.IOException
+//ORIGINAL LINE: @Override public void saveArchive(OSRSCache.fs.Archive a, byte[] archiveData) throws java.io.IOException
 		public virtual void saveArchive(Archive a, sbyte[] archiveData)
 		{
 			Index index = a.Index;
@@ -242,7 +240,7 @@ namespace net.runelite.cache.fs.jagex
 			crc.update(archiveData, 0, length);
 			a.Crc = crc.Hash;
 
-			logger.trace("Saved archive {}/{} at sector {}, compressed length {}", index.Id, a.ArchiveId, res.sector, res.compressedLength);
+			Console.WriteLine("Saved archive {}/{} at sector {}, compressed length {}", index.Id, a.ArchiveId, res.sector, res.compressedLength);
 		}
 	}
 

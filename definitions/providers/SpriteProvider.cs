@@ -22,9 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.providers
+namespace OSRSCache.definitions.providers
 {
-	using SpriteDefinition = net.runelite.cache.definitions.SpriteDefinition;
+	using SpriteDefinition = OSRSCache.definitions.SpriteDefinition;
 
 	public interface SpriteProvider
 	{

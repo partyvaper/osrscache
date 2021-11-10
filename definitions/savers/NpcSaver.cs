@@ -24,10 +24,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.savers
+namespace OSRSCache.definitions.savers
 {
-	using NpcDefinition = net.runelite.cache.definitions.NpcDefinition;
-	using OutputStream = net.runelite.cache.io.OutputStream;
+	using NpcDefinition = OSRSCache.definitions.NpcDefinition;
+	using OutputStream = OSRSCache.io.OutputStream;
 
 	public class NpcSaver
 	{

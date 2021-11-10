@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 /*
@@ -25,18 +26,15 @@ using System.Diagnostics;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.fs
+namespace OSRSCache.fs
 {
 	using Preconditions = com.google.common.@base.Preconditions;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using OutputStream = net.runelite.cache.io.OutputStream;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using InputStream = OSRSCache.io.InputStream;
+	using OutputStream = OSRSCache.io.OutputStream;
+
 
 	public class ArchiveFiles
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(ArchiveFiles));
-
 		private readonly IList<FSFile> files = new List<FSFile>();
 		private readonly IDictionary<int, FSFile> fileMap = new Dictionary<int, FSFile>();
 
@@ -101,7 +99,7 @@ namespace net.runelite.cache.fs
 
 		public virtual void loadContents(sbyte[] data)
 		{
-			logger.trace("Loading contents of archive ({} files)", files.Count);
+			Console.WriteLine("Loading contents of archive ({} files)", files.Count);
 
 			Debug.Assert(this.Files.Count > 0);
 
@@ -204,7 +202,7 @@ namespace net.runelite.cache.fs
 
 			sbyte[] fileData = stream.flip();
 
-			logger.trace("Saved contents of archive ({} files), {} bytes", files.Count, fileData.Length);
+			Console.WriteLine("Saved contents of archive ({} files), {} bytes", files.Count, fileData.Length);
 			return fileData;
 		}
 	}

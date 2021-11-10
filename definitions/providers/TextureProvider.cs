@@ -22,9 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.providers
+namespace OSRSCache.definitions.providers
 {
-	using TextureDefinition = net.runelite.cache.definitions.TextureDefinition;
+	using TextureDefinition = OSRSCache.definitions.TextureDefinition;
 
 	public interface TextureProvider
 	{

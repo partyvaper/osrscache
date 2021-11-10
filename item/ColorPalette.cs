@@ -24,19 +24,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.item
+namespace OSRSCache.item
 {
-	using Getter = lombok.Getter;
-
 	public class ColorPalette
 	{
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Getter private final int[] colorPalette;
 		private readonly int[] colorPalette;
 
 		public ColorPalette(double brightness, int var2, int var3)
 		{
 			colorPalette = buildColorPalettee(brightness, var2, var3);
+		}
+
+		public int[] getColorPalette()
+		{
+			return colorPalette;
 		}
 
 		private int[] buildColorPalettee(double brightness, int var2, int var3)

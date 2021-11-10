@@ -24,10 +24,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.index
+namespace OSRSCache.index
 {
-	using InputStream = net.runelite.cache.io.InputStream;
-	using OutputStream = net.runelite.cache.io.OutputStream;
+	using InputStream = OSRSCache.io.InputStream;
+	using OutputStream = OSRSCache.io.OutputStream;
 
 	public class IndexData
 	{

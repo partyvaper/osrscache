@@ -36,6 +36,23 @@
           <HintPath>packages\CommandLineParser.2.9.0-preview1\lib\net461\CommandLine.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="Crc32.NET, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc0b95cf99bf4e99">
+          <HintPath>packages\Crc32.NET.1.2.0\lib\net20\Crc32.NET.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="JavaPropertiesParser, Version=0.2.1.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>packages\JavaPropertiesParser.0.2.1\lib\net40\JavaPropertiesParser.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+          <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Sprache, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>packages\Sprache.2.3.0\lib\net45\Sprache.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
@@ -45,6 +62,7 @@
         <Compile Include="*.cs" />
         <Compile Include="definitions/**/*.cs" />
         <Compile Include="fs/**/*.cs" />
+        <Compile Include="fs\flat\FlatStorage.cs.unused" />
         <Compile Include="index/**/*.cs" />
         <Compile Include="io/**/*.cs" />
         <Compile Include="item/**/*.cs" />

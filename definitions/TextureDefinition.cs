@@ -1,43 +1,15 @@
 ﻿using System;
 
-/*
- * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-namespace net.runelite.cache.definitions
+namespace OSRSCache.definitions
 {
-	using Data = lombok.Data;
-	using SpriteProvider = net.runelite.cache.definitions.providers.SpriteProvider;
+	using SpriteProvider = OSRSCache.definitions.providers.SpriteProvider;
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Data public class TextureDefinition
 	public class TextureDefinition
 	{
 		public int field1777;
 		public bool field1778;
-		private int id;
-		private int[] fileIds;
+		public int id; // was private, is now public
+		public int[] fileIds; // was private, is now public
 		public int[] field1780;
 		public int[] field1781;
 		public int[] field1786;
@@ -96,14 +68,14 @@ namespace net.runelite.cache.definitions
 
 				if (var11 == 0)
 				{
-					if (var3 == var7.getMaxWidth())
+					if (var3 == var7.maxWidth)
 					{
 						for (var12 = 0; var12 < var5; ++var12)
 						{
 							this.pixels[var12] = var9[var8[var12] & 255];
 						}
 					}
-					else if (var7.getMaxWidth() == 64 && var3 == 128)
+					else if (var7.maxWidth == 64 && var3 == 128)
 					{
 						var12 = 0;
 
@@ -117,7 +89,7 @@ namespace net.runelite.cache.definitions
 					}
 					else
 					{
-						if (var7.getMaxWidth() != 128 || var3 != 64)
+						if (var7.maxWidth != 128 || var3 != 64)
 						{
 							throw new Exception();
 						}

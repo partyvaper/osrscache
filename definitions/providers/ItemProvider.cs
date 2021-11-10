@@ -22,9 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.providers
+namespace OSRSCache.definitions.providers
 {
-	using ItemDefinition = net.runelite.cache.definitions.ItemDefinition;
+	using ItemDefinition = OSRSCache.definitions.ItemDefinition;
 
 	public interface ItemProvider
 	{

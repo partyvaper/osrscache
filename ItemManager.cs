@@ -25,19 +25,19 @@ using System.Collections.Generic;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache
+namespace OSRSCache
 {
-	using ItemDefinition = net.runelite.cache.definitions.ItemDefinition;
-	using ItemExporter = net.runelite.cache.definitions.exporters.ItemExporter;
-	using ItemLoader = net.runelite.cache.definitions.loaders.ItemLoader;
-	using ItemProvider = net.runelite.cache.definitions.providers.ItemProvider;
-	using Archive = net.runelite.cache.fs.Archive;
-	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
-	using FSFile = net.runelite.cache.fs.FSFile;
-	using Index = net.runelite.cache.fs.Index;
-	using Storage = net.runelite.cache.fs.Storage;
-	using Store = net.runelite.cache.fs.Store;
-	using IDClass = net.runelite.cache.util.IDClass;
+	using ItemDefinition = OSRSCache.definitions.ItemDefinition;
+	using ItemExporter = OSRSCache.definitions.exporters.ItemExporter;
+	using ItemLoader = OSRSCache.definitions.loaders.ItemLoader;
+	using ItemProvider = OSRSCache.definitions.providers.ItemProvider;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	// using IDClass = OSRSCache.util.IDClass;
 
 	public class ItemManager : ItemProvider
 	{
@@ -57,7 +57,7 @@ namespace net.runelite.cache
 
 			Storage storage = store.Storage;
 			Index index = store.getIndex(IndexType.CONFIGS);
-			Archive archive = index.getArchive(ConfigType.ITEM.getId());
+			Archive archive = index.getArchive(ConfigType.ITEM.Id);
 
 			sbyte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
@@ -73,7 +73,8 @@ namespace net.runelite.cache
 		{
 			get
 			{
-				return Collections.unmodifiableCollection(items.Values);
+				// return Collections.unmodifiableCollection(items.Values);
+				return new List<ItemDefinition>(items.Values);
 			}
 		}
 
@@ -84,38 +85,39 @@ namespace net.runelite.cache
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public void export(java.io.File out) throws java.io.IOException
-		public virtual void export(File @out)
+		public virtual void export(string @out)
 		{
-			@out.mkdirs();
+			// @out.mkdirs(); // TODO: ????
 
 			foreach (ItemDefinition def in items.Values)
 			{
 				ItemExporter exporter = new ItemExporter(def);
 
-				File targ = new File(@out, def.id + ".json");
+				string targ = $"{@out}/{def.id}.json";
 				exporter.exportTo(targ);
 			}
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public void java(java.io.File java) throws java.io.IOException
-		public virtual void java(File java)
+		public virtual void java(string java)
 		{
-			java.mkdirs();
-			using (IDClass ids = IDClass.create(java, "ItemID"), IDClass nulls = IDClass.create(java, "NullItemID"))
-			{
-				foreach (ItemDefinition def in items.Values)
-				{
-					if (def.name.Equals("NULL", StringComparison.OrdinalIgnoreCase))
-					{
-						nulls.add(def.name, def.id);
-					}
-					else
-					{
-						ids.add(def.name, def.id);
-					}
-				}
-			}
+			Console.WriteLine($"ItemManager.java not implemented! {java}");
+			// java.mkdirs();
+			// using (IDClass ids = IDClass.create(java, "ItemID"), IDClass nulls = IDClass.create(java, "NullItemID"))
+			// {
+			// 	foreach (ItemDefinition def in items.Values)
+			// 	{
+			// 		if (def.name.Equals("NULL", StringComparison.OrdinalIgnoreCase))
+			// 		{
+			// 			nulls.add(def.name, def.id);
+			// 		}
+			// 		else
+			// 		{
+			// 			ids.add(def.name, def.id);
+			// 		}
+			// 	}
+			// }
 		}
 
 		public virtual ItemDefinition provide(int itemId)

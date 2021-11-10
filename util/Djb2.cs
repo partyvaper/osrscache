@@ -1,4 +1,4 @@
-﻿namespace net.runelite.cache.util
+﻿namespace OSRSCache.util
 {
 	/// <summary>
 	/// An implementation of the {@code djb2} hash function.

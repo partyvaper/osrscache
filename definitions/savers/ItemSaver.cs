@@ -24,10 +24,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.savers
+namespace OSRSCache.definitions.savers
 {
-	using ItemDefinition = net.runelite.cache.definitions.ItemDefinition;
-	using OutputStream = net.runelite.cache.io.OutputStream;
+	using ItemDefinition = OSRSCache.definitions.ItemDefinition;
+	using OutputStream = OSRSCache.io.OutputStream;
 
 	public class ItemSaver
 	{

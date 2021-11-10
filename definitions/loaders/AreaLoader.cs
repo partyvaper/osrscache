@@ -22,10 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using AreaDefinition = net.runelite.cache.definitions.AreaDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using AreaDefinition = OSRSCache.definitions.AreaDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class AreaLoader
 	{

@@ -24,10 +24,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using StructDefinition = net.runelite.cache.definitions.StructDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using StructDefinition = OSRSCache.definitions.StructDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class StructLoader
 	{

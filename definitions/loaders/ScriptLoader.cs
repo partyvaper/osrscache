@@ -1,48 +1,24 @@
 ﻿using System.Collections.Generic;
 
-/*
- * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using ScriptDefinition = net.runelite.cache.definitions.ScriptDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+	
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.script.Opcodes.SCONST;
+//	import static OSRSCache.script.Opcodes.SCONST;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.script.Opcodes.POP_INT;
+//	import static OSRSCache.script.Opcodes.POP_INT;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.script.Opcodes.POP_STRING;
+//	import static OSRSCache.script.Opcodes.POP_STRING;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.script.Opcodes.RETURN;
+//	import static OSRSCache.script.Opcodes.RETURN;
 
 	public class ScriptLoader
 	{
 		public virtual ScriptDefinition load(int id, sbyte[] b)
 		{
-			ScriptDefinition def = new ScriptDefinition();
-			def.setId(id);
+			ScriptDefinition def = new ScriptDefinition(id);
 			InputStream @in = new InputStream(b);
 
 			@in.Offset = @in.Length - 2;
@@ -61,7 +37,7 @@ namespace net.runelite.cache.definitions.loaders
 			if (numSwitches > 0)
 			{
 				IDictionary<int, int>[] switches = new System.Collections.IDictionary[numSwitches];
-				def.setSwitches(switches);
+				def.switches = switches;
 
 				for (int i = 0; i < numSwitches; ++i)
 				{
@@ -78,10 +54,10 @@ namespace net.runelite.cache.definitions.loaders
 				}
 			}
 
-			def.setLocalIntCount(localIntCount);
-			def.setLocalStringCount(localStringCount);
-			def.setIntStackCount(intStackCount);
-			def.setStringStackCount(stringStackCount);
+			def.localIntCount = localIntCount;
+			def.localStringCount = localStringCount;
+			def.intStackCount = intStackCount;
+			def.stringStackCount = stringStackCount;
 
 			@in.Offset = 0;
 			@in.readStringOrNull();
@@ -90,9 +66,9 @@ namespace net.runelite.cache.definitions.loaders
 			int[] intOperands = new int[numOpcodes];
 			string[] stringOperands = new string[numOpcodes];
 
-			def.setInstructions(instructions);
-			def.setIntOperands(intOperands);
-			def.setStringOperands(stringOperands);
+			def.instructions = instructions;
+			def.intOperands = intOperands;
+			def.stringOperands = stringOperands;
 
 			int opcode;
 			for (int i = 0; @in.Offset < endIdx; instructions[i++] = opcode)

@@ -1,4 +1,4 @@
-﻿namespace net.runelite.cache.models
+﻿namespace OSRSCache.models
 {
 	public class FaceNormal
 	{

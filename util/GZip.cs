@@ -25,16 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace net.runelite.cache.util
+namespace OSRSCache.util
 {
 	using IOUtils = org.apache.commons.compress.utils.IOUtils;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+
 
 	public class GZip
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(GZip));
-
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public static byte[] compress(byte[] bytes) throws java.io.IOException
 		public static sbyte[] compress(sbyte[] bytes)

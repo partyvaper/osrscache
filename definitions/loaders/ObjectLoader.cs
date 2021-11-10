@@ -25,23 +25,20 @@ using System.Collections.Generic;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using ObjectDefinition = net.runelite.cache.definitions.ObjectDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using ObjectDefinition = OSRSCache.definitions.ObjectDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
 
 	public class ObjectLoader
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(ObjectLoader));
-
 		public virtual ObjectDefinition load(int id, sbyte[] b)
 		{
 			ObjectDefinition def = new ObjectDefinition();
 			InputStream @is = new InputStream(b);
 
-			def.setId(id);
+			def.id = id;
 
 			for (;;)
 			{
@@ -75,20 +72,20 @@ namespace net.runelite.cache.definitions.loaders
 						objectTypes[index] = @is.readUnsignedByte();
 					}
 
-					def.setObjectTypes(objectTypes);
-					def.setObjectModels(objectModels);
+					def.objectTypes = objectTypes;
+					def.objectModels = objectModels;
 				}
 			}
 			else if (opcode == 2)
 			{
-				def.setName(@is.readString());
+				def.name = @is.readString();
 			}
 			else if (opcode == 5)
 			{
 				int length = @is.readUnsignedByte();
 				if (length > 0)
 				{
-					def.setObjectTypes(null);
+					def.objectTypes = null;
 					int[] objectModels = new int[length];
 
 					for (int index = 0; index < length; ++index)
@@ -96,69 +93,69 @@ namespace net.runelite.cache.definitions.loaders
 						objectModels[index] = @is.readUnsignedShort();
 					}
 
-					def.setObjectModels(objectModels);
+					def.objectModels = objectModels;
 				}
 			}
 			else if (opcode == 14)
 			{
-				def.setSizeX(@is.readUnsignedByte());
+				def.sizeX = @is.readUnsignedByte();
 			}
 			else if (opcode == 15)
 			{
-				def.setSizeY(@is.readUnsignedByte());
+				def.sizeY = @is.readUnsignedByte();
 			}
 			else if (opcode == 17)
 			{
-				def.setInteractType(0);
-				def.setBlocksProjectile(false);
+				def.interactType = 0;
+				def.blocksProjectile = false;
 			}
 			else if (opcode == 18)
 			{
-				def.setBlocksProjectile(false);
+				def.blocksProjectile = false;
 			}
 			else if (opcode == 19)
 			{
-				def.setWallOrDoor(@is.readUnsignedByte());
+				def.wallOrDoor = @is.readUnsignedByte();
 			}
 			else if (opcode == 21)
 			{
-				def.setContouredGround(0);
+				def.contouredGround = 0;
 			}
 			else if (opcode == 22)
 			{
-				def.setMergeNormals(true);
+				def.mergeNormals = true;
 			}
 			else if (opcode == 23)
 			{
-				def.setABool2111(true);
+				def.aBool2111 = true;
 			}
 			else if (opcode == 24)
 			{
-				def.setAnimationID(@is.readUnsignedShort());
-				if (def.getAnimationID() == 0xFFFF)
+				def.animationID = @is.readUnsignedShort();
+				if (def.animationID == 0xFFFF)
 				{
-					def.setAnimationID(-1);
+					def.animationID = -1;
 				}
 			}
 			else if (opcode == 27)
 			{
-				def.setInteractType(1);
+				def.interactType = 1;
 			}
 			else if (opcode == 28)
 			{
-				def.setDecorDisplacement(@is.readUnsignedByte());
+				def.decorDisplacement = @is.readUnsignedByte();
 			}
 			else if (opcode == 29)
 			{
-				def.setAmbient(@is.readByte());
+				def.ambient = @is.readByte();
 			}
 			else if (opcode == 39)
 			{
-				def.setContrast(@is.readByte() * 25);
+				def.contrast = @is.readByte() * 25;
 			}
 			else if (opcode >= 30 && opcode < 35)
 			{
-				string[] actions = def.getActions();
+				string[] actions = def.actions;
 				actions[opcode - 30] = @is.readString();
 				if (actions[opcode - 30].Equals("Hidden", StringComparison.OrdinalIgnoreCase))
 				{
@@ -177,8 +174,8 @@ namespace net.runelite.cache.definitions.loaders
 					recolorToReplace[index] = @is.readShort();
 				}
 
-				def.setRecolorToFind(recolorToFind);
-				def.setRecolorToReplace(recolorToReplace);
+				def.recolorToFind = recolorToFind;
+				def.recolorToReplace = recolorToReplace;
 			}
 			else if (opcode == 41)
 			{
@@ -192,64 +189,64 @@ namespace net.runelite.cache.definitions.loaders
 					textureToReplace[index] = @is.readShort();
 				}
 
-				def.setRetextureToFind(retextureToFind);
-				def.setTextureToReplace(textureToReplace);
+				def.retextureToFind = retextureToFind;
+				def.textureToReplace = textureToReplace;
 			}
 			else if (opcode == 61)
 			{
-				def.setCategory(@is.readUnsignedShort());
+				def.category = @is.readUnsignedShort();
 			}
 			else if (opcode == 62)
 			{
-				def.setRotated(true);
+				def.isRotated = true;
 			}
 			else if (opcode == 64)
 			{
-				def.setShadow(false);
+				def.shadow = false;
 			}
 			else if (opcode == 65)
 			{
-				def.setModelSizeX(@is.readUnsignedShort());
+				def.modelSizeX = @is.readUnsignedShort();
 			}
 			else if (opcode == 66)
 			{
-				def.setModelSizeHeight(@is.readUnsignedShort());
+				def.modelSizeHeight = @is.readUnsignedShort();
 			}
 			else if (opcode == 67)
 			{
-				def.setModelSizeY(@is.readUnsignedShort());
+				def.modelSizeY = @is.readUnsignedShort();
 			}
 			else if (opcode == 68)
 			{
-				def.setMapSceneID(@is.readUnsignedShort());
+				def.mapSceneID = @is.readUnsignedShort();
 			}
 			else if (opcode == 69)
 			{
-				def.setBlockingMask(@is.readByte());
+				def.blockingMask = @is.readByte();
 			}
 			else if (opcode == 70)
 			{
-				def.setOffsetX(@is.readUnsignedShort());
+				def.offsetX = @is.readUnsignedShort();
 			}
 			else if (opcode == 71)
 			{
-				def.setOffsetHeight(@is.readUnsignedShort());
+				def.offsetHeight = @is.readUnsignedShort();
 			}
 			else if (opcode == 72)
 			{
-				def.setOffsetY(@is.readUnsignedShort());
+				def.offsetY = @is.readUnsignedShort();
 			}
 			else if (opcode == 73)
 			{
-				def.setObstructsGround(true);
+				def.obstructsGround = true;
 			}
 			else if (opcode == 74)
 			{
-				def.setHollow(true);
+				def.isHollow = true;
 			}
 			else if (opcode == 75)
 			{
-				def.setSupportsItems(@is.readUnsignedByte());
+				def.supportsItems = @is.readUnsignedByte();
 			}
 			else if (opcode == 77)
 			{
@@ -258,15 +255,13 @@ namespace net.runelite.cache.definitions.loaders
 				{
 					varpID = -1;
 				}
-				def.setVarbitID(varpID);
-
+				def.varbitID = varpID;
 				int configId = @is.readUnsignedShort();
 				if (configId == 0xFFFF)
 				{
 					configId = -1;
 				}
-				def.setVarpID(configId);
-
+				def.varpID = configId;
 				int length = @is.readUnsignedByte();
 				int[] configChangeDest = new int[length + 2];
 
@@ -281,18 +276,18 @@ namespace net.runelite.cache.definitions.loaders
 
 				configChangeDest[length + 1] = -1;
 
-				def.setConfigChangeDest(configChangeDest);
+				def.configChangeDest = configChangeDest;
 			}
 			else if (opcode == 78)
 			{
-				def.setAmbientSoundId(@is.readUnsignedShort());
-				def.setAnInt2083(@is.readUnsignedByte());
+				def.ambientSoundId = @is.readUnsignedShort();
+				def.anInt2083 = @is.readUnsignedByte();
 			}
 			else if (opcode == 79)
 			{
-				def.setAnInt2112(@is.readUnsignedShort());
-				def.setAnInt2113(@is.readUnsignedShort());
-				def.setAnInt2083(@is.readUnsignedByte());
+				def.anInt2112 = @is.readUnsignedShort();
+				def.anInt2113 = @is.readUnsignedShort();
+				def.anInt2083 = @is.readUnsignedByte();
 				int length = @is.readUnsignedByte();
 				int[] anIntArray2084 = new int[length];
 
@@ -301,19 +296,19 @@ namespace net.runelite.cache.definitions.loaders
 					anIntArray2084[index] = @is.readUnsignedShort();
 				}
 
-				def.setAmbientSoundIds(anIntArray2084);
+				def.ambientSoundIds = anIntArray2084;
 			}
 			else if (opcode == 81)
 			{
-				def.setContouredGround(@is.readUnsignedByte() * 256);
+				def.contouredGround = @is.readUnsignedByte() * 256;
 			}
 			else if (opcode == 82)
 			{
-				def.setMapAreaId(@is.readUnsignedShort());
+				def.mapAreaId = @is.readUnsignedShort();
 			}
 			else if (opcode == 89)
 			{
-				def.setRandomizeAnimStart(true);
+				def.randomizeAnimStart = true;
 			}
 			else if (opcode == 92)
 			{
@@ -322,16 +317,13 @@ namespace net.runelite.cache.definitions.loaders
 				{
 					varpID = -1;
 				}
-				def.setVarbitID(varpID);
-
+				def.varbitID = varpID;
 				int configId = @is.readUnsignedShort();
 				if (configId == 0xFFFF)
 				{
 					configId = -1;
 				}
-				def.setVarpID(configId);
-
-
+				def.varpID = configId;
 				int var = @is.readUnsignedShort();
 				if (var == 0xFFFF)
 				{
@@ -352,7 +344,7 @@ namespace net.runelite.cache.definitions.loaders
 
 				configChangeDest[length + 1] = var;
 
-				def.setConfigChangeDest(configChangeDest);
+				def.configChangeDest = configChangeDest;
 			}
 			else if (opcode == 249)
 			{
@@ -378,37 +370,37 @@ namespace net.runelite.cache.definitions.loaders
 					@params[key] = value;
 				}
 
-				def.setParams(@params);
+				def.@params = @params;
 			}
 			else
 			{
-				logger.warn("Unrecognized opcode {}", opcode);
+				Console.WriteLine("ObjectLoader: unrecognized opcode {}", opcode);
 			}
 		}
 
 
 		private void post(ObjectDefinition def)
 		{
-			if (def.getWallOrDoor() == -1)
+			if (def.wallOrDoor == -1)
 			{
-				def.setWallOrDoor(0);
-				if (def.getObjectModels() != null && (def.getObjectTypes() == null || def.getObjectTypes()[0] == 10))
+				def.wallOrDoor = 0;
+				if (def.objectModels != null && (def.objectTypes == null || def.objectTypes[0] == 10))
 				{
-					def.setWallOrDoor(1);
+					def.wallOrDoor = 1;
 				}
 
 				for (int var1 = 0; var1 < 5; ++var1)
 				{
-					if (def.getActions()[var1] != null)
+					if (def.actions[var1] != null)
 					{
-						def.setWallOrDoor(1);
+						def.wallOrDoor = 1;
 					}
 				}
 			}
 
-			if (def.getSupportsItems() == -1)
+			if (def.supportsItems == -1)
 			{
-				def.setSupportsItems(def.getInteractType() != 0 ? 1 : 0);
+				def.supportsItems = def.interactType != 0 ? 1 : 0;
 			}
 		}
 	}

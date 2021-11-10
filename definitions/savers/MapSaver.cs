@@ -22,29 +22,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.savers
+namespace OSRSCache.definitions.savers
 {
-	using MapDefinition = net.runelite.cache.definitions.MapDefinition;
-	using Tile = net.runelite.cache.definitions.MapDefinition.Tile;
-	using OutputStream = net.runelite.cache.io.OutputStream;
+	using MapDefinition = OSRSCache.definitions.MapDefinition;
+	using Tile = OSRSCache.definitions.MapDefinition.Tile;
+	using OutputStream = OSRSCache.io.OutputStream;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.region.Region.X;
+//	import static OSRSCache.region.Region.X;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.region.Region.Y;
+//	import static OSRSCache.region.Region.Y;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static net.runelite.cache.region.Region.Z;
+//	import static OSRSCache.region.Region.Z;
 
 	public class MapSaver
 	{
 		public virtual sbyte[] save(MapDefinition map)
 		{
-			MapDefinition.Tile[][][] tiles = map.getTiles();
+			MapDefinition.Tile[][][] tiles = map.tiles;
 			OutputStream @out = new OutputStream();
-			for (int z = 0; z < Z; z++)
+			for (int z = 0; z < MapDefinition.Z; z++)
 			{
-				for (int x = 0; x < X; x++)
+				for (int x = 0; x < MapDefinition.X; x++)
 				{
-					for (int y = 0; y < Y; y++)
+					for (int y = 0; y < MapDefinition.Y; y++)
 					{
 						MapDefinition.Tile tile = tiles[z][x][y];
 						if (tile.attrOpcode != 0)

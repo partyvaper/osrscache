@@ -24,17 +24,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache
+namespace OSRSCache
 {
-	using TextureDefinition = net.runelite.cache.definitions.TextureDefinition;
-	using TextureLoader = net.runelite.cache.definitions.loaders.TextureLoader;
-	using TextureProvider = net.runelite.cache.definitions.providers.TextureProvider;
-	using Archive = net.runelite.cache.fs.Archive;
-	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
-	using FSFile = net.runelite.cache.fs.FSFile;
-	using Index = net.runelite.cache.fs.Index;
-	using Storage = net.runelite.cache.fs.Storage;
-	using Store = net.runelite.cache.fs.Store;
+	using TextureDefinition = OSRSCache.definitions.TextureDefinition;
+	using TextureLoader = OSRSCache.definitions.loaders.TextureLoader;
+	using TextureProvider = OSRSCache.definitions.providers.TextureProvider;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
 
 	public class TextureManager : TextureProvider
 	{
@@ -78,7 +78,7 @@ namespace net.runelite.cache
 		{
 			foreach (TextureDefinition td in textures)
 			{
-				if (td.getId() == id)
+				if (td.id == id)
 				{
 					return td;
 				}

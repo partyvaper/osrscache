@@ -22,16 +22,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.fs
+
+using System;
+using System.IO;
+
+namespace OSRSCache.fs
 {
-	using FileData = net.runelite.cache.index.FileData;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using FileData = OSRSCache.index.FileData;
+
 
 	public class Archive
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(Archive));
-
 		private readonly Index index; // member of this index
 
 		private readonly int archiveId;
@@ -114,7 +115,7 @@ namespace net.runelite.cache.fs
 			Container container = Container.decompress(encryptedData, keys);
 			if (container == null)
 			{
-				logger.warn("Unable to decrypt archive {}", this);
+				Console.WriteLine("Unable to decrypt archive {}", this);
 				return null;
 			}
 
@@ -122,14 +123,14 @@ namespace net.runelite.cache.fs
 
 			if (this.crc != container.crc)
 			{
-				logger.warn("crc mismatch for archive {}/{}", index.Id, this.ArchiveId);
+				Console.WriteLine("crc mismatch for archive {}/{}", index.Id, this.ArchiveId);
 				throw new IOException("CRC mismatch for " + index.Id + "/" + this.ArchiveId);
 			}
 
 			if (container.revision != -1 && this.Revision != container.revision)
 			{
 				// compressed data doesn't always include a revision, but check it if it does
-				logger.warn("revision mismatch for archive {}/{}, expected {} was {}", index.Id, this.ArchiveId, this.Revision, container.revision);
+				Console.WriteLine("revision mismatch for archive {}/{}, expected {} was {}", index.Id, this.ArchiveId, this.Revision, container.revision);
 				// I've seen this happen with vanilla caches where the
 				// revision in the index data differs from the revision
 				// stored for the archive data on disk... I assume this

@@ -25,18 +25,15 @@ using System.Diagnostics;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache
+namespace OSRSCache
 {
-	using Store = net.runelite.cache.fs.Store;
-	using Region = net.runelite.cache.region.Region;
-	using RegionLoader = net.runelite.cache.region.RegionLoader;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using Store = OSRSCache.fs.Store;
+	using Region = OSRSCache.region.Region;
+	using RegionLoader = OSRSCache.region.RegionLoader;
+
 
 	public class HeightMapDumper
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(HeightMapDumper));
-
 		private const int MAP_SCALE = 1;
 		private const float MAX_HEIGHT = 2048f;
 
@@ -71,7 +68,7 @@ namespace net.runelite.cache
 			dimX *= MAP_SCALE;
 			dimY *= MAP_SCALE;
 
-			logger.info("Map image dimensions: {}px x {}px, {}px per map square ({} MB)", dimX, dimY, MAP_SCALE, (dimX * dimY / 1024 / 1024));
+			Console.WriteLine("Map image dimensions: {}px x {}px, {}px per map square ({} MB)", dimX, dimY, MAP_SCALE, (dimX * dimY / 1024 / 1024));
 
 			BufferedImage image = new BufferedImage(dimX, dimY, BufferedImage.TYPE_INT_RGB);
 			draw(image, z);

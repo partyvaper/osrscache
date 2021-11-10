@@ -22,14 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.providers
+namespace OSRSCache.definitions.providers
 {
-	using ModelDefinition = net.runelite.cache.definitions.ModelDefinition;
+	using ModelDefinition = OSRSCache.definitions.ModelDefinition;
 
 	public interface ModelProvider
 	{
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: net.runelite.cache.definitions.ModelDefinition provide(int modelId) throws java.io.IOException;
+//ORIGINAL LINE: OSRSCache.definitions.ModelDefinition provide(int modelId) throws java.io.IOException;
 		ModelDefinition provide(int modelId);
 	}
 

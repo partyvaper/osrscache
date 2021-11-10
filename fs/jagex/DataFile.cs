@@ -22,22 +22,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.fs.jagex
+
+using System;
+using System.IO;
+
+namespace OSRSCache.fs.jagex
 {
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+
 
 	public class DataFile : System.IDisposable
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(DataFile));
-
 		private const int SECTOR_SIZE = 520;
 
 		private readonly RandomAccessFile dat;
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public DataFile(java.io.File file) throws java.io.FileNotFoundException
-		public DataFile(File file)
+		public DataFile(string file)
 		{
 			this.dat = new RandomAccessFile(file, "rw");
 		}
@@ -71,7 +72,7 @@ namespace net.runelite.cache.fs.jagex
 			{
 				if (sector <= 0L || dat.length() / SECTOR_SIZE < (long) sector)
 				{
-					logger.warn("bad read, dat length {}, requested sector {}", dat.length(), sector);
+					Console.WriteLine("bad read, dat length {}, requested sector {}", dat.length(), sector);
 					return null;
 				}
         
@@ -82,7 +83,7 @@ namespace net.runelite.cache.fs.jagex
 				{
 					if (sector == 0)
 					{
-						logger.warn("Unexpected end of file");
+						Console.WriteLine("Unexpected end of file");
 						return null;
 					}
         
@@ -104,7 +105,7 @@ namespace net.runelite.cache.fs.jagex
 						int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
 						if (i != headerSize + dataBlockSize)
 						{
-							logger.warn("Short read when reading file data for {}/{}", indexId, archiveId);
+							Console.WriteLine("Short read when reading file data for {}/{}", indexId, archiveId);
 							return null;
 						}
         
@@ -124,7 +125,7 @@ namespace net.runelite.cache.fs.jagex
 						int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
 						if (i != headerSize + dataBlockSize)
 						{
-							logger.warn("short read");
+							Console.WriteLine("short read");
 							return null;
 						}
         
@@ -136,13 +137,13 @@ namespace net.runelite.cache.fs.jagex
         
 					if (archiveId != currentArchive || currentPart != part || indexId != currentIndex)
 					{
-						logger.warn("data mismatch {} != {}, {} != {}, {} != {}", archiveId, currentArchive, part, currentPart, indexId, currentIndex);
+						Console.WriteLine("data mismatch {} != {}, {} != {}, {} != {}", archiveId, currentArchive, part, currentPart, indexId, currentIndex);
 						return null;
 					}
         
 					if (nextSector < 0 || dat.length() / SECTOR_SIZE < (long) nextSector)
 					{
-						logger.warn("Invalid next sector");
+						Console.WriteLine("Invalid next sector");
 						return null;
 					}
         

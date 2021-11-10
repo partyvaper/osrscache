@@ -22,17 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using SpotAnimDefinition = net.runelite.cache.definitions.SpotAnimDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using SpotAnimDefinition = OSRSCache.definitions.SpotAnimDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
 
 	public class SpotAnimLoader
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(SpotAnimLoader));
-
 		public virtual SpotAnimDefinition load(int id, sbyte[] b)
 		{
 			SpotAnimDefinition def = new SpotAnimDefinition();

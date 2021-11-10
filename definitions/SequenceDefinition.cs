@@ -22,15 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions
+namespace OSRSCache.definitions
 {
-	using Data = lombok.Data;
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Data public class SequenceDefinition
 	public class SequenceDefinition
 	{
-		private readonly int id;
+		public readonly int id;
 		public int[] frameIDs; // top 16 bits are FrameDefinition ids
 		public int[] chatFrameIds;
 		public int[] frameLenghts;
@@ -45,6 +44,11 @@ namespace net.runelite.cache.definitions
 		public int precedenceAnimating = -1;
 		public int priority = -1;
 		public int replyMode = 2;
+
+		public SequenceDefinition(int id)
+		{
+			this.id = id;
+		}
 	}
 
 }

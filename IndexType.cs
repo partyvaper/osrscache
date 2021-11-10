@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace net.runelite.cache
+namespace OSRSCache
 {
 	public sealed class IndexType
 	{

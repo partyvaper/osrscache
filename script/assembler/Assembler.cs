@@ -26,11 +26,11 @@ using System.Text;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.script.assembler
+namespace OSRSCache.script.assembler
 {
-	using ScriptDefinition = net.runelite.cache.definitions.ScriptDefinition;
-	using Instructions = net.runelite.cache.script.Instructions;
-	using ProgContext = net.runelite.cache.script.assembler.rs2asmParser.ProgContext;
+	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
+	using Instructions = OSRSCache.script.Instructions;
+	using ProgContext = OSRSCache.script.assembler.rs2asmParser.ProgContext;
 	using ANTLRInputStream = org.antlr.v4.runtime.ANTLRInputStream;
 	using CommonTokenStream = org.antlr.v4.runtime.CommonTokenStream;
 	using ParseTreeWalker = org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -45,7 +45,7 @@ namespace net.runelite.cache.script.assembler
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public net.runelite.cache.definitions.ScriptDefinition assemble(java.io.InputStream in) throws java.io.IOException
+//ORIGINAL LINE: public OSRSCache.definitions.ScriptDefinition assemble(java.io.InputStream in) throws java.io.IOException
 		public virtual ScriptDefinition assemble(Stream @in)
 		{
 			// Get our lexer

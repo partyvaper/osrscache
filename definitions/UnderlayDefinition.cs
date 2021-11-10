@@ -24,25 +24,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions
+namespace OSRSCache.definitions
 {
-	using Data = lombok.Data;
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Data public class UnderlayDefinition
 	public class UnderlayDefinition
 	{
-		private int id;
-		private int color;
+		public int id; // all were private, is now public
+		public int color;
 
 		[NonSerialized]
-		private int hue;
+		public int hue;
 		[NonSerialized]
-		private int saturation;
+		public int saturation;
 		[NonSerialized]
-		private int lightness;
+		public int lightness;
 		[NonSerialized]
-		private int hueMultiplier;
+		public int hueMultiplier;
+
+		public UnderlayDefinition(int id)
+		{
+			this.id = id;
+		}
 
 		public virtual void calculateHsl()
 		{

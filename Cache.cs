@@ -1,140 +1,85 @@
 ﻿using System;
+using CommandLine;
 
-/*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-namespace net.runelite.cache
+namespace OSRSCache
 {
-	using Store = net.runelite.cache.fs.Store;
-	using CommandLine = org.apache.commons.cli.CommandLine;
-	using CommandLineParser = org.apache.commons.cli.CommandLineParser;
-	using DefaultParser = org.apache.commons.cli.DefaultParser;
-	using Options = org.apache.commons.cli.Options;
-	using ParseException = org.apache.commons.cli.ParseException;
+	using Store = OSRSCache.fs.Store;
 
 	public class Cache
 	{
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public static void main(String[] args) throws java.io.IOException
+		public class Options
+		{
+			[Option('v', "verbose", Required = false, HelpText = "Set output to verbose messages")]
+			public bool Verbose { get; set; }
+			[Option('c', "cache", Required = false, HelpText = "Set the cache folder directory")]
+			public string Cache { get; set; }
+			[Option('i', "items", Required = false, HelpText = "Dump items config to folder")]
+			public bool Items { get; set; }
+			[Option('n', "npcs", Required = false, HelpText = "Dump npcs config to folder")]
+			public bool Npcs { get; set; }
+			[Option('o', "objects", Required = false, HelpText = "Dump objects config to folder")]
+			public bool Objects { get; set; }
+			[Option('s', "sprites", Required = false, HelpText = "Dump sprites images to folder")]
+			public bool Sprites { get; set; }
+		}
+		
 		public static void Main(string[] args)
 		{
-			Options options = new Options();
+			Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(o => {
+				Console.WriteLine($"Verbose set to: {o.Verbose}");
 
-			options.addOption("c", "cache", true, "cache base");
-
-			options.addOption(null, "items", true, "directory to dump items to");
-			options.addOption(null, "npcs", true, "directory to dump npcs to");
-			options.addOption(null, "objects", true, "directory to dump objects to");
-			options.addOption(null, "sprites", true, "directory to dump sprites to");
-
-			CommandLineParser parser = new DefaultParser();
-			CommandLine cmd;
-			try
-			{
-				cmd = parser.parse(options, args);
-			}
-			catch (ParseException ex)
-			{
-				Console.Error.WriteLine("Error parsing command line options: " + ex.Message);
-				Environment.Exit(-1);
-				return;
-			}
-
-			string cache = cmd.getOptionValue("cache");
-
-			Store store = loadStore(cache);
-
-			if (cmd.hasOption("items"))
-			{
-				string itemdir = cmd.getOptionValue("items");
-
-				if (string.ReferenceEquals(itemdir, null))
-				{
-					Console.Error.WriteLine("Item directory must be specified");
-					return;
+				string cacheDir = o.Cache;
+				if (cacheDir == null) {
+					cacheDir = "cache";
 				}
 
-				Console.WriteLine("Dumping items to " + itemdir);
-				dumpItems(store, new File(itemdir));
-			}
-			else if (cmd.hasOption("npcs"))
-			{
-				string npcdir = cmd.getOptionValue("npcs");
+				string outDir = "dumps";
 
-				if (string.ReferenceEquals(npcdir, null))
+				// TODO: flatcache
+				
+				Store store = loadStore(cacheDir);
+				
+				if (o.Items)
 				{
-					Console.Error.WriteLine("NPC directory must be specified");
-					return;
+					string dir = outDir + "/items";
+					Console.WriteLine("Dumping items to " + dir);
+					dumpItems(store, dir);
 				}
-
-				Console.WriteLine("Dumping npcs to " + npcdir);
-				dumpNpcs(store, new File(npcdir));
-			}
-			else if (cmd.hasOption("objects"))
-			{
-				string objectdir = cmd.getOptionValue("objects");
-
-				if (string.ReferenceEquals(objectdir, null))
+				else if (o.Npcs)
 				{
-					Console.Error.WriteLine("Object directory must be specified");
-					return;
+					string dir = outDir + "/npcs";
+					Console.WriteLine("Dumping npcs to " + dir);
+					dumpNpcs(store, dir);
 				}
-
-				Console.WriteLine("Dumping objects to " + objectdir);
-				dumpObjects(store, new File(objectdir));
-			}
-			else if (cmd.hasOption("sprites"))
-			{
-				string spritedir = cmd.getOptionValue("sprites");
-
-				if (string.ReferenceEquals(spritedir, null))
+				else if (o.Objects)
 				{
-					Console.Error.WriteLine("Sprite directory must be specified");
-					return;
+					string dir = outDir + "/objects";
+					Console.WriteLine("Dumping objects to " + dir);
+					dumpObjects(store, dir);
 				}
-
-				Console.WriteLine("Dumping sprites to " + spritedir);
-				dumpSprites(store, new File(spritedir));
-			}
-			else
-			{
-				Console.Error.WriteLine("Nothing to do");
-			}
+				else if (o.Sprites)
+				{
+					string dir = outDir + "/sprites";
+					Console.WriteLine("Dumping sprites to " + dir);
+					dumpSprites(store, dir);
+				}
+				else
+				{
+					Console.WriteLine("Nothing to do");
+				}
+				
+				Environment.Exit(1);
+			});
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private static net.runelite.cache.fs.Store loadStore(String cache) throws java.io.IOException
 		private static Store loadStore(string cache)
 		{
-			Store store = new Store(new File(cache));
+			Store store = new Store(cache);
 			store.load();
 			return store;
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private static void dumpItems(net.runelite.cache.fs.Store store, java.io.File itemdir) throws java.io.IOException
-		private static void dumpItems(Store store, File itemdir)
+		private static void dumpItems(Store store, string itemdir)
 		{
 			ItemManager dumper = new ItemManager(store);
 			dumper.load();
@@ -142,9 +87,7 @@ namespace net.runelite.cache
 			dumper.java(itemdir);
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private static void dumpNpcs(net.runelite.cache.fs.Store store, java.io.File npcdir) throws java.io.IOException
-		private static void dumpNpcs(Store store, File npcdir)
+		private static void dumpNpcs(Store store, string npcdir)
 		{
 			NpcManager dumper = new NpcManager(store);
 			dumper.load();
@@ -152,9 +95,7 @@ namespace net.runelite.cache
 			dumper.java(npcdir);
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private static void dumpObjects(net.runelite.cache.fs.Store store, java.io.File objectdir) throws java.io.IOException
-		private static void dumpObjects(Store store, File objectdir)
+		private static void dumpObjects(Store store, string objectdir)
 		{
 			ObjectManager dumper = new ObjectManager(store);
 			dumper.load();
@@ -162,9 +103,7 @@ namespace net.runelite.cache
 			dumper.java(objectdir);
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private static void dumpSprites(net.runelite.cache.fs.Store store, java.io.File spritedir) throws java.io.IOException
-		private static void dumpSprites(Store store, File spritedir)
+		private static void dumpSprites(Store store, string spritedir)
 		{
 			SpriteManager dumper = new SpriteManager(store);
 			dumper.load();

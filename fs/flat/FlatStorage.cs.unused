@@ -27,13 +27,13 @@ using System.Text;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.fs.flat
+namespace OSRSCache.fs.flat
 {
-	using Archive = net.runelite.cache.fs.Archive;
-	using Index = net.runelite.cache.fs.Index;
-	using Storage = net.runelite.cache.fs.Storage;
-	using Store = net.runelite.cache.fs.Store;
-	using FileData = net.runelite.cache.index.FileData;
+	using Archive = OSRSCache.fs.Archive;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	using FileData = OSRSCache.index.FileData;
 
 	/// <summary>
 	/// A Storage that stores the cache as a series of flat files, designed
@@ -43,12 +43,12 @@ namespace net.runelite.cache.fs.flat
 	{
 		protected internal const string EXTENSION = ".flatcache";
 
-		private readonly File directory;
+		private readonly string directory;
 		private readonly IDictionary<long, sbyte[]> data = new Dictionary<long, sbyte[]>();
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public FlatStorage(java.io.File directory) throws java.io.IOException
-		public FlatStorage(File directory)
+		public FlatStorage(string directory)
 		{
 			this.directory = directory;
 		}
@@ -80,7 +80,7 @@ namespace net.runelite.cache.fs.flat
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void init(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: @Override public void init(OSRSCache.fs.Store store) throws java.io.IOException
 		public virtual void init(Store store)
 		{
 			string[] idxs = listFlatcacheFiles();
@@ -98,7 +98,7 @@ namespace net.runelite.cache.fs.flat
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void load(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: @Override public void load(OSRSCache.fs.Store store) throws java.io.IOException
 		public virtual void load(Store store)
 		{
 			foreach (Index idx in store.Indexes)
@@ -208,7 +208,7 @@ namespace net.runelite.cache.fs.flat
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void save(net.runelite.cache.fs.Store store) throws java.io.IOException
+//ORIGINAL LINE: @Override public void save(OSRSCache.fs.Store store) throws java.io.IOException
 		public virtual void save(Store store)
 		{
 //JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
@@ -259,14 +259,14 @@ namespace net.runelite.cache.fs.flat
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public byte[] loadArchive(net.runelite.cache.fs.Archive archive) throws java.io.IOException
+//ORIGINAL LINE: @Override public byte[] loadArchive(OSRSCache.fs.Archive archive) throws java.io.IOException
 		public virtual sbyte[] loadArchive(Archive archive)
 		{
 			return data[(long) archive.Index.Id << 32 | archive.ArchiveId];
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void saveArchive(net.runelite.cache.fs.Archive archive, byte[] bytes) throws java.io.IOException
+//ORIGINAL LINE: @Override public void saveArchive(OSRSCache.fs.Archive archive, byte[] bytes) throws java.io.IOException
 		public virtual void saveArchive(Archive archive, sbyte[] bytes)
 		{
 			data[(long) archive.Index.Id << 32 | archive.ArchiveId] = bytes;

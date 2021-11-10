@@ -24,11 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using FrameDefinition = net.runelite.cache.definitions.FrameDefinition;
-	using FramemapDefinition = net.runelite.cache.definitions.FramemapDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using FrameDefinition = OSRSCache.definitions.FrameDefinition;
+	using FramemapDefinition = OSRSCache.definitions.FramemapDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class FrameLoader
 	{

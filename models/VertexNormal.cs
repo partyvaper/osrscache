@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace net.runelite.cache.models
+namespace OSRSCache.models
 {
 	public class VertexNormal
 	{

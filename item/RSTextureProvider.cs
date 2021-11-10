@@ -22,11 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.item
+namespace OSRSCache.item
 {
-	using TextureDefinition = net.runelite.cache.definitions.TextureDefinition;
-	using SpriteProvider = net.runelite.cache.definitions.providers.SpriteProvider;
-	using TextureProvider = net.runelite.cache.definitions.providers.TextureProvider;
+	using TextureDefinition = OSRSCache.definitions.TextureDefinition;
+	using SpriteProvider = OSRSCache.definitions.providers.SpriteProvider;
+	using TextureProvider = OSRSCache.definitions.providers.TextureProvider;
 
 	public class RSTextureProvider
 	{
@@ -51,16 +51,16 @@ namespace net.runelite.cache.item
 			int max = -1;
 			foreach (TextureDefinition textureDefinition in textureProvider.provide())
 			{
-				if (textureDefinition.getId() > max)
+				if (textureDefinition.id > max)
 				{
-					max = textureDefinition.getId();
+					max = textureDefinition.id;
 				}
 			}
 
 			textures = new TextureDefinition[max + 1];
 			foreach (TextureDefinition textureDefinition in textureProvider.provide())
 			{
-				textures[textureDefinition.getId()] = textureDefinition;
+				textures[textureDefinition.id] = textureDefinition;
 			}
 		}
 

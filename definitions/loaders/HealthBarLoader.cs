@@ -22,10 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using HealthBarDefinition = net.runelite.cache.definitions.HealthBarDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using HealthBarDefinition = OSRSCache.definitions.HealthBarDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class HealthBarLoader
 	{

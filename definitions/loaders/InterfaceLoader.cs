@@ -24,11 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using ClientScript1Instruction = net.runelite.cache.definitions.ClientScript1Instruction;
-	using InterfaceDefinition = net.runelite.cache.definitions.InterfaceDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using ClientScript1Instruction = OSRSCache.definitions.ClientScript1Instruction;
+	using InterfaceDefinition = OSRSCache.definitions.InterfaceDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class InterfaceLoader
 	{

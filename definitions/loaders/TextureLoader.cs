@@ -22,17 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using TextureDefinition = net.runelite.cache.definitions.TextureDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using TextureDefinition = OSRSCache.definitions.TextureDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
 
 	public class TextureLoader
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(TextureLoader));
-
 		public virtual TextureDefinition load(int id, sbyte[] b)
 		{
 			TextureDefinition def = new TextureDefinition();
@@ -40,7 +37,7 @@ namespace net.runelite.cache.definitions.loaders
 
 			def.field1777 = @is.readUnsignedShort();
 			def.field1778 = @is.readByte() != 0;
-			def.setId(id);
+			def.id = id;
 
 			int count = @is.readUnsignedByte();
 			int[] files = new int[count];
@@ -50,7 +47,7 @@ namespace net.runelite.cache.definitions.loaders
 				files[i] = @is.readUnsignedShort();
 			}
 
-			def.setFileIds(files);
+			def.fileIds = files;
 
 			if (count > 1)
 			{

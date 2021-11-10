@@ -22,11 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders.sound
+namespace OSRSCache.definitions.loaders.sound
 {
-	using SoundEffect1Definition = net.runelite.cache.definitions.sound.SoundEffect1Definition;
-	using SoundEffect2Definition = net.runelite.cache.definitions.sound.SoundEffect2Definition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using SoundEffect1Definition = OSRSCache.definitions.sound.SoundEffect1Definition;
+	using SoundEffect2Definition = OSRSCache.definitions.sound.SoundEffect2Definition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class SoundEffect1Loader
 	{

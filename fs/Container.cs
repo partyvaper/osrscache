@@ -1,49 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
 
-/*
- * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-namespace net.runelite.cache.fs
+namespace OSRSCache.fs
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static com.google.common.primitives.Bytes.concat;
 	using Ints = com.google.common.primitives.Ints;
-	using CompressionType = net.runelite.cache.fs.jagex.CompressionType;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using OutputStream = net.runelite.cache.io.OutputStream;
-	using BZip2 = net.runelite.cache.util.BZip2;
-	using Crc32 = net.runelite.cache.util.Crc32;
-	using GZip = net.runelite.cache.util.GZip;
-	using Xtea = net.runelite.cache.util.Xtea;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using CompressionType = OSRSCache.fs.jagex.CompressionType;
+	using InputStream = OSRSCache.io.InputStream;
+	using OutputStream = OSRSCache.io.OutputStream;
+	using BZip2 = OSRSCache.util.BZip2;
+	using Crc32 = OSRSCache.util.Crc32;
+	using GZip = OSRSCache.util.GZip;
+	using Xtea = OSRSCache.util.Xtea;
+
 
 	public class Container
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(Container));
-
 		public sbyte[] data;
 		public int compression; // compression
 		public int revision;

@@ -22,10 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using HitSplatDefinition = net.runelite.cache.definitions.HitSplatDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using HitSplatDefinition = OSRSCache.definitions.HitSplatDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class HitSplatLoader
 	{
@@ -43,46 +43,46 @@ namespace net.runelite.cache.definitions.loaders
 					case 0:
 						return def;
 					case 1:
-						def.setFontType(stream.readBigSmart2());
+						def.fontType = stream.readBigSmart2();
 						break;
 					case 2:
-						def.setTextColor(stream.read24BitInt());
+						def.textColor = stream.read24BitInt();
 						break;
 					case 3:
-						def.setLeftSprite(stream.readBigSmart2());
+						def.leftSprite = stream.readBigSmart2();
 						break;
 					case 4:
-						def.setLeftSprite2(stream.readBigSmart2());
+						def.leftSprite2 = stream.readBigSmart2();
 						break;
 					case 5:
-						def.setBackgroundSprite(stream.readBigSmart2());
+						def.backgroundSprite = stream.readBigSmart2();
 						break;
 					case 6:
-						def.setRightSpriteId(stream.readBigSmart2());
+						def.rightSpriteId = stream.readBigSmart2();
 						break;
 					case 7:
-						def.setScrollToOffsetX(stream.readShort());
+						def.scrollToOffsetX = stream.readShort();
 						break;
 					case 8:
-						def.setStringFormat(stream.readString2());
+						def.stringFormat = stream.readString2();
 						break;
 					case 9:
-						def.setDisplayCycles(stream.readUnsignedShort());
+						def.displayCycles = stream.readUnsignedShort();
 						break;
 					case 10:
-						def.setScrollToOffsetY(stream.readShort());
+						def.scrollToOffsetY = stream.readShort();
 						break;
 					case 11:
-						def.setFadeStartCycle(0);
+						def.fadeStartCycle = 0;
 						break;
 					case 12:
-						def.setUseDamage(stream.readUnsignedByte());
+						def.useDamage = stream.readUnsignedByte();
 						break;
 					case 13:
-						def.setTextOffsetY(stream.readShort());
+						def.textOffsetY = stream.readShort();
 						break;
 					case 14:
-						def.setFadeStartCycle(stream.readUnsignedShort());
+						def.fadeStartCycle = stream.readUnsignedShort();
 						break;
 					case 17:
 					case 18:
@@ -92,14 +92,14 @@ namespace net.runelite.cache.definitions.loaders
 						{
 							varbitId = -1;
 						}
-						def.setVarbitID(varbitId);
+						def.varbitID = varbitId;
 
 						int varp = stream.readUnsignedShort();
 						if (varp == 0xFFFF)
 						{
 							varp = -1;
 						}
-						def.setVarpID(varp);
+						def.varpID = varp;
 
 						int id = -1;
 						if (opcode == 18)
@@ -125,7 +125,7 @@ namespace net.runelite.cache.definitions.loaders
 
 						multihitsplats[length + 1] = id;
 
-						def.setMultihitsplats(multihitsplats);
+						def.multihitsplats = multihitsplats;
 						break;
 				}
 			}

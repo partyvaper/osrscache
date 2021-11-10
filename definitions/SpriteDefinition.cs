@@ -24,23 +24,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions
+namespace OSRSCache.definitions
 {
-	using Data = lombok.Data;
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Data public class SpriteDefinition
 	public class SpriteDefinition
 	{
-		private int id;
-		private int frame;
-		private int offsetX;
-		private int offsetY;
-		private int width;
-		private int height;
-		private int[] pixels;
-		private int maxWidth;
-		private int maxHeight;
+		public int id; // Was private, is now public
+		public int frame; // Was private, is now public
+		public int offsetX; // Was private, is now public
+		public int offsetY; // Was private, is now public
+		public int width; // Was private, is now public
+		public int height; // Was private, is now public
+		public int[] pixels; // Was private, is now public
+		public int maxWidth; // Was private, is now public
+		public int maxHeight; // Was private, is now public
 
 		[NonSerialized]
 		public sbyte[] pixelIdx;

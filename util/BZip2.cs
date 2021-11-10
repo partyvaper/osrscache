@@ -26,18 +26,15 @@ using System.IO;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.util
+namespace OSRSCache.util
 {
 	using BZip2CompressorInputStream = org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 	using BZip2CompressorOutputStream = org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 	using IOUtils = org.apache.commons.compress.utils.IOUtils;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+
 
 	public class BZip2
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(BZip2));
-
 		private static readonly sbyte[] BZIP_HEADER = new sbyte[] {(sbyte)'B', (sbyte)'Z', (sbyte)'h', (sbyte)'1'};
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:

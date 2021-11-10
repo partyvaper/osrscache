@@ -1,4 +1,6 @@
-﻿namespace net.runelite.cache.models
+﻿using System;
+
+namespace OSRSCache.models
 {
 	public class Vector3f
 	{
@@ -26,15 +28,15 @@
 
 		public override string ToString()
 		{
-			return "Vector3f{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+			return $"Vector3f(x={x}, y={y}, z={x})";
 		}
 
 		public override int GetHashCode()
 		{
 			int hash = 7;
-			hash = 23 * hash + Float.floatToIntBits(this.x);
-			hash = 23 * hash + Float.floatToIntBits(this.y);
-			hash = 23 * hash + Float.floatToIntBits(this.z);
+			hash = 23 * hash + FloatToIntBits(x);
+			hash = 23 * hash + FloatToIntBits(y);
+			hash = 23 * hash + FloatToIntBits(z);
 			return hash;
 		}
 
@@ -52,18 +54,16 @@
 			{
 				return false;
 			}
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final Vector3f other = (Vector3f) obj;
 			Vector3f other = (Vector3f) obj;
-			if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x))
+			if (FloatToIntBits(x) != FloatToIntBits(other.x))
 			{
 				return false;
 			}
-			if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y))
+			if (FloatToIntBits(y) != FloatToIntBits(other.y))
 			{
 				return false;
 			}
-			if (Float.floatToIntBits(this.z) != Float.floatToIntBits(other.z))
+			if (FloatToIntBits(z) != FloatToIntBits(other.z))
 			{
 				return false;
 			}
@@ -106,6 +106,11 @@
 			{
 				this.z = value;
 			}
+		}
+
+		private static int FloatToIntBits(float f)
+		{
+			return BitConverter.ToInt32(BitConverter.GetBytes(f), 0);
 		}
 
 	}

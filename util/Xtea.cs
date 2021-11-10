@@ -22,14 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.util
+namespace OSRSCache.util
 {
 	using ByteBuf = io.netty.buffer.ByteBuf;
 	using Unpooled = io.netty.buffer.Unpooled;
 
 	public class Xtea
 	{
-		private const int GOLDEN_RATIO = unchecked((int)0x9E3779B9);
+		private const int GOLDEN_RATIO = unchecked((int)0x9E3779B9); // uint 0x9E3779B9 ???
 
 		private const int ROUNDS = 32;
 

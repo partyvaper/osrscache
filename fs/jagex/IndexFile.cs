@@ -22,25 +22,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.fs.jagex
+
+using System;
+
+namespace OSRSCache.fs.jagex
 {
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+
 
 	public class IndexFile : System.IDisposable
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(IndexFile));
-
 		private const int INDEX_ENTRY_LEN = 6;
 
 		private readonly int indexFileId;
-		private readonly File file;
+		private readonly string file;
 		private readonly RandomAccessFile idx;
 		private readonly sbyte[] buffer = new sbyte[INDEX_ENTRY_LEN];
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public IndexFile(int indexFileId, java.io.File file) throws java.io.FileNotFoundException
-		public IndexFile(int indexFileId, File file)
+		public IndexFile(int indexFileId, string file)
 		{
 			this.indexFileId = indexFileId;
 			this.file = file;
@@ -126,7 +126,7 @@ namespace net.runelite.cache.fs.jagex
 				int i = idx.read(buffer);
 				if (i != INDEX_ENTRY_LEN)
 				{
-					logger.debug("short read for id {} on index {}: {}", id, indexFileId, i);
+					Console.WriteLine("short read for id {} on index {}: {}", id, indexFileId, i);
 					return null;
 				}
         
@@ -135,7 +135,7 @@ namespace net.runelite.cache.fs.jagex
         
 				if (length <= 0 || sector <= 0)
 				{
-					logger.debug("invalid length or sector {}/{}", length, sector);
+					Console.WriteLine("invalid length or sector {}/{}", length, sector);
 					return null;
 				}
         

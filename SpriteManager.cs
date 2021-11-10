@@ -24,18 +24,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache
+namespace OSRSCache
 {
-	using LinkedListMultimap = com.google.common.collect.LinkedListMultimap;
-	using Multimap = com.google.common.collect.Multimap;
-	using SpriteDefinition = net.runelite.cache.definitions.SpriteDefinition;
-	using SpriteExporter = net.runelite.cache.definitions.exporters.SpriteExporter;
-	using SpriteLoader = net.runelite.cache.definitions.loaders.SpriteLoader;
-	using SpriteProvider = net.runelite.cache.definitions.providers.SpriteProvider;
-	using Archive = net.runelite.cache.fs.Archive;
-	using Index = net.runelite.cache.fs.Index;
-	using Storage = net.runelite.cache.fs.Storage;
-	using Store = net.runelite.cache.fs.Store;
+	// using LinkedListMultimap = com.google.common.collect.LinkedListMultimap;
+	// using Multimap = com.google.common.collect.Multimap;
+	using SpriteDefinition = OSRSCache.definitions.SpriteDefinition;
+	using SpriteExporter = OSRSCache.definitions.exporters.SpriteExporter;
+	using SpriteLoader = OSRSCache.definitions.loaders.SpriteLoader;
+	using SpriteProvider = OSRSCache.definitions.providers.SpriteProvider;
+	using Archive = OSRSCache.fs.Archive;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
 
 	public class SpriteManager : SpriteProvider
 	{
@@ -63,7 +63,7 @@ namespace net.runelite.cache
 
 				foreach (SpriteDefinition sprite in defs)
 				{
-					sprites.put(sprite.getId(), sprite);
+					sprites.put(sprite.id, sprite);
 				}
 			}
 		}
@@ -80,7 +80,7 @@ namespace net.runelite.cache
 		{
 			foreach (SpriteDefinition sprite in sprites.get(spriteId))
 			{
-				if (sprite.getFrame() == frameId)
+				if (sprite.frame == frameId)
 				{
 					return sprite;
 				}
@@ -90,25 +90,25 @@ namespace net.runelite.cache
 
 		public virtual BufferedImage getSpriteImage(SpriteDefinition sprite)
 		{
-			BufferedImage image = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			image.setRGB(0, 0, sprite.getWidth(), sprite.getHeight(), sprite.getPixels(), 0, sprite.getWidth());
+			BufferedImage image = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
+			image.setRGB(0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
 			return image;
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public void export(java.io.File outDir) throws java.io.IOException
-		public virtual void export(File outDir)
+		public virtual void export(string outDir)
 		{
 			foreach (SpriteDefinition sprite in sprites.values())
 			{
 				// I don't know why this happens
-				if (sprite.getHeight() <= 0 || sprite.getWidth() <= 0)
+				if (sprite.height <= 0 || sprite.width <= 0)
 				{
 					continue;
 				}
 
 				SpriteExporter exporter = new SpriteExporter(sprite);
-				File png = new File(outDir, sprite.getId() + "-" + sprite.getFrame() + ".png");
+				string png = $"{outDir}/{sprite.id}-{sprite.frame}.png";
 
 				exporter.exportTo(png);
 			}

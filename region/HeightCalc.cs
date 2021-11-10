@@ -21,7 +21,7 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 /// </summary>
-namespace net.runelite.cache.region
+namespace OSRSCache.region
 {
 	/// <summary>
 	/// @author Kyle Friz
@@ -31,7 +31,7 @@ namespace net.runelite.cache.region
 	{
 		private const int JAGEX_CIRCULAR_ANGLE = 2048;
 		private static readonly double ANGULAR_RATIO = 360D / JAGEX_CIRCULAR_ANGLE;
-		private static readonly double JAGEX_RADIAN = Math.toRadians(ANGULAR_RATIO);
+		private static readonly double JAGEX_RADIAN = Math.PI * ANGULAR_RATIO / 180.0; // Math.toRadians
 
 		private static readonly int[] SIN = new int[JAGEX_CIRCULAR_ANGLE];
 		private static readonly int[] COS = new int[JAGEX_CIRCULAR_ANGLE];

@@ -24,16 +24,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache
+namespace OSRSCache
 {
-	using AreaDefinition = net.runelite.cache.definitions.AreaDefinition;
-	using AreaLoader = net.runelite.cache.definitions.loaders.AreaLoader;
-	using Archive = net.runelite.cache.fs.Archive;
-	using ArchiveFiles = net.runelite.cache.fs.ArchiveFiles;
-	using FSFile = net.runelite.cache.fs.FSFile;
-	using Index = net.runelite.cache.fs.Index;
-	using Storage = net.runelite.cache.fs.Storage;
-	using Store = net.runelite.cache.fs.Store;
+	using AreaDefinition = OSRSCache.definitions.AreaDefinition;
+	using AreaLoader = OSRSCache.definitions.loaders.AreaLoader;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
 
 	public class AreaManager
 	{
@@ -51,7 +51,7 @@ namespace net.runelite.cache
 		{
 			Storage storage = store.Storage;
 			Index index = store.getIndex(IndexType.CONFIGS);
-			Archive archive = index.getArchive(ConfigType.AREA.getId());
+			Archive archive = index.getArchive(ConfigType.AREA.Id);
 
 			sbyte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
@@ -68,7 +68,8 @@ namespace net.runelite.cache
 		{
 			get
 			{
-				return Collections.unmodifiableCollection(areas.Values);
+				// return Collections.unmodifiableCollection(areas.Values);
+				return new List<AreaDefinition>(areas.Values);
 			}
 		}
 

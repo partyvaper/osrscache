@@ -5,6 +5,9 @@
 //	This class includes methods to convert Java rectangular arrays (jagged arrays
 //	with inner arrays of the same length).
 //----------------------------------------------------------------------------------------
+
+using OSRSCache.definitions;
+
 internal static class RectangularArrays
 {
     public static int[][] RectangularIntArray(int size1, int size2)
@@ -18,17 +21,17 @@ internal static class RectangularArrays
         return newArray;
     }
 
-    public static Tile[][][] RectangularTileArray(int size1, int size2, int size3)
+    public static MapDefinition.Tile[][][] RectangularTileArray(int size1, int size2, int size3)
     {
-        Tile[][][] newArray = new Tile[size1][][];
+        MapDefinition.Tile[][][] newArray = new MapDefinition.Tile[size1][][];
         for (int array1 = 0; array1 < size1; array1++)
         {
-            newArray[array1] = new Tile[size2][];
+            newArray[array1] = new MapDefinition.Tile[size2][];
             if (size3 > -1)
             {
                 for (int array2 = 0; array2 < size2; array2++)
                 {
-                    newArray[array1][array2] = new Tile[size3];
+                    newArray[array1][array2] = new MapDefinition.Tile[size3];
                 }
             }
         }

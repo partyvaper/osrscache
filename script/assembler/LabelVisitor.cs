@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
@@ -24,15 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.script.assembler
+namespace OSRSCache.script.assembler
 {
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+
 
 	public class LabelVisitor : rs2asmBaseListener
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(LabelVisitor));
-
 		private int pos;
 		private readonly IDictionary<string, int> map = new Dictionary<string, int>();
 
@@ -46,7 +44,7 @@ namespace net.runelite.cache.script.assembler
 			string text = ctx.getText();
 			text = text.Substring(0, text.Length - 1); // remove trailing :
 
-			logger.debug("Label {} is on instruction {}", text, pos);
+			Console.WriteLine("Label {} is on instruction {}", text, pos);
 
 			map[text] = pos;
 		}

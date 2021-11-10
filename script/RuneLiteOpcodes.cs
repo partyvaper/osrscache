@@ -22,14 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.script
+namespace OSRSCache.script
 {
-	public interface RuneLiteOpcodes : Opcodes
-	{
-		/// <summary>
-		/// RuneLite execution opcode used to inject scripts.
-		/// </summary>
-		public static int RUNELITE_EXECUTE = 6599;
-	}
+	// public interface RuneLiteOpcodes : Opcodes
+	// {
+	// 	/// <summary>
+	// 	/// RuneLite execution opcode used to inject scripts.
+	// 	/// </summary>
+	// 	public static int RUNELITE_EXECUTE = 6599;
+	// }
 
 }

@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.script.assembler
+namespace OSRSCache.script.assembler
 {
 	using BaseErrorListener = org.antlr.v4.runtime.BaseErrorListener;
 	using RecognitionException = org.antlr.v4.runtime.RecognitionException;

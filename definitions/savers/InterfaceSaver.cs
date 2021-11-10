@@ -22,11 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.savers
+namespace OSRSCache.definitions.savers
 {
-	using ClientScript1Instruction = net.runelite.cache.definitions.ClientScript1Instruction;
-	using InterfaceDefinition = net.runelite.cache.definitions.InterfaceDefinition;
-	using OutputStream = net.runelite.cache.io.OutputStream;
+	using ClientScript1Instruction = OSRSCache.definitions.ClientScript1Instruction;
+	using InterfaceDefinition = OSRSCache.definitions.InterfaceDefinition;
+	using OutputStream = OSRSCache.io.OutputStream;
 
 	public class InterfaceSaver
 	{

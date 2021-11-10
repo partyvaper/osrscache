@@ -22,19 +22,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using VarbitDefinition = net.runelite.cache.definitions.VarbitDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
+	using VarbitDefinition = OSRSCache.definitions.VarbitDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
 	public class VarbitLoader
 	{
 		public virtual VarbitDefinition load(int id, sbyte[] b)
 		{
-			VarbitDefinition def = new VarbitDefinition();
+			VarbitDefinition def = new VarbitDefinition(id);
 			InputStream @is = new InputStream(b);
-
-			def.setId(id);
 
 			for (;;)
 			{
@@ -46,9 +44,9 @@ namespace net.runelite.cache.definitions.loaders
 
 				if (opcode == 1)
 				{
-					def.setIndex(@is.readUnsignedShort());
-					def.setLeastSignificantBit(@is.readUnsignedByte());
-					def.setMostSignificantBit(@is.readUnsignedByte());
+					def.index = @is.readUnsignedShort();
+					def.leastSignificantBit = @is.readUnsignedByte();
+					def.mostSignificantBit = @is.readUnsignedByte();
 				}
 			}
 

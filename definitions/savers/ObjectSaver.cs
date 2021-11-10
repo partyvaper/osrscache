@@ -1,211 +1,187 @@
 ﻿using System.Collections.Generic;
 
-/*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-namespace net.runelite.cache.definitions.savers
+namespace OSRSCache.definitions.savers
 {
-	using ObjectDefinition = net.runelite.cache.definitions.ObjectDefinition;
-	using OutputStream = net.runelite.cache.io.OutputStream;
+	using ObjectDefinition = OSRSCache.definitions.ObjectDefinition;
+	using OutputStream = OSRSCache.io.OutputStream;
 
 	public class ObjectSaver
 	{
 		public virtual sbyte[] save(ObjectDefinition obj)
 		{
 			OutputStream @out = new OutputStream();
-			if (obj.getObjectTypes() != null && obj.getObjectModels() != null)
+			if (obj.objectTypes != null && obj.objectModels != null)
 			{
 				@out.writeByte(1);
-				@out.writeByte(obj.getObjectTypes().length);
-				for (int i = 0; i < obj.getObjectTypes().length; ++i)
+				@out.writeByte(obj.objectTypes.Length);
+				for (int i = 0; i < obj.objectTypes.Length; ++i)
 				{
-					@out.writeShort(obj.getObjectModels()[i]);
-					@out.writeByte(obj.getObjectTypes()[i]);
+					@out.writeShort(obj.objectModels[i]);
+					@out.writeByte(obj.objectTypes[i]);
 				}
 			}
-			if (obj.getName() != null)
+			if (obj.name != null)
 			{
 				@out.writeByte(2);
-				@out.writeString(obj.getName());
+				@out.writeString(obj.name);
 			}
-			if (obj.getObjectTypes() == null && obj.getObjectModels() != null)
+			if (obj.objectTypes == null && obj.objectModels != null)
 			{
 				@out.writeByte(5);
-				@out.writeByte(obj.getObjectModels().length);
-				for (int i = 0; i < obj.getObjectModels().length; ++i)
+				@out.writeByte(obj.objectModels.Length);
+				for (int i = 0; i < obj.objectModels.Length; ++i)
 				{
-					@out.writeShort(obj.getObjectModels()[i]);
+					@out.writeShort(obj.objectModels[i]);
 				}
 			}
 			@out.writeByte(14);
-			@out.writeByte(obj.getSizeX());
+			@out.writeByte(obj.sizeX);
 			@out.writeByte(15);
-			@out.writeByte(obj.getSizeY());
-			if (obj.getInteractType() == 0 && !obj.isBlocksProjectile())
+			@out.writeByte(obj.sizeY);
+			if (obj.interactType == 0 && !obj.blocksProjectile)
 			{
 				@out.writeByte(17);
 			}
-			else if (!obj.isBlocksProjectile())
+			else if (!obj.blocksProjectile)
 			{
 				@out.writeByte(18);
 			}
-			if (obj.getWallOrDoor() != -1)
+			if (obj.wallOrDoor != -1)
 			{
 				@out.writeByte(19);
-				@out.writeByte(obj.getWallOrDoor());
+				@out.writeByte(obj.wallOrDoor);
 			}
-			if (obj.getContouredGround() == 0)
+			if (obj.contouredGround == 0)
 			{
 				@out.writeByte(21);
 			}
-			if (!obj.isMergeNormals())
+			if (!obj.mergeNormals)
 			{
 				@out.writeByte(22);
 			}
-			if (obj.isABool2111())
+			if (obj.aBool2111)
 			{
 				@out.writeByte(23);
 			}
-			if (obj.getAnimationID() != -1)
+			if (obj.animationID != -1)
 			{
 				@out.writeByte(24);
-				@out.writeShort(obj.getAnimationID());
+				@out.writeShort(obj.animationID);
 			}
-			if (obj.getInteractType() == 1)
+			if (obj.interactType == 1)
 			{
 				@out.writeByte(27);
 			}
 			@out.writeByte(28);
-			@out.writeByte(obj.getDecorDisplacement());
+			@out.writeByte(obj.decorDisplacement);
 			@out.writeByte(29);
-			@out.writeByte(obj.getAmbient());
+			@out.writeByte(obj.ambient);
 			@out.writeByte(39);
-			@out.writeByte(obj.getContrast() / 25);
+			@out.writeByte(obj.contrast / 25);
 			for (int i = 0; i < 5; ++i)
 			{
 				@out.writeByte(30 + i);
-				string action = obj.getActions()[i];
+				string action = obj.actions[i];
 				@out.writeString(!string.ReferenceEquals(action, null) ? action : "Hidden");
 			}
-			if (obj.getRecolorToFind() != null && obj.getRecolorToReplace() != null)
+			if (obj.recolorToFind != null && obj.recolorToReplace != null)
 			{
 				@out.writeByte(40);
-				@out.writeByte(obj.getRecolorToFind().length);
-				for (int i = 0; i < obj.getRecolorToFind().length; ++i)
+				@out.writeByte(obj.recolorToFind.Length);
+				for (int i = 0; i < obj.recolorToFind.Length; ++i)
 				{
-					@out.writeShort(obj.getRecolorToFind()[i]);
-					@out.writeShort(obj.getRecolorToReplace()[i]);
+					@out.writeShort(obj.recolorToFind[i]);
+					@out.writeShort(obj.recolorToReplace[i]);
 				}
 			}
-			if (obj.getRetextureToFind() != null && obj.getTextureToReplace() != null)
+			if (obj.retextureToFind != null && obj.textureToReplace != null)
 			{
 				@out.writeByte(41);
-				@out.writeByte(obj.getRetextureToFind().length);
-				for (int i = 0; i < obj.getRetextureToFind().length; ++i)
+				@out.writeByte(obj.retextureToFind.Length);
+				for (int i = 0; i < obj.retextureToFind.Length; ++i)
 				{
-					@out.writeShort(obj.getRetextureToFind()[i]);
-					@out.writeShort(obj.getTextureToReplace()[i]);
+					@out.writeShort(obj.retextureToFind[i]);
+					@out.writeShort(obj.textureToReplace[i]);
 				}
 			}
-			if (obj.isRotated())
+			if (obj.isRotated)
 			{
 				@out.writeByte(62);
 			}
-			if (!obj.isShadow())
+			if (!obj.shadow)
 			{
 				@out.writeByte(64);
 			}
 			@out.writeByte(65);
-			@out.writeShort(obj.getModelSizeX());
+			@out.writeShort(obj.modelSizeX);
 			@out.writeByte(66);
-			@out.writeShort(obj.getModelSizeHeight());
+			@out.writeShort(obj.modelSizeHeight);
 			@out.writeByte(67);
-			@out.writeShort(obj.getModelSizeY());
-			if (obj.getMapSceneID() != -1)
+			@out.writeShort(obj.modelSizeY);
+			if (obj.mapSceneID != -1)
 			{
 				@out.writeByte(68);
-				@out.writeShort(obj.getMapSceneID());
+				@out.writeShort(obj.mapSceneID);
 			}
-			if (obj.getBlockingMask() != 0)
+			if (obj.blockingMask != 0)
 			{
 				@out.writeByte(69);
-				@out.writeByte(obj.getBlockingMask());
+				@out.writeByte(obj.blockingMask);
 			}
 			@out.writeByte(70);
-			@out.writeShort(obj.getOffsetX());
+			@out.writeShort(obj.offsetX);
 			@out.writeByte(71);
-			@out.writeShort(obj.getOffsetHeight());
+			@out.writeShort(obj.offsetHeight);
 			@out.writeByte(72);
-			@out.writeShort(obj.getOffsetY());
-			if (obj.isObstructsGround())
+			@out.writeShort(obj.offsetY);
+			if (obj.obstructsGround)
 			{
 				@out.writeByte(73);
 			}
-			if (obj.isHollow())
+			if (obj.isHollow)
 			{
 				@out.writeByte(74);
 			}
-			if (obj.getSupportsItems() != -1)
+			if (obj.supportsItems != -1)
 			{
 				@out.writeByte(75);
-				@out.writeByte(obj.getSupportsItems());
+				@out.writeByte(obj.supportsItems);
 			}
-			if (obj.getAmbientSoundId() != -1)
+			if (obj.ambientSoundId != -1)
 			{
 				@out.writeByte(78);
-				@out.writeShort(obj.getAmbientSoundId());
-				@out.writeByte(obj.getAnInt2083());
+				@out.writeShort(obj.ambientSoundId);
+				@out.writeByte(obj.anInt2083);
 			}
-			if (obj.getAmbientSoundIds() != null)
+			if (obj.ambientSoundIds != null)
 			{
 				@out.writeByte(79);
-				@out.writeShort(obj.getAnInt2112());
-				@out.writeShort(obj.getAnInt2113());
-				@out.writeByte(obj.getAnInt2083());
-				@out.writeByte(obj.getAmbientSoundIds().length);
-				foreach (int i in obj.getAmbientSoundIds())
+				@out.writeShort(obj.anInt2112);
+				@out.writeShort(obj.anInt2113);
+				@out.writeByte(obj.anInt2083);
+				@out.writeByte(obj.ambientSoundIds.Length);
+				foreach (int i in obj.ambientSoundIds)
 				{
 					@out.writeShort(i);
 				}
 			}
-			if (obj.getContouredGround() != -1)
+			if (obj.contouredGround != -1)
 			{
 				@out.writeByte(81);
-				@out.writeByte(obj.getContouredGround() / 256);
+				@out.writeByte(obj.contouredGround / 256);
 			}
-			if (obj.getMapAreaId() != -1)
+			if (obj.mapAreaId != -1)
 			{
 				@out.writeByte(82);
-				@out.writeShort(obj.getMapAreaId());
+				@out.writeShort(obj.mapAreaId);
 			}
-			if (obj.getConfigChangeDest() != null)
+			if (obj.configChangeDest != null)
 			{
 				@out.writeByte(92);
-				@out.writeShort(obj.getVarbitID());
-				@out.writeShort(obj.getVarpID());
+				@out.writeShort(obj.varbitID);
+				@out.writeShort(obj.varpID);
 
-				int[] c = obj.getConfigChangeDest();
+				int[] c = obj.configChangeDest;
 				@out.writeShort(c[c.Length - 1]);
 				@out.writeByte(c.Length - 2);
 				for (int i = 0; i <= c.Length - 2; ++i)
@@ -213,11 +189,11 @@ namespace net.runelite.cache.definitions.savers
 					@out.writeShort(c[i]);
 				}
 			}
-			if (obj.getParams() != null)
+			if (obj.@params != null)
 			{
 				@out.writeByte(249);
-				@out.writeByte(obj.getParams().size());
-				foreach (KeyValuePair<int, object> entry in obj.getParams().entrySet())
+				@out.writeByte(obj.@params.Count);
+				foreach (KeyValuePair<int, object> entry in obj.@params.SetOfKeyValuePairs())
 				{
 					@out.writeByte(entry.Value is string ? 1 : 0);
 					@out.write24BitInt(entry.Key);

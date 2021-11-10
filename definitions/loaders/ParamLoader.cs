@@ -22,11 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using ParamDefinition = net.runelite.cache.definitions.ParamDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using ScriptVarType = net.runelite.cache.util.ScriptVarType;
+	using ParamDefinition = OSRSCache.definitions.ParamDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+	using ScriptVarType = OSRSCache.util.ScriptVarType;
 
 	public class ParamLoader
 	{
@@ -46,17 +46,17 @@ namespace net.runelite.cache.definitions.loaders
 					case 1:
 					{
 						int idx = b.readByte();
-						def.setType(ScriptVarType.forCharKey((char) idx));
+						def.type = ScriptVarType.forCharKey((char) idx);
 						break;
 					}
 					case 2:
-						def.setDefaultInt(b.readInt());
+						def.defaultInt = b.readInt();
 						break;
 					case 4:
-						def.setMembers(false);
+						def.isMembers = false;
 						break;
 					case 5:
-						def.setDefaultString(b.readString());
+						def.defaultString = b.readString();
 						break;
 				}
 			}

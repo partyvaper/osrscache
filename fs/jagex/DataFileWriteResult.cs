@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace net.runelite.cache.fs.jagex
+namespace OSRSCache.fs.jagex
 {
 	public class DataFileWriteResult
 	{

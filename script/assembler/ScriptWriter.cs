@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
@@ -26,19 +27,16 @@ using System.Diagnostics;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.script.assembler
+namespace OSRSCache.script.assembler
 {
-	using ScriptDefinition = net.runelite.cache.definitions.ScriptDefinition;
-	using Instruction = net.runelite.cache.script.Instruction;
-	using Instructions = net.runelite.cache.script.Instructions;
-	using Opcodes = net.runelite.cache.script.Opcodes;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
+	using Instruction = OSRSCache.script.Instruction;
+	using Instructions = OSRSCache.script.Instructions;
+	using Opcodes = OSRSCache.script.Opcodes;
+
 
 	public class ScriptWriter : rs2asmBaseListener
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(ScriptWriter));
-
 		private readonly Instructions instructions;
 		private readonly LabelVisitor labelVisitor;
 
@@ -100,7 +98,7 @@ namespace net.runelite.cache.script.assembler
 			Instruction i = instructions.find(text);
 			if (i == null)
 			{
-				logger.warn("Unknown instruction {}", text);
+				Console.WriteLine("Unknown instruction {}", text);
 				throw new Exception("Unknown instruction " + text);
 			}
 
@@ -202,16 +200,15 @@ namespace net.runelite.cache.script.assembler
 		{
 			setSwitchOperands();
 
-			ScriptDefinition script = new ScriptDefinition();
-			script.setId(id);
-			script.setIntStackCount(intStackCount);
-			script.setStringStackCount(stringStackCount);
-			script.setLocalIntCount(localIntCount);
-			script.setLocalStringCount(localStringCount);
-			script.setInstructions(opcodes.Select(int.valueOf).ToArray());
-			script.setIntOperands(iops.Select(i => i == null ? 0 : i).Select(int.valueOf).ToArray());
-			script.setStringOperands(((List<string>)sops).ToArray());
-			script.setSwitches(buildSwitches());
+			ScriptDefinition script = new ScriptDefinition(id);
+			script.intStackCount = intStackCount;
+			script.stringStackCount = stringStackCount;
+			script.localIntCount = localIntCount;
+			script.localStringCount = localStringCount;
+			script.instructions = opcodes.Select(int.valueOf).ToArray();
+			script.intOperands = iops.Select(i => i == null ? 0 : i).Select(int.valueOf).ToArray();
+			script.stringOperands = ((List<string>)sops).ToArray();
+			script.switches = buildSwitches();
 			return script;
 		}
 
@@ -220,7 +217,7 @@ namespace net.runelite.cache.script.assembler
 			int count = 0;
 			for (int i = 0; i < opcodes.Count; ++i)
 			{
-				if (opcodes[i] != Opcodes.SWITCH)
+				if (opcodes[i] != (int) Opcodes.SWITCH)
 				{
 					continue;
 				}

@@ -24,39 +24,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.util
+namespace OSRSCache.util
 {
-	using RuneLiteAPI = net.runelite.http.api.RuneLiteAPI;
-	using XteaClient = net.runelite.http.api.xtea.XteaClient;
-	using XteaKey = net.runelite.http.api.xtea.XteaKey;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	// TODO: Rewrite this whole file !?
 
 	public class XteaKeyManager
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(XteaKeyManager));
-
 		private readonly IDictionary<int, int[]> keys = new Dictionary<int, int[]>();
 
 		public virtual void loadKeys()
 		{
-			XteaClient xteaClient = new XteaClient(RuneLiteAPI.CLIENT);
-
-			try
-			{
-				foreach (XteaKey key in xteaClient.get())
-				{
-					keys[key.getRegion()] = key.getKeys();
-				}
-			}
-			catch (IOException ex)
-			{
-				// happens on release when it is not deployed yet
-				logger.debug("unable to load xtea keys", ex);
-				return;
-			}
-
-			logger.info("Loaded {} keys", keys.Count);
+			// TODO: JSON LOADER AND PARSER !!!!!
+			// XteaClient xteaClient = new XteaClient(RuneLiteAPI.CLIENT);
+			//
+			// try
+			// {
+			// 	foreach (XteaKey key in xteaClient.get())
+			// 	{
+			// 		keys[key.getRegion()] = key.getKeys();
+			// 	}
+			// }
+			// catch (IOException ex)
+			// {
+			// 	// happens on release when it is not deployed yet
+			// 	Console.WriteLine("unable to load xtea keys", ex);
+			// 	return;
+			// }
+			//
+			// Console.WriteLine("Loaded {} keys", keys.Count);
 		}
 
 		public virtual int[] getKeys(int region)

@@ -25,9 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace net.runelite.cache.definitions
+namespace OSRSCache.definitions
 {
-	using Data = lombok.Data;
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Data public class NpcDefinition
@@ -67,6 +66,11 @@ namespace net.runelite.cache.definitions
 		public bool isPet;
 		public IDictionary<int, object> @params;
 		public int category;
+
+		public NpcDefinition(int id)
+		{
+			this.id = id;
+		}
 	}
 
 }

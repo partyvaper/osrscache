@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace net.runelite.cache.region
+namespace OSRSCache.region
 {
 	public class Position
 	{

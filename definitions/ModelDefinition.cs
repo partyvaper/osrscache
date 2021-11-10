@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace net.runelite.cache.definitions
+namespace OSRSCache.definitions
 {
-	using Data = lombok.Data;
-	using CircularAngle = net.runelite.cache.models.CircularAngle;
-	using FaceNormal = net.runelite.cache.models.FaceNormal;
-	using VertexNormal = net.runelite.cache.models.VertexNormal;
+	using CircularAngle = OSRSCache.models.CircularAngle;
+	using FaceNormal = OSRSCache.models.FaceNormal;
+	using VertexNormal = OSRSCache.models.VertexNormal;
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Data public class ModelDefinition

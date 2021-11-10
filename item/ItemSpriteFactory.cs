@@ -24,21 +24,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.item
+namespace OSRSCache.item
 {
-	using ItemDefinition = net.runelite.cache.definitions.ItemDefinition;
-	using ModelDefinition = net.runelite.cache.definitions.ModelDefinition;
-	using ItemProvider = net.runelite.cache.definitions.providers.ItemProvider;
-	using ModelProvider = net.runelite.cache.definitions.providers.ModelProvider;
-	using SpriteProvider = net.runelite.cache.definitions.providers.SpriteProvider;
-	using TextureProvider = net.runelite.cache.definitions.providers.TextureProvider;
-	using FaceNormal = net.runelite.cache.models.FaceNormal;
-	using VertexNormal = net.runelite.cache.models.VertexNormal;
+	using ItemDefinition = OSRSCache.definitions.ItemDefinition;
+	using ModelDefinition = OSRSCache.definitions.ModelDefinition;
+	using ItemProvider = OSRSCache.definitions.providers.ItemProvider;
+	using ModelProvider = OSRSCache.definitions.providers.ModelProvider;
+	using SpriteProvider = OSRSCache.definitions.providers.SpriteProvider;
+	using TextureProvider = OSRSCache.definitions.providers.TextureProvider;
+	using FaceNormal = OSRSCache.models.FaceNormal;
+	using VertexNormal = OSRSCache.models.VertexNormal;
 
 	public class ItemSpriteFactory
 	{
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public static final java.awt.image.BufferedImage createSprite(net.runelite.cache.definitions.providers.ItemProvider itemProvider, net.runelite.cache.definitions.providers.ModelProvider modelProvider, net.runelite.cache.definitions.providers.SpriteProvider spriteProvider, net.runelite.cache.definitions.providers.TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, boolean noted) throws java.io.IOException
+//ORIGINAL LINE: public static final java.awt.image.BufferedImage createSprite(OSRSCache.definitions.providers.ItemProvider itemProvider, OSRSCache.definitions.providers.ModelProvider modelProvider, OSRSCache.definitions.providers.SpriteProvider spriteProvider, OSRSCache.definitions.providers.TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, boolean noted) throws java.io.IOException
 		public static BufferedImage createSprite(ItemProvider itemProvider, ModelProvider modelProvider, SpriteProvider spriteProvider, TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, bool noted)
 		{
 			SpritePixels spritePixels = createSpritePixels(itemProvider, modelProvider, spriteProvider, textureProvider, itemId, quantity, border, shadowColor, noted);
@@ -46,7 +46,7 @@ namespace net.runelite.cache.item
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private static final SpritePixels createSpritePixels(net.runelite.cache.definitions.providers.ItemProvider itemProvider, net.runelite.cache.definitions.providers.ModelProvider modelProvider, net.runelite.cache.definitions.providers.SpriteProvider spriteProvider, net.runelite.cache.definitions.providers.TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, boolean noted) throws java.io.IOException
+//ORIGINAL LINE: private static final SpritePixels createSpritePixels(OSRSCache.definitions.providers.ItemProvider itemProvider, OSRSCache.definitions.providers.ModelProvider modelProvider, OSRSCache.definitions.providers.SpriteProvider spriteProvider, OSRSCache.definitions.providers.TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, boolean noted) throws java.io.IOException
 		private static SpritePixels createSpritePixels(ItemProvider itemProvider, ModelProvider modelProvider, SpriteProvider spriteProvider, TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, bool noted)
 		{
 			ItemDefinition item = itemProvider.provide(itemId);
@@ -170,7 +170,7 @@ namespace net.runelite.cache.item
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private static Model getModel(net.runelite.cache.definitions.providers.ModelProvider modelProvider, net.runelite.cache.definitions.ItemDefinition item) throws java.io.IOException
+//ORIGINAL LINE: private static Model getModel(OSRSCache.definitions.providers.ModelProvider modelProvider, OSRSCache.definitions.ItemDefinition item) throws java.io.IOException
 		private static Model getModel(ModelProvider modelProvider, ItemDefinition item)
 		{
 			Model itemModel;

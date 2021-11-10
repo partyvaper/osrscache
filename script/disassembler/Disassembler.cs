@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
@@ -26,20 +27,18 @@ using System.Text;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.script.disassembler
+namespace OSRSCache.script.disassembler
 {
-	using Escaper = com.google.common.escape.Escaper;
-	using Escapers = com.google.common.escape.Escapers;
-	using ScriptDefinition = net.runelite.cache.definitions.ScriptDefinition;
-	using Instruction = net.runelite.cache.script.Instruction;
-	using Instructions = net.runelite.cache.script.Instructions;
-	using Opcodes = net.runelite.cache.script.Opcodes;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	// using Escaper = com.google.common.escape.Escaper;
+	// using Escapers = com.google.common.escape.Escapers;
+	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
+	using Instruction = OSRSCache.script.Instruction;
+	using Instructions = OSRSCache.script.Instructions;
+	using Opcodes = OSRSCache.script.Opcodes;
+
 
 	public class Disassembler
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(Disassembler));
 		private static readonly Escaper ESCAPER = Escapers.builder().addEscape('"', "\\\"").addEscape('\\', "\\\\").build();
 
 		private readonly Instructions instructions = new Instructions();
@@ -53,13 +52,13 @@ namespace net.runelite.cache.script.disassembler
 		{
 			switch (opcode)
 			{
-				case Opcodes.JUMP:
-				case Opcodes.IF_ICMPEQ:
-				case Opcodes.IF_ICMPGE:
-				case Opcodes.IF_ICMPGT:
-				case Opcodes.IF_ICMPLE:
-				case Opcodes.IF_ICMPLT:
-				case Opcodes.IF_ICMPNE:
+				case (int) Opcodes.JUMP:
+				case (int) Opcodes.IF_ICMPEQ:
+				case (int) Opcodes.IF_ICMPGE:
+				case (int) Opcodes.IF_ICMPGT:
+				case (int) Opcodes.IF_ICMPLE:
+				case (int) Opcodes.IF_ICMPLT:
+				case (int) Opcodes.IF_ICMPNE:
 					return true;
 				default:
 					return false;
@@ -68,9 +67,9 @@ namespace net.runelite.cache.script.disassembler
 
 		private bool[] needLabel(ScriptDefinition script)
 		{
-			int[] instructions = script.getInstructions();
-			int[] iops = script.getIntOperands();
-			IDictionary<int, int>[] switches = script.getSwitches();
+			int[] instructions = script.instructions;
+			int[] iops = script.intOperands;
+			IDictionary<int, int>[] switches = script.switches;
 
 			bool[] jumped = new bool[instructions.Length];
 
@@ -79,7 +78,7 @@ namespace net.runelite.cache.script.disassembler
 				int opcode = instructions[i];
 				int iop = iops[i];
 
-				if (opcode == Opcodes.SWITCH)
+				if (opcode == (int) Opcodes.SWITCH)
 				{
 					IDictionary<int, int> switchMap = switches[iop];
 
@@ -87,9 +86,9 @@ namespace net.runelite.cache.script.disassembler
 					{
 						int offset = entry.Value;
 
-						int to = i + offset + 1;
-						Debug.Assert(to >= 0 && to < instructions.Length);
-						jumped[to] = true;
+						int _to = i + offset + 1;
+						Debug.Assert(_to >= 0 && _to < instructions.Length);
+						jumped[_to] = true;
 					}
 				}
 
@@ -111,13 +110,13 @@ namespace net.runelite.cache.script.disassembler
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public String disassemble(net.runelite.cache.definitions.ScriptDefinition script) throws java.io.IOException
+//ORIGINAL LINE: public String disassemble(OSRSCache.definitions.ScriptDefinition script) throws java.io.IOException
 		public virtual string disassemble(ScriptDefinition script)
 		{
-			int[] instructions = script.getInstructions();
-			int[] iops = script.getIntOperands();
-			string[] sops = script.getStringOperands();
-			IDictionary<int, int>[] switches = script.getSwitches();
+			int[] instructions = script.instructions;
+			int[] iops = script.intOperands;
+			string[] sops = script.stringOperands;
+			IDictionary<int, int>[] switches = script.switches;
 
 			Debug.Assert(iops.Length == instructions.Length);
 			Debug.Assert(sops.Length == instructions.Length);
@@ -136,7 +135,7 @@ namespace net.runelite.cache.script.disassembler
 				Instruction ins = this.instructions.find(opcode);
 				if (ins == null)
 				{
-					logger.warn("Unknown instruction {} in script {}", opcode, script.getId());
+					Console.WriteLine("Unknown instruction {0} in script {1}", opcode, script.id);
 				}
 
 				if (jumps[i])
@@ -174,7 +173,7 @@ namespace net.runelite.cache.script.disassembler
 					writer.Append(" \"").Append(ESCAPER.escape(sop)).Append("\"");
 				}
 
-				if (opcode == Opcodes.SWITCH)
+				if (opcode == (int) Opcodes.SWITCH)
 				{
 					IDictionary<int, int> switchMap = switches[iop];
 
@@ -196,7 +195,7 @@ namespace net.runelite.cache.script.disassembler
 
 		private bool shouldWriteIntOperand(int opcode, int operand)
 		{
-			if (opcode == Opcodes.SWITCH)
+			if (opcode == (int) Opcodes.SWITCH)
 			{
 				// table follows instruction
 				return false;
@@ -210,11 +209,11 @@ namespace net.runelite.cache.script.disassembler
 
 			switch (opcode)
 			{
-				case Opcodes.ICONST:
-				case Opcodes.ILOAD:
-				case Opcodes.SLOAD:
-				case Opcodes.ISTORE:
-				case Opcodes.SSTORE:
+				case (int) Opcodes.ICONST:
+				case (int) Opcodes.ILOAD:
+				case (int) Opcodes.SLOAD:
+				case (int) Opcodes.ISTORE:
+				case (int) Opcodes.SSTORE:
 					return true;
 			}
 
@@ -224,11 +223,11 @@ namespace net.runelite.cache.script.disassembler
 
 		private void writerHeader(StringBuilder writer, ScriptDefinition script)
 		{
-			int id = script.getId();
-			int intStackCount = script.getIntStackCount();
-			int stringStackCount = script.getStringStackCount();
-			int localIntCount = script.getLocalIntCount();
-			int localStringCount = script.getLocalStringCount();
+			int id = script.id;
+			int intStackCount = script.intStackCount;
+			int stringStackCount = script.stringStackCount;
+			int localIntCount = script.localIntCount;
+			int localStringCount = script.localStringCount;
 
 			writer.Append(".id                 ").Append(id).Append('\n');
 			writer.Append(".int_stack_count    ").Append(intStackCount).Append('\n');

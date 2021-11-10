@@ -22,9 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.exporters
+namespace OSRSCache.definitions.exporters
 {
-	using SpriteDefinition = net.runelite.cache.definitions.SpriteDefinition;
+	using SpriteDefinition = OSRSCache.definitions.SpriteDefinition;
 
 	public class SpriteExporter
 	{
@@ -37,14 +37,14 @@ namespace net.runelite.cache.definitions.exporters
 
 		public virtual BufferedImage export()
 		{
-			BufferedImage bi = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			bi.setRGB(0, 0, sprite.getWidth(), sprite.getHeight(), sprite.getPixels(), 0, sprite.getWidth());
+			BufferedImage bi = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
+			bi.setRGB(0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
 			return bi;
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public void exportTo(java.io.File file) throws java.io.IOException
-		public virtual void exportTo(File file)
+		public virtual void exportTo(string file)
 		{
 			BufferedImage image = export();
 			ImageIO.write(image, "png", file);

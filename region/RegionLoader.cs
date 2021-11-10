@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
@@ -25,25 +27,22 @@ using System.Diagnostics;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.region
+namespace OSRSCache.region
 {
-	using IndexType = net.runelite.cache.IndexType;
-	using LocationsDefinition = net.runelite.cache.definitions.LocationsDefinition;
-	using MapDefinition = net.runelite.cache.definitions.MapDefinition;
-	using LocationsLoader = net.runelite.cache.definitions.loaders.LocationsLoader;
-	using MapLoader = net.runelite.cache.definitions.loaders.MapLoader;
-	using Archive = net.runelite.cache.fs.Archive;
-	using Index = net.runelite.cache.fs.Index;
-	using Storage = net.runelite.cache.fs.Storage;
-	using Store = net.runelite.cache.fs.Store;
-	using XteaKeyManager = net.runelite.cache.util.XteaKeyManager;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using IndexType = OSRSCache.IndexType;
+	using LocationsDefinition = OSRSCache.definitions.LocationsDefinition;
+	using MapDefinition = OSRSCache.definitions.MapDefinition;
+	using LocationsLoader = OSRSCache.definitions.loaders.LocationsLoader;
+	using MapLoader = OSRSCache.definitions.loaders.MapLoader;
+	using Archive = OSRSCache.fs.Archive;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	using XteaKeyManager = OSRSCache.util.XteaKeyManager;
+
 
 	public class RegionLoader
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(RegionLoader));
-
 		private const int MAX_REGION = 32768;
 
 		private readonly Store store;
@@ -112,7 +111,7 @@ namespace net.runelite.cache.region
 				}
 				catch (IOException ex)
 				{
-					logger.debug("Can't decrypt region " + i, ex);
+					Console.WriteLine("Can't decrypt region " + i, ex);
 				}
 			}
 

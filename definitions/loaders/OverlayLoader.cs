@@ -22,23 +22,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.loaders
+namespace OSRSCache.definitions.loaders
 {
-	using OverlayDefinition = net.runelite.cache.definitions.OverlayDefinition;
-	using InputStream = net.runelite.cache.io.InputStream;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using OverlayDefinition = OSRSCache.definitions.OverlayDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
 
 	public class OverlayLoader
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(OverlayLoader));
-
 		public virtual OverlayDefinition load(int id, sbyte[] b)
 		{
 			OverlayDefinition def = new OverlayDefinition();
 			InputStream @is = new InputStream(b);
 
-			def.setId(id);
+			def.id = id;
 
 			for (;;)
 			{
@@ -51,21 +48,21 @@ namespace net.runelite.cache.definitions.loaders
 				if (opcode == 1)
 				{
 					int color = @is.read24BitInt();
-					def.setRgbColor(color);
+					def.rgbColor = color;
 				}
 				else if (opcode == 2)
 				{
 					int texture = @is.readUnsignedByte();
-					def.setTexture(texture);
+					def.texture = texture;
 				}
 				else if (opcode == 5)
 				{
-					def.setHideUnderlay(false);
+					def.hideUnderlay = false;
 				}
 				else if (opcode == 7)
 				{
 					int secondaryColor = @is.read24BitInt();
-					def.setSecondaryRgbColor(secondaryColor);
+					def.secondaryRgbColor = secondaryColor;
 				}
 			}
 

@@ -22,9 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.definitions.providers
+namespace OSRSCache.definitions.providers
 {
-	using StructDefinition = net.runelite.cache.definitions.StructDefinition;
+	using StructDefinition = OSRSCache.definitions.StructDefinition;
 
 	public interface StructProvider
 	{

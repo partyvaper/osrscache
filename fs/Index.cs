@@ -24,19 +24,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace net.runelite.cache.fs
+namespace OSRSCache.fs
 {
-	using ArchiveData = net.runelite.cache.index.ArchiveData;
-	using FileData = net.runelite.cache.index.FileData;
-	using IndexData = net.runelite.cache.index.IndexData;
-	using Djb2 = net.runelite.cache.util.Djb2;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
+	using ArchiveData = OSRSCache.index.ArchiveData;
+	using FileData = OSRSCache.index.FileData;
+	using IndexData = OSRSCache.index.IndexData;
+	using Djb2 = OSRSCache.util.Djb2;
+
 
 	public class Index
 	{
-		private static readonly Logger logger = LoggerFactory.getLogger(typeof(Index));
-
 		private readonly int id;
 
 		private int protocol = 6;
