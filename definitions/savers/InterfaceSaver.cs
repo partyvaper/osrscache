@@ -30,7 +30,7 @@ namespace OSRSCache.definitions.savers
 
 	public class InterfaceSaver
 	{
-		public virtual sbyte[] save(InterfaceDefinition def)
+		public virtual byte[] save(InterfaceDefinition def)
 		{
 			if (def.isIf3)
 			{
@@ -42,12 +42,12 @@ namespace OSRSCache.definitions.savers
 			}
 		}
 
-		private sbyte[] saveIf3(InterfaceDefinition def)
+		private byte[] saveIf3(InterfaceDefinition def)
 		{
 			throw new System.NotSupportedException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 
-		private sbyte[] saveIf1(InterfaceDefinition def)
+		private byte[] saveIf1(InterfaceDefinition def)
 		{
 			OutputStream @out = new OutputStream();
 			@out.writeByte(def.type);

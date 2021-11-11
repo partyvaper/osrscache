@@ -13,7 +13,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class WorldMapLoader
 	{
-		public virtual WorldMapDefinition load(sbyte[] b, int fileId)
+		public virtual WorldMapDefinition load(byte[] b, int fileId)
 		{
 			WorldMapDefinition def = new WorldMapDefinition();
 			InputStream @in = new InputStream(b);
@@ -40,7 +40,7 @@ namespace OSRSCache.definitions.loaders
 			def.isSurface = @in.readUnsignedByte() == 1;
 			def.defaultZoom = @in.readUnsignedByte();
 			int var3 = @in.readUnsignedByte();
-			def.regionList = new LinkedList();
+			def.regionList = new List<WorldMapTypeBase>();
 
 			for (int var4 = 0; var4 < var3; ++var4)
 			{

@@ -9,10 +9,8 @@ namespace OSRSCache.util
 		private readonly Crc32Algorithm crc32 = new Crc32Algorithm();
 		private byte[] hash;
 
-		public virtual void update(sbyte[] sdata, int offset, int length)
+		public virtual void update(byte[] data, int offset, int length)
 		{
-			// sbyte (-127,127) to byte (0,255)
-			byte[] data = (byte[]) (Array)sdata;
 			hash = crc32.ComputeHash(data, offset, length);
 		}
 

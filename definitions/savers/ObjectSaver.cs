@@ -7,7 +7,7 @@ namespace OSRSCache.definitions.savers
 
 	public class ObjectSaver
 	{
-		public virtual sbyte[] save(ObjectDefinition obj)
+		public virtual byte[] save(ObjectDefinition obj)
 		{
 			OutputStream @out = new OutputStream();
 			if (obj.objectTypes != null && obj.objectModels != null)

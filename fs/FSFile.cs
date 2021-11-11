@@ -32,7 +32,7 @@ namespace OSRSCache.fs
 	{
 		private readonly int fileId;
 		private int nameHash;
-		private sbyte[] contents;
+		private byte[] contents;
 
 		public FSFile(int fileId)
 		{
@@ -44,7 +44,7 @@ namespace OSRSCache.fs
 			int hash = 7;
 			hash = 97 * hash + this.fileId;
 			hash = 97 * hash + this.nameHash;
-			hash = 97 * hash + Arrays.hashCode(this.contents);
+			hash = 97 * hash + this.contents.GetHashCode();
 			return hash;
 		}
 
@@ -97,7 +97,7 @@ namespace OSRSCache.fs
 		}
 
 
-		public virtual sbyte[] Contents
+		public virtual byte[] Contents
 		{
 			get
 			{

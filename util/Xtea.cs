@@ -40,7 +40,7 @@ namespace OSRSCache.util
 			this.key = key;
 		}
 
-		public virtual sbyte[] encrypt(sbyte[] data, int len)
+		public virtual byte[] encrypt(byte[] data, int len)
 		{
 			ByteBuf buf = Unpooled.wrappedBuffer(data, 0, len);
 			ByteBuf @out = Unpooled.buffer(len);
@@ -63,7 +63,7 @@ namespace OSRSCache.util
 			return @out.array();
 		}
 
-		public virtual sbyte[] decrypt(sbyte[] data, int len)
+		public virtual byte[] decrypt(byte[] data, int len)
 		{
 			ByteBuf buf = Unpooled.wrappedBuffer(data, 0, len);
 			ByteBuf @out = Unpooled.buffer(len);

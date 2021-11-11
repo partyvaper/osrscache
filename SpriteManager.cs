@@ -56,7 +56,7 @@ namespace OSRSCache
 
 			foreach (Archive a in index.Archives)
 			{
-				sbyte[] contents = a.decompress(storage.loadArchive(a));
+				byte[] contents = a.decompress(storage.loadArchive(a));
 
 				SpriteLoader loader = new SpriteLoader();
 				SpriteDefinition[] defs = loader.load(a.ArchiveId, contents);

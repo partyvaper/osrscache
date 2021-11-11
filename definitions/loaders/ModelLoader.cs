@@ -5,7 +5,7 @@
 
 	public class ModelLoader
 	{
-		public virtual ModelDefinition load(int modelId, sbyte[] b)
+		public virtual ModelDefinition load(int modelId, byte[] b)
 		{
 			ModelDefinition def = new ModelDefinition();
 			def.id = modelId;
@@ -26,7 +26,7 @@
 			return def;
 		}
 
-		private void load1(ModelDefinition model, sbyte[] var1)
+		private void load1(ModelDefinition model, byte[] var1)
 		{
 			InputStream var2 = new InputStream(var1);
 			InputStream var24 = new InputStream(var1);
@@ -56,12 +56,12 @@
 			int position;
 			if (textureTriangleCount > 0)
 			{
-				model.textureRenderTypes = new sbyte[textureTriangleCount];
+				model.textureRenderTypes = new byte[textureTriangleCount];
 				var2.Offset = 0;
 
 				for (position = 0; position < textureTriangleCount; ++position)
 				{
-					sbyte renderType = model.textureRenderTypes[position] = var2.readByte();
+					byte renderType = model.textureRenderTypes[position] = var2.readByte();
 					if (renderType == 0)
 					{
 						++textureAmount;
@@ -158,21 +158,21 @@
 
 			if (var13 == 1)
 			{
-				model.faceRenderTypes = new sbyte[triangleCount];
+				model.faceRenderTypes = new byte[triangleCount];
 			}
 
 			if (modelPriority == 255)
 			{
-				model.faceRenderPriorities = new sbyte[triangleCount];
+				model.faceRenderPriorities = new byte[triangleCount];
 			}
 			else
 			{
-				model.priority = (sbyte) modelPriority;
+				model.priority = (byte) modelPriority;
 			}
 
 			if (var50 == 1)
 			{
-				model.faceAlphas = new sbyte[triangleCount];
+				model.faceAlphas = new byte[triangleCount];
 			}
 
 			if (var17 == 1)
@@ -187,7 +187,7 @@
 
 			if (modelTexture == 1 && textureTriangleCount > 0)
 			{
-				model.textureCoordinates = new sbyte[triangleCount];
+				model.textureCoordinates = new byte[triangleCount];
 			}
 
 			model.faceColors = new short[triangleCount];
@@ -202,7 +202,7 @@
 					model.aShortArray2575 = new short[var7];
 					model.aShortArray2586 = new short[var7];
 					model.aShortArray2577 = new short[var7];
-					model.aByteArray2580 = new sbyte[var7];
+					model.aByteArray2580 = new byte[var7];
 					model.aShortArray2578 = new short[var7];
 				}
 
@@ -297,7 +297,7 @@
 
 				if (model.textureCoordinates != null && model.faceTextures[point] != -1)
 				{
-					model.textureCoordinates[point] = (sbyte)(var51.readUnsignedByte() - 1);
+					model.textureCoordinates[point] = (byte)(var51.readUnsignedByte() - 1);
 				}
 			}
 
@@ -426,7 +426,7 @@
 			}
 		}
 
-		private void load2(ModelDefinition model, sbyte[] var1)
+		private void load2(ModelDefinition model, byte[] var1)
 		{
 			bool var2 = false;
 			bool var43 = false;
@@ -448,7 +448,7 @@
 			int var20 = var5.readUnsignedShort();
 			int var36 = var5.readUnsignedShort();
 			int var23 = var5.readUnsignedShort();
-			sbyte var16 = 0;
+			byte var16 = 0;
 			int var46 = var16 + var10;
 			int var24 = var46;
 			var46 += var11;
@@ -504,7 +504,7 @@
 			model.faceVertexIndices3 = new int[var11];
 			if (var12 > 0)
 			{
-				model.textureRenderTypes = new sbyte[var12];
+				model.textureRenderTypes = new byte[var12];
 				model.textureTriangleVertexIndices1 = new short[var12];
 				model.textureTriangleVertexIndices2 = new short[var12];
 				model.textureTriangleVertexIndices3 = new short[var12];
@@ -517,23 +517,23 @@
 
 			if (var13 == 1)
 			{
-				model.faceRenderTypes = new sbyte[var11];
-				model.textureCoordinates = new sbyte[var11];
+				model.faceRenderTypes = new byte[var11];
+				model.textureCoordinates = new byte[var11];
 				model.faceTextures = new short[var11];
 			}
 
 			if (var14 == 255)
 			{
-				model.faceRenderPriorities = new sbyte[var11];
+				model.faceRenderPriorities = new byte[var11];
 			}
 			else
 			{
-				model.priority = (sbyte) var14;
+				model.priority = (byte) var14;
 			}
 
 			if (var30 == 1)
 			{
-				model.faceAlphas = new sbyte[var11];
+				model.faceAlphas = new byte[var11];
 			}
 
 			if (var15 == 1)
@@ -613,7 +613,7 @@
 
 					if ((var8 & 2) == 2)
 					{
-						model.textureCoordinates[var18] = (sbyte)(var8 >> 2);
+						model.textureCoordinates[var18] = (byte)(var8 >> 2);
 						model.faceTextures[var18] = model.faceColors[var18];
 						model.faceColors[var18] = 127;
 						if (model.faceTextures[var18] != -1)

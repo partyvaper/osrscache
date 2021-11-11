@@ -54,7 +54,7 @@ namespace OSRSCache
 			Index index = store.getIndex(IndexType.TEXTURES);
 			Archive archive = index.getArchive(0);
 
-			sbyte[] archiveData = storage.loadArchive(archive);
+			byte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
 
 			TextureLoader loader = new TextureLoader();

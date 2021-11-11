@@ -31,7 +31,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class LocationsLoader
 	{
-		public virtual LocationsDefinition load(int regionX, int regionY, sbyte[] b)
+		public virtual LocationsDefinition load(int regionX, int regionY, byte[] b)
 		{
 			LocationsDefinition loc = new LocationsDefinition();
 			loc.regionX = regionX;
@@ -40,7 +40,7 @@ namespace OSRSCache.definitions.loaders
 			return loc;
 		}
 
-		private void loadLocations(LocationsDefinition loc, sbyte[] b)
+		private void loadLocations(LocationsDefinition loc, byte[] b)
 		{
 			InputStream buf = new InputStream(b);
 

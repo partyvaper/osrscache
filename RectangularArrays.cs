@@ -57,17 +57,17 @@ internal static class RectangularArrays
         return newArray;
     }
 
-    public static sbyte[][][] RectangularSbyteArray(int size1, int size2, int size3)
+    public static byte[][][] RectangularbyteArray(int size1, int size2, int size3)
     {
-        sbyte[][][] newArray = new sbyte[size1][][];
+        byte[][][] newArray = new byte[size1][][];
         for (int array1 = 0; array1 < size1; array1++)
         {
-            newArray[array1] = new sbyte[size2][];
+            newArray[array1] = new byte[size2][];
             if (size3 > -1)
             {
                 for (int array2 = 0; array2 < size2; array2++)
                 {
-                    newArray[array1][array2] = new sbyte[size3];
+                    newArray[array1][array2] = new byte[size3];
                 }
             }
         }

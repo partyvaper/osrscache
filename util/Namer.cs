@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
@@ -45,7 +46,7 @@ namespace OSRSCache.util
 
 			if (used.Contains(name))
 			{
-				name = name + "_" + id;
+				name = $"{name}_{id}";
 				Debug.Assert(!used.Contains(name));
 			}
 
@@ -56,14 +57,15 @@ namespace OSRSCache.util
 
 		private static string sanitize(string @in)
 		{
-			string s = removeTags(@in).ToUpper().Replace(' ', '_').replaceAll("[^a-zA-Z0-9_]", "");
+			string s = removeTags(@in).ToUpper().Replace(' ', '_'); // .Replace("[^a-zA-Z0-9_]", "");
+			s = Regex.Replace(s, "[^a-zA-Z0-9_]", "");
 			if (s.Length == 0)
 			{
 				return null;
 			}
 			if (char.IsDigit(s[0]))
 			{
-				return "_" + s;
+				return $"_{s}";
 			}
 			else
 			{

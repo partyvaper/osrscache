@@ -36,7 +36,7 @@ namespace OSRSCache.definitions.savers
 
 	public class MapSaver
 	{
-		public virtual sbyte[] save(MapDefinition map)
+		public virtual byte[] save(MapDefinition map)
 		{
 			MapDefinition.Tile[][][] tiles = map.tiles;
 			OutputStream @out = new OutputStream();

@@ -59,7 +59,7 @@ namespace OSRSCache
 			Index index = store.getIndex(IndexType.CONFIGS);
 			Archive archive = index.getArchive(ConfigType.ITEM.Id);
 
-			sbyte[] archiveData = storage.loadArchive(archive);
+			byte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
 
 			foreach (FSFile f in files.Files)

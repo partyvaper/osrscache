@@ -45,20 +45,20 @@ namespace OSRSCache.region
 //ORIGINAL LINE: private readonly int[][][] tileHeights = new int[Z][X][Y];
 		private readonly int[][][] tileHeights = RectangularArrays.RectangularIntArray(Z, X, Y);
 //JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-//ORIGINAL LINE: private readonly sbyte[][][] tileSettings = new sbyte[Z][X][Y];
-		private readonly sbyte[][][] tileSettings = RectangularArrays.RectangularSbyteArray(Z, X, Y);
+//ORIGINAL LINE: private readonly byte[][][] tileSettings = new byte[Z][X][Y];
+		private readonly byte[][][] tileSettings = RectangularArrays.RectangularbyteArray(Z, X, Y);
 //JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-//ORIGINAL LINE: private readonly sbyte[][][] overlayIds = new sbyte[Z][X][Y];
-		private readonly sbyte[][][] overlayIds = RectangularArrays.RectangularSbyteArray(Z, X, Y);
+//ORIGINAL LINE: private readonly byte[][][] overlayIds = new byte[Z][X][Y];
+		private readonly byte[][][] overlayIds = RectangularArrays.RectangularbyteArray(Z, X, Y);
 //JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-//ORIGINAL LINE: private readonly sbyte[][][] overlayPaths = new sbyte[Z][X][Y];
-		private readonly sbyte[][][] overlayPaths = RectangularArrays.RectangularSbyteArray(Z, X, Y);
+//ORIGINAL LINE: private readonly byte[][][] overlayPaths = new byte[Z][X][Y];
+		private readonly byte[][][] overlayPaths = RectangularArrays.RectangularbyteArray(Z, X, Y);
 //JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-//ORIGINAL LINE: private readonly sbyte[][][] overlayRotations = new sbyte[Z][X][Y];
-		private readonly sbyte[][][] overlayRotations = RectangularArrays.RectangularSbyteArray(Z, X, Y);
+//ORIGINAL LINE: private readonly byte[][][] overlayRotations = new byte[Z][X][Y];
+		private readonly byte[][][] overlayRotations = RectangularArrays.RectangularbyteArray(Z, X, Y);
 //JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-//ORIGINAL LINE: private readonly sbyte[][][] underlayIds = new sbyte[Z][X][Y];
-		private readonly sbyte[][][] underlayIds = RectangularArrays.RectangularSbyteArray(Z, X, Y);
+//ORIGINAL LINE: private readonly byte[][][] underlayIds = new byte[Z][X][Y];
+		private readonly byte[][][] underlayIds = RectangularArrays.RectangularbyteArray(Z, X, Y);
 
 		private readonly IList<Location> locations = new List<Location>();
 
@@ -165,7 +165,7 @@ namespace OSRSCache.region
 			return tileHeights[z][x][y];
 		}
 
-		public virtual sbyte getTileSetting(int z, int x, int y)
+		public virtual byte getTileSetting(int z, int x, int y)
 		{
 			return tileSettings[z][x][y];
 		}
@@ -175,12 +175,12 @@ namespace OSRSCache.region
 			return overlayIds[z][x][y] & 0xFF;
 		}
 
-		public virtual sbyte getOverlayPath(int z, int x, int y)
+		public virtual byte getOverlayPath(int z, int x, int y)
 		{
 			return overlayPaths[z][x][y];
 		}
 
-		public virtual sbyte getOverlayRotation(int z, int x, int y)
+		public virtual byte getOverlayRotation(int z, int x, int y)
 		{
 			return overlayRotations[z][x][y];
 		}

@@ -3,21 +3,18 @@ using System.Diagnostics;
 
 namespace OSRSCache.fs
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static com.google.common.primitives.Bytes.concat;
-	using Ints = com.google.common.primitives.Ints;
 	using CompressionType = OSRSCache.fs.jagex.CompressionType;
 	using InputStream = OSRSCache.io.InputStream;
 	using OutputStream = OSRSCache.io.OutputStream;
-	using BZip2 = OSRSCache.util.BZip2;
 	using Crc32 = OSRSCache.util.Crc32;
 	using GZip = OSRSCache.util.GZip;
+	using BZip2 = OSRSCache.util.BZip2;
 	using Xtea = OSRSCache.util.Xtea;
 
 
 	public class Container
 	{
-		public sbyte[] data;
+		public byte[] data;
 		public int compression; // compression
 		public int revision;
 		public int crc; // crc of compressed data
@@ -30,11 +27,11 @@ namespace OSRSCache.fs
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public void compress(byte[] data, int[] keys) throws java.io.IOException
-		public virtual void compress(sbyte[] data, int[] keys)
+		public virtual void compress(byte[] data, int[] keys)
 		{
 			OutputStream stream = new OutputStream();
 
-			sbyte[] compressedData;
+			byte[] compressedData;
 			int length;
 			switch (compression)
 			{
@@ -70,7 +67,7 @@ namespace OSRSCache.fs
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public static Container decompress(byte[] b, int[] keys) throws java.io.IOException
-		public static Container decompress(sbyte[] b, int[] keys)
+		public static Container decompress(byte[] b, int[] keys)
 		{
 			InputStream stream = new InputStream(b);
 
@@ -84,17 +81,17 @@ namespace OSRSCache.fs
 			Crc32 crc32 = new Crc32();
 			crc32.update(b, 0, 5); // compression + length
 
-			sbyte[] data;
+			byte[] data;
 			int revision = -1;
 			switch (compression)
 			{
 				case CompressionType.NONE:
 				{
-					sbyte[] encryptedData = new sbyte[compressedLength];
+					byte[] encryptedData = new byte[compressedLength];
 					stream.readBytes(encryptedData, 0, compressedLength);
 
 					crc32.update(encryptedData, 0, compressedLength);
-					sbyte[] decryptedData = decrypt(encryptedData, encryptedData.Length, keys);
+					byte[] decryptedData = decrypt(encryptedData, encryptedData.Length, keys);
 
 					if (stream.remaining() >= 2)
 					{
@@ -108,11 +105,11 @@ namespace OSRSCache.fs
 				}
 				case CompressionType.BZ2:
 				{
-					sbyte[] encryptedData = new sbyte[compressedLength + 4];
+					byte[] encryptedData = new byte[compressedLength + 4];
 					stream.readBytes(encryptedData);
 
 					crc32.update(encryptedData, 0, encryptedData.Length);
-					sbyte[] decryptedData = decrypt(encryptedData, encryptedData.Length, keys);
+					byte[] decryptedData = decrypt(encryptedData, encryptedData.Length, keys);
 
 					if (stream.remaining() >= 2)
 					{
@@ -136,11 +133,11 @@ namespace OSRSCache.fs
 				}
 				case CompressionType.GZ:
 				{
-					sbyte[] encryptedData = new sbyte[compressedLength + 4];
+					byte[] encryptedData = new byte[compressedLength + 4];
 					stream.readBytes(encryptedData);
 
 					crc32.update(encryptedData, 0, encryptedData.Length);
-					sbyte[] decryptedData = decrypt(encryptedData, encryptedData.Length, keys);
+					byte[] decryptedData = decrypt(encryptedData, encryptedData.Length, keys);
 
 					if (stream.remaining() >= 2)
 					{
@@ -172,7 +169,7 @@ namespace OSRSCache.fs
 			return container;
 		}
 
-		private static sbyte[] decrypt(sbyte[] data, int length, int[] keys)
+		private static byte[] decrypt(byte[] data, int length, int[] keys)
 		{
 			if (keys == null)
 			{
@@ -183,7 +180,7 @@ namespace OSRSCache.fs
 			return xtea.decrypt(data, length);
 		}
 
-		private static sbyte[] encrypt(sbyte[] data, int length, int[] keys)
+		private static byte[] encrypt(byte[] data, int length, int[] keys)
 		{
 			if (keys == null)
 			{

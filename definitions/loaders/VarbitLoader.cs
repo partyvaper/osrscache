@@ -29,7 +29,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class VarbitLoader
 	{
-		public virtual VarbitDefinition load(int id, sbyte[] b)
+		public virtual VarbitDefinition load(int id, byte[] b)
 		{
 			VarbitDefinition def = new VarbitDefinition(id);
 			InputStream @is = new InputStream(b);

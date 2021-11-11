@@ -1,4 +1,6 @@
-﻿namespace OSRSCache.fs.jagex
+﻿using System;
+
+namespace OSRSCache.fs.jagex
 {
 
 	public class IndexEntry
@@ -49,7 +51,7 @@
 		public override int GetHashCode()
 		{
 			int hash = 7;
-			hash = 19 * hash + Objects.hashCode(this.indexFile);
+			hash = 19 * hash + this.indexFile.GetHashCode();
 			hash = 19 * hash + this.id;
 			hash = 19 * hash + this.sector;
 			hash = 19 * hash + this.length;
@@ -69,7 +71,7 @@
 //JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
 //ORIGINAL LINE: final IndexEntry other = (IndexEntry) obj;
 			IndexEntry other = (IndexEntry) obj;
-			if (!Objects.equals(this.indexFile, other.indexFile))
+			if (!Object.Equals(this.indexFile, other.indexFile))
 			{
 				return false;
 			}

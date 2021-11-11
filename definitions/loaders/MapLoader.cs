@@ -36,7 +36,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class MapLoader
 	{
-		public virtual MapDefinition load(int regionX, int regionY, sbyte[] b)
+		public virtual MapDefinition load(int regionX, int regionY, byte[] b)
 		{
 			MapDefinition map = new MapDefinition();
 			map.regionX = regionX;
@@ -45,7 +45,7 @@ namespace OSRSCache.definitions.loaders
 			return map;
 		}
 
-		private void loadTerrain(MapDefinition map, sbyte[] buf)
+		private void loadTerrain(MapDefinition map, byte[] buf)
 		{
 			MapDefinition.Tile[][][] tiles = map.tiles;
 
@@ -75,16 +75,16 @@ namespace OSRSCache.definitions.loaders
 							{
 								tile.attrOpcode = attribute;
 								tile.overlayId = @in.readByte();
-								tile.overlayPath = (sbyte)((attribute - 2) / 4);
-								tile.overlayRotation = (sbyte)(attribute - 2 & 3);
+								tile.overlayPath = (byte)((attribute - 2) / 4);
+								tile.overlayRotation = (byte)(attribute - 2 & 3);
 							}
 							else if (attribute <= 81)
 							{
-								tile.settings = (sbyte)(attribute - 49);
+								tile.settings = (byte)(attribute - 49);
 							}
 							else
 							{
-								tile.underlayId = (sbyte)(attribute - 81);
+								tile.underlayId = (byte)(attribute - 81);
 							}
 						}
 					}

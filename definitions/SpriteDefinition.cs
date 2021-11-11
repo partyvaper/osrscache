@@ -42,7 +42,7 @@ namespace OSRSCache.definitions
 		public int maxHeight; // Was private, is now public
 
 		[NonSerialized]
-		public sbyte[] pixelIdx;
+		public byte[] pixelIdx;
 		[NonSerialized]
 		public int[] palette;
 
@@ -50,7 +50,7 @@ namespace OSRSCache.definitions
 		{
 			if (this.width != this.maxWidth || this.height != this.maxHeight)
 			{
-				sbyte[] var1 = new sbyte[this.maxWidth * this.maxHeight];
+				byte[] var1 = new byte[this.maxWidth * this.maxHeight];
 				int var2 = 0;
 
 				for (int var3 = 0; var3 < this.height; ++var3)

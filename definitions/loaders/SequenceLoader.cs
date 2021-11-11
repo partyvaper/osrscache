@@ -29,7 +29,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class SequenceLoader
 	{
-		public virtual SequenceDefinition load(int id, sbyte[] b)
+		public virtual SequenceDefinition load(int id, byte[] b)
 		{
 			SequenceDefinition def = new SequenceDefinition(id);
 			InputStream @is = new InputStream(b);

@@ -32,7 +32,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class InterfaceLoader
 	{
-		public virtual InterfaceDefinition load(int id, sbyte[] b)
+		public virtual InterfaceDefinition load(int id, byte[] b)
 		{
 			InterfaceDefinition iface = new InterfaceDefinition();
 			iface.id = id;

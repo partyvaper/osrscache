@@ -40,11 +40,11 @@ namespace OSRSCache.item
 		internal int[] field1856;
 		internal int[] field1854;
 		internal int[] field1823;
-		internal sbyte[] field1838;
-		internal sbyte[] field1882;
-		internal sbyte[] field1840;
+		internal byte[] field1838;
+		internal byte[] field1882;
+		internal byte[] field1840;
 		internal short[] field1841;
-		internal sbyte field1842;
+		internal byte field1842;
 		internal int field1852;
 		internal int[] field1844;
 		internal int[] field1865;
@@ -320,7 +320,7 @@ namespace OSRSCache.item
 							for (var9 = 0; var9 < var7; ++var9)
 							{
 								var10 = var8[var9];
-								sbyte var31 = this.field1838[var10];
+								byte var31 = this.field1838[var10];
 								var12 = field1872[var31]++;
 								field1874[var31][var12] = var10;
 								if (var31 < 10)

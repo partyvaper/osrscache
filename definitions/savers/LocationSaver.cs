@@ -2,15 +2,15 @@
 
 namespace OSRSCache.definitions.savers
 {
-	using LinkedListMultimap = com.google.common.collect.LinkedListMultimap;
-	using Multimap = com.google.common.collect.Multimap;
+	// using LinkedListMultimap = com.google.common.collect.LinkedListMultimap;
+	// using Multimap = com.google.common.collect.Multimap;
 	using LocationsDefinition = OSRSCache.definitions.LocationsDefinition;
 	using OutputStream = OSRSCache.io.OutputStream;
 	using Location = OSRSCache.region.Location;
 
 	public class LocationSaver
 	{
-		public virtual sbyte[] save(LocationsDefinition locs)
+		public virtual byte[] save(LocationsDefinition locs)
 		{
 			Multimap<int, Location> locById = LinkedListMultimap.create();
 			IList<Location> sortedLocs = new List<Location>(locs.getLocations());

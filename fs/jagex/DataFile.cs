@@ -66,7 +66,7 @@ namespace OSRSCache.fs.jagex
 		/// <exception cref="IOException"> </exception>
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public synchronized byte[] read(int indexId, int archiveId, int sector, int size) throws java.io.IOException
-		public virtual sbyte[] read(int indexId, int archiveId, int sector, int size)
+		public virtual byte[] read(int indexId, int archiveId, int sector, int size)
 		{
 			lock (this)
 			{
@@ -76,7 +76,7 @@ namespace OSRSCache.fs.jagex
 					return null;
 				}
         
-				sbyte[] readBuffer = new sbyte[SECTOR_SIZE];
+				byte[] readBuffer = new byte[SECTOR_SIZE];
 				ByteBuffer buffer = ByteBuffer.allocate(size);
         
 				for (int part = 0, readBytesCount = 0, nextSector; size > readBytesCount; sector = nextSector)
@@ -90,7 +90,7 @@ namespace OSRSCache.fs.jagex
 					dat.seek(SECTOR_SIZE * sector);
         
 					int dataBlockSize = size - readBytesCount;
-					sbyte headerSize;
+					byte headerSize;
 					int currentIndex;
 					int currentPart;
 					int currentArchive;
@@ -160,14 +160,14 @@ namespace OSRSCache.fs.jagex
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public synchronized DataFileWriteResult write(int indexId, int archiveId, byte[] compressedData) throws java.io.IOException
-		public virtual DataFileWriteResult write(int indexId, int archiveId, sbyte[] compressedData)
+		public virtual DataFileWriteResult write(int indexId, int archiveId, byte[] compressedData)
 		{
 			lock (this)
 			{
 				int sector;
 				int startSector;
         
-				sbyte[] writeBuffer = new sbyte[SECTOR_SIZE];
+				byte[] writeBuffer = new byte[SECTOR_SIZE];
 				ByteBuffer data = ByteBuffer.wrap(compressedData);
         
 				sector = (int)((dat.length() + (long)(SECTOR_SIZE - 1)) / (long) SECTOR_SIZE);
@@ -189,16 +189,16 @@ namespace OSRSCache.fs.jagex
 							nextSector = 0;
 						}
         
-						writeBuffer[0] = (sbyte)(archiveId >> 24);
-						writeBuffer[1] = (sbyte)(archiveId >> 16);
-						writeBuffer[2] = (sbyte)(archiveId >> 8);
-						writeBuffer[3] = (sbyte) archiveId;
-						writeBuffer[4] = (sbyte)(part >> 8);
-						writeBuffer[5] = (sbyte) part;
-						writeBuffer[6] = (sbyte)(nextSector >> 16);
-						writeBuffer[7] = (sbyte)(nextSector >> 8);
-						writeBuffer[8] = (sbyte) nextSector;
-						writeBuffer[9] = (sbyte) indexId;
+						writeBuffer[0] = (byte)(archiveId >> 24);
+						writeBuffer[1] = (byte)(archiveId >> 16);
+						writeBuffer[2] = (byte)(archiveId >> 8);
+						writeBuffer[3] = (byte) archiveId;
+						writeBuffer[4] = (byte)(part >> 8);
+						writeBuffer[5] = (byte) part;
+						writeBuffer[6] = (byte)(nextSector >> 16);
+						writeBuffer[7] = (byte)(nextSector >> 8);
+						writeBuffer[8] = (byte) nextSector;
+						writeBuffer[9] = (byte) indexId;
 						dat.seek(SECTOR_SIZE * sector);
 						dat.write(writeBuffer, 0, 10);
         
@@ -215,14 +215,14 @@ namespace OSRSCache.fs.jagex
 							nextSector = 0;
 						}
         
-						writeBuffer[0] = (sbyte)(archiveId >> 8);
-						writeBuffer[1] = (sbyte) archiveId;
-						writeBuffer[2] = (sbyte)(part >> 8);
-						writeBuffer[3] = (sbyte) part;
-						writeBuffer[4] = (sbyte)(nextSector >> 16);
-						writeBuffer[5] = (sbyte)(nextSector >> 8);
-						writeBuffer[6] = (sbyte) nextSector;
-						writeBuffer[7] = (sbyte) indexId;
+						writeBuffer[0] = (byte)(archiveId >> 8);
+						writeBuffer[1] = (byte) archiveId;
+						writeBuffer[2] = (byte)(part >> 8);
+						writeBuffer[3] = (byte) part;
+						writeBuffer[4] = (byte)(nextSector >> 16);
+						writeBuffer[5] = (byte)(nextSector >> 8);
+						writeBuffer[6] = (byte) nextSector;
+						writeBuffer[7] = (byte) indexId;
 						dat.seek(SECTOR_SIZE * sector);
 						dat.write(writeBuffer, 0, 8);
         

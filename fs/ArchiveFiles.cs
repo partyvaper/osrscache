@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 /*
@@ -28,7 +29,7 @@ using System.Diagnostics;
  */
 namespace OSRSCache.fs
 {
-	using Preconditions = com.google.common.@base.Preconditions;
+	// using Preconditions = com.google.common.@base.Preconditions;
 	using InputStream = OSRSCache.io.InputStream;
 	using OutputStream = OSRSCache.io.OutputStream;
 
@@ -41,7 +42,7 @@ namespace OSRSCache.fs
 		public override int GetHashCode()
 		{
 			int hash = 7;
-			hash = 67 * hash + Objects.hashCode(this.files);
+			hash = 67 * hash + this.files.GetHashCode();
 			return hash;
 		}
 
@@ -58,7 +59,7 @@ namespace OSRSCache.fs
 //JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
 //ORIGINAL LINE: final ArchiveFiles other = (ArchiveFiles) obj;
 			ArchiveFiles other = (ArchiveFiles) obj;
-			if (!Objects.equals(this.files, other.files))
+			if (!Object.Equals(this.files, other.files))
 			{
 				return false;
 			}
@@ -67,8 +68,11 @@ namespace OSRSCache.fs
 
 		public virtual void addFile(FSFile file)
 		{
-			Preconditions.checkArgument(file.FileId != -1);
-
+			// Preconditions.checkArgument(file.FileId != -1);
+			if (file.FileId == -1)
+			{
+				return;
+			}
 			if (fileMap.ContainsKey(file.FileId))
 			{
 				throw new System.InvalidOperationException("duplicate file ids");
@@ -82,7 +86,7 @@ namespace OSRSCache.fs
 		{
 			get
 			{
-				return Collections.unmodifiableList(files);
+				return new List<FSFile>(files);
 			}
 		}
 
@@ -97,7 +101,7 @@ namespace OSRSCache.fs
 			fileMap.Clear();
 		}
 
-		public virtual void loadContents(sbyte[] data)
+		public virtual void loadContents(byte[] data)
 		{
 			Console.WriteLine("Loading contents of archive ({} files)", files.Count);
 
@@ -137,12 +141,12 @@ namespace OSRSCache.fs
 				}
 			}
 
-			sbyte[][] fileContents = new sbyte[filesCount][];
+			byte[][] fileContents = new byte[filesCount][];
 			int[] fileOffsets = new int[filesCount];
 
 			for (int i = 0; i < filesCount; ++i)
 			{
-				fileContents[i] = new sbyte[filesSize[i]];
+				fileContents[i] = new byte[filesSize[i]];
 			}
 
 			// the file data is at the beginning of the stream
@@ -167,7 +171,7 @@ namespace OSRSCache.fs
 			}
 		}
 
-		public virtual sbyte[] saveContents()
+		public virtual byte[] saveContents()
 		{
 			OutputStream stream = new OutputStream();
 
@@ -182,7 +186,7 @@ namespace OSRSCache.fs
 			{
 				foreach (FSFile file in this.Files)
 				{
-					sbyte[] contents = file.Contents;
+					byte[] contents = file.Contents;
 					stream.writeBytes(contents);
 				}
 
@@ -200,7 +204,7 @@ namespace OSRSCache.fs
 				stream.writeByte(1); // chunks
 			}
 
-			sbyte[] fileData = stream.flip();
+			byte[] fileData = stream.flip();
 
 			Console.WriteLine("Saved contents of archive ({} files), {} bytes", files.Count, fileData.Length);
 			return fileData;

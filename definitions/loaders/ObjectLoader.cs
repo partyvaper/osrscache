@@ -33,7 +33,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class ObjectLoader
 	{
-		public virtual ObjectDefinition load(int id, sbyte[] b)
+		public virtual ObjectDefinition load(int id, byte[] b)
 		{
 			ObjectDefinition def = new ObjectDefinition();
 			InputStream @is = new InputStream(b);

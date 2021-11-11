@@ -36,7 +36,7 @@ namespace OSRSCache.fs.jagex
 		private readonly int indexFileId;
 		private readonly string file;
 		private readonly RandomAccessFile idx;
-		private readonly sbyte[] buffer = new sbyte[INDEX_ENTRY_LEN];
+		private readonly byte[] buffer = new byte[INDEX_ENTRY_LEN];
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public IndexFile(int indexFileId, java.io.File file) throws java.io.FileNotFoundException
@@ -64,7 +64,7 @@ namespace OSRSCache.fs.jagex
 		public override int GetHashCode()
 		{
 			int hash = 3;
-			hash = 41 * hash + Objects.hashCode(this.file);
+			hash = 41 * hash + this.file.GetHashCode();
 			return hash;
 		}
 
@@ -81,7 +81,7 @@ namespace OSRSCache.fs.jagex
 //JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
 //ORIGINAL LINE: final IndexFile other = (IndexFile) obj;
 			IndexFile other = (IndexFile) obj;
-			if (!Objects.equals(this.file, other.file))
+			if (!Object.Equals(this.file, other.file))
 			{
 				return false;
 			}
@@ -104,13 +104,13 @@ namespace OSRSCache.fs.jagex
 			{
 				idx.seek(entry.Id * INDEX_ENTRY_LEN);
         
-				buffer[0] = (sbyte)(entry.Length >> 16);
-				buffer[1] = (sbyte)(entry.Length >> 8);
-				buffer[2] = (sbyte) entry.Length;
+				buffer[0] = (byte)(entry.Length >> 16);
+				buffer[1] = (byte)(entry.Length >> 8);
+				buffer[2] = (byte) entry.Length;
         
-				buffer[3] = (sbyte)(entry.Sector >> 16);
-				buffer[4] = (sbyte)(entry.Sector >> 8);
-				buffer[5] = (sbyte) entry.Sector;
+				buffer[3] = (byte)(entry.Sector >> 16);
+				buffer[4] = (byte)(entry.Sector >> 8);
+				buffer[5] = (byte) entry.Sector;
         
 				idx.write(buffer);
 			}

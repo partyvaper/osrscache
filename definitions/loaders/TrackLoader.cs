@@ -79,7 +79,7 @@ namespace OSRSCache.definitions.loaders
 		private const int JAG_END_OF_TRACK = 7;
 		private const int JAG_TEMPO = 23;
 
-		public virtual TrackDefinition load(sbyte[] b)
+		public virtual TrackDefinition load(byte[] b)
 		{
 			TrackDefinition def = new TrackDefinition();
 			load(def, new InputStream(b));
@@ -384,7 +384,7 @@ namespace OSRSCache.definitions.loaders
 
 							controllerNumber = controllerNumber + var1.Array[controlChangeIndex++] & 127;
 							var51.writeByte(controllerNumber);
-							sbyte var66;
+							byte var66;
 							if (controllerNumber == CONTROLLER_BANK_SELECT || controllerNumber == CONTROLLER_BANK_SELECT_2)
 							{
 								var66 = var1.Array[programChangeIndex++];

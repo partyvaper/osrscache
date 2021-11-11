@@ -29,7 +29,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class HealthBarLoader
 	{
-		public virtual HealthBarDefinition load(int id, sbyte[] b)
+		public virtual HealthBarDefinition load(int id, byte[] b)
 		{
 			HealthBarDefinition def = new HealthBarDefinition();
 			InputStream @is = new InputStream(b);

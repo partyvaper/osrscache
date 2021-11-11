@@ -15,7 +15,7 @@ TODO List:
  * [ ] ScriptVarType -> can probably get rid of it, enums? key val dict?
  * [ ] Opcode ?
  * [ ] .entrySet() -> .SetOfKeyValuePairs(), .size() -> .Count
- * [ ] Objects.* ?
+ * [ ] Object.* ?
  * [ ] LinkedList, LinkedListMultimap ? (google?)
  * [ ] buffer.array, other buffer stuff?
  * [ ] Ints (google)

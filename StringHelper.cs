@@ -48,27 +48,27 @@ internal static class StringHelper
 	//-----------------------------------------------------------------------------
 	//	These methods are used to replace calls to some Java String constructors.
 	//-----------------------------------------------------------------------------
-	public static string NewString(sbyte[] bytes)
+	public static string NewString(byte[] bytes)
 	{
 		return NewString(bytes, 0, bytes.Length);
 	}
-	public static string NewString(sbyte[] bytes, int index, int count)
+	public static string NewString(byte[] bytes, int index, int count)
 	{
 		return Encoding.UTF8.GetString((byte[])(object)bytes, index, count);
 	}
-	public static string NewString(sbyte[] bytes, string encoding)
+	public static string NewString(byte[] bytes, string encoding)
 	{
 		return NewString(bytes, 0, bytes.Length, encoding);
 	}
-	public static string NewString(sbyte[] bytes, int index, int count, string encoding)
+	public static string NewString(byte[] bytes, int index, int count, string encoding)
 	{
 		return NewString(bytes, index, count, Encoding.GetEncoding(encoding));
 	}
-	public static string NewString(sbyte[] bytes, Encoding encoding)
+	public static string NewString(byte[] bytes, Encoding encoding)
 	{
 		return NewString(bytes, 0, bytes.Length, encoding);
 	}
-	public static string NewString(sbyte[] bytes, int index, int count, Encoding encoding)
+	public static string NewString(byte[] bytes, int index, int count, Encoding encoding)
 	{
 		return encoding.GetString((byte[])(object)bytes, index, count);
 	}
@@ -76,22 +76,22 @@ internal static class StringHelper
 	//--------------------------------------------------------------------------------
 	//	These methods are used to replace calls to the Java String.getBytes methods.
 	//--------------------------------------------------------------------------------
-	public static sbyte[] GetBytes(this string self)
+	public static byte[] GetBytes(this string self)
 	{
-		return GetSBytesForEncoding(Encoding.UTF8, self);
+		return GetbytesForEncoding(Encoding.UTF8, self);
 	}
-	public static sbyte[] GetBytes(this string self, Encoding encoding)
+	public static byte[] GetBytes(this string self, Encoding encoding)
 	{
-		return GetSBytesForEncoding(encoding, self);
+		return GetbytesForEncoding(encoding, self);
 	}
-	public static sbyte[] GetBytes(this string self, string encoding)
+	public static byte[] GetBytes(this string self, string encoding)
 	{
-		return GetSBytesForEncoding(Encoding.GetEncoding(encoding), self);
+		return GetbytesForEncoding(Encoding.GetEncoding(encoding), self);
 	}
-	private static sbyte[] GetSBytesForEncoding(Encoding encoding, string s)
+	private static byte[] GetbytesForEncoding(Encoding encoding, string s)
 	{
-		sbyte[] sbytes = new sbyte[encoding.GetByteCount(s)];
-		encoding.GetBytes(s, 0, s.Length, (byte[])(object)sbytes, 0);
-		return sbytes;
+		byte[] bytes = new byte[encoding.GetByteCount(s)];
+		encoding.GetBytes(s, 0, s.Length, (byte[])(object)bytes, 0);
+		return bytes;
 	}
 }

@@ -24,10 +24,10 @@ namespace OSRSCache.definitions
 		public int[] faceVertexIndices1;
 		public int[] faceVertexIndices2;
 		public int[] faceVertexIndices3;
-		public sbyte[] faceAlphas;
+		public byte[] faceAlphas;
 		public short[] faceColors;
-		public sbyte[] faceRenderPriorities;
-		public sbyte[] faceRenderTypes;
+		public byte[] faceRenderPriorities;
+		public byte[] faceRenderTypes;
 		[NonSerialized]
 		public FaceNormal[] faceNormals;
 
@@ -41,19 +41,19 @@ namespace OSRSCache.definitions
 		public float[][] faceTextureVCoordinates;
 		public short[] texturePrimaryColors;
 		public short[] faceTextures;
-		public sbyte[] textureCoordinates;
-		public sbyte[] textureRenderTypes;
+		public byte[] textureCoordinates;
+		public byte[] textureRenderTypes;
 
 		public int[] vertexSkins;
 		public int[] faceSkins;
 
-		public sbyte priority;
+		public byte priority;
 
 		public short[] aShortArray2574;
 		public short[] aShortArray2575;
 		public short[] aShortArray2577;
 		public short[] aShortArray2578;
-		public sbyte[] aByteArray2580;
+		public byte[] aByteArray2580;
 		public short[] aShortArray2586;
 
 		[NonSerialized]
@@ -123,7 +123,7 @@ namespace OSRSCache.definitions
 				var12 = var12 * 256 / length;
 				var13 = var13 * 256 / length;
 
-				sbyte var15;
+				byte var15;
 				if (this.faceRenderTypes == null)
 				{
 					var15 = 0;
@@ -219,7 +219,7 @@ namespace OSRSCache.definitions
 					{
 						textureCoordinate &= 0xFF;
 
-						sbyte textureRenderType = 0;
+						byte textureRenderType = 0;
 						if (textureRenderTypes != null)
 						{
 							textureRenderType = textureRenderTypes[textureCoordinate];

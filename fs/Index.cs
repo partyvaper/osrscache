@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
@@ -54,7 +55,7 @@ namespace OSRSCache.fs
 			int hash = 3;
 			hash = 97 * hash + this.id;
 			hash = 97 * hash + this.revision;
-			hash = 97 * hash + Objects.hashCode(this.archives);
+			hash = 97 * hash + this.archives.GetHashCode();
 			return hash;
 		}
 
@@ -79,7 +80,7 @@ namespace OSRSCache.fs
 			{
 				return false;
 			}
-			if (!Objects.equals(this.archives, other.archives))
+			if (!Object.Equals(this.archives, other.archives))
 			{
 				return false;
 			}

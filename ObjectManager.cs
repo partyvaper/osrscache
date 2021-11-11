@@ -58,7 +58,7 @@ namespace OSRSCache
 			Index index = store.getIndex(IndexType.CONFIGS);
 			Archive archive = index.getArchive(ConfigType.OBJECT.Id);
 
-			sbyte[] archiveData = storage.loadArchive(archive);
+			byte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
 
 			foreach (FSFile f in files.Files)
@@ -72,7 +72,7 @@ namespace OSRSCache
 		{
 			get
 			{
-				// return Collections.unmodifiableCollection(objects.Values);
+				// return Collections.unmodifiableCollection(Object.Values);
 				return new List<ObjectDefinition>(objects.Values);
 			}
 		}
@@ -105,7 +105,7 @@ namespace OSRSCache
 			// java.mkdirs();
 			// using (IDClass ids = IDClass.create(java, "ObjectID"), IDClass nulls = IDClass.create(java, "NullObjectID"))
 			// {
-			// 	foreach (ObjectDefinition def in objects.Values)
+			// 	foreach (ObjectDefinition def in Object.Values)
 			// 	{
 			// 		if ("null".Equals(def.getName()))
 			// 		{

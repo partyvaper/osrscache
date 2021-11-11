@@ -28,7 +28,7 @@ using System.Diagnostics;
  */
 namespace OSRSCache.fs.jagex
 {
-	using Ints = com.google.common.primitives.Ints;
+	// using Ints = com.google.common.primitives.Ints;
 	using Archive = OSRSCache.fs.Archive;
 	using Container = OSRSCache.fs.Container;
 	using Index = OSRSCache.fs.Index;
@@ -114,7 +114,7 @@ namespace OSRSCache.fs.jagex
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public byte[] readIndex(int indexId) throws java.io.IOException
-		public virtual sbyte[] readIndex(int indexId)
+		public virtual byte[] readIndex(int indexId)
 		{
 			IndexEntry entry = index255.read(indexId);
 			if (entry == null)
@@ -122,7 +122,7 @@ namespace OSRSCache.fs.jagex
 				return null;
 			}
 
-			sbyte[] indexData = data.read(index255.IndexFileId, entry.Id, entry.Sector, entry.Length);
+			byte[] indexData = data.read(index255.IndexFileId, entry.Id, entry.Sector, entry.Length);
 			return indexData;
 		}
 
@@ -132,14 +132,14 @@ namespace OSRSCache.fs.jagex
 		{
 			Console.WriteLine("Loading index {}", index.Id);
 
-			sbyte[] indexData = readIndex(index.Id);
+			byte[] indexData = readIndex(index.Id);
 			if (indexData == null)
 			{
 				return;
 			}
 
 			Container res = Container.decompress(indexData, null);
-			sbyte[] data = res.data;
+			byte[] data = res.data;
 
 			IndexData id = new IndexData();
 			id.load(data);
@@ -164,9 +164,7 @@ namespace OSRSCache.fs.jagex
 			Debug.Assert(res.revision == -1);
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public byte[] loadArchive(OSRSCache.fs.Archive archive) throws java.io.IOException
-		public virtual sbyte[] loadArchive(Archive archive)
+		public virtual byte[] loadArchive(Archive archive)
 		{
 			Index index = archive.Index;
 			IndexFile indexFile = getIndex(index.Id);
@@ -184,7 +182,7 @@ namespace OSRSCache.fs.jagex
 
 			Console.WriteLine("Loading archive {} for index {} from sector {} length {}", archive.ArchiveId, index.Id, entry.Sector, entry.Length);
 
-			sbyte[] archiveData = data.read(index.Id, entry.Id, entry.Sector, entry.Length);
+			byte[] archiveData = data.read(index.Id, entry.Id, entry.Sector, entry.Length);
 			return archiveData;
 		}
 
@@ -205,11 +203,11 @@ namespace OSRSCache.fs.jagex
 		private void saveIndex(Index index)
 		{
 			IndexData indexData = index.toIndexData();
-			sbyte[] data = indexData.writeIndexData();
+			byte[] data = indexData.writeIndexData();
 
 			Container container = new Container(index.Compression, -1); // index data revision is always -1
 			container.compress(data, null);
-			sbyte[] compressedData = container.data;
+			byte[] compressedData = container.data;
 			DataFileWriteResult res = this.data.write(index255.IndexFileId, index.Id, compressedData);
 
 			index255.write(new IndexEntry(index255, index.Id, res.sector, res.compressedLength));
@@ -221,7 +219,7 @@ namespace OSRSCache.fs.jagex
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: @Override public void saveArchive(OSRSCache.fs.Archive a, byte[] archiveData) throws java.io.IOException
-		public virtual void saveArchive(Archive a, sbyte[] archiveData)
+		public virtual void saveArchive(Archive a, byte[] archiveData)
 		{
 			Index index = a.Index;
 			IndexFile indexFile = getIndex(index.Id);
@@ -230,8 +228,10 @@ namespace OSRSCache.fs.jagex
 			DataFileWriteResult res = data.write(index.Id, a.ArchiveId, archiveData);
 			indexFile.write(new IndexEntry(indexFile, a.ArchiveId, res.sector, res.compressedLength));
 
-			sbyte compression = archiveData[0];
-			int compressedSize = Ints.fromBytes(archiveData[1], archiveData[2], archiveData[3], archiveData[4]);
+			byte compression = archiveData[0];
+			// int compressedSize = Ints.fromBytes(archiveData[1], archiveData[2], archiveData[3], archiveData[4]);
+			byte[] _archiveData = (byte[]) (Array)archiveData;
+			int compressedSize = BitConverter.ToInt32(new byte[] {_archiveData[1], _archiveData[2], _archiveData[3], _archiveData[4]}, 0);
 
 			// don't crc the appended revision, if it is there
 			int length = 1 + 4 + compressedSize + (compression != CompressionType.NONE ? 4 : 0);

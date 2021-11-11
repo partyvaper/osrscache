@@ -6,7 +6,7 @@
 
 	public class SoundEffectLoader
 	{
-		public virtual SoundEffectDefinition load(sbyte[] b)
+		public virtual SoundEffectDefinition load(byte[] b)
 		{
 			SoundEffectDefinition se = new SoundEffectDefinition();
 			InputStream @in = new InputStream(b);

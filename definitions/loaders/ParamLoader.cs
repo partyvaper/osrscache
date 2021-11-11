@@ -30,7 +30,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class ParamLoader
 	{
-		public virtual ParamDefinition load(sbyte[] data)
+		public virtual ParamDefinition load(byte[] data)
 		{
 			ParamDefinition def = new ParamDefinition();
 			InputStream b = new InputStream(data);

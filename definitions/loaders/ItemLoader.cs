@@ -8,7 +8,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class ItemLoader
 	{
-		public virtual ItemDefinition load(int id, sbyte[] b)
+		public virtual ItemDefinition load(int id, byte[] b)
 		{
 			ItemDefinition def = new ItemDefinition(id);
 			InputStream @is = new InputStream(b);

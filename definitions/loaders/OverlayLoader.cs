@@ -30,7 +30,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class OverlayLoader
 	{
-		public virtual OverlayDefinition load(int id, sbyte[] b)
+		public virtual OverlayDefinition load(int id, byte[] b)
 		{
 			OverlayDefinition def = new OverlayDefinition();
 			InputStream @is = new InputStream(b);

@@ -29,7 +29,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class AreaLoader
 	{
-		public virtual AreaDefinition load(sbyte[] b, int id)
+		public virtual AreaDefinition load(byte[] b, int id)
 		{
 			InputStream @in = new InputStream(b);
 			AreaDefinition def = new AreaDefinition();
@@ -117,7 +117,7 @@ namespace OSRSCache.definitions.loaders
 					def.field3292[var5] = @in.readInt();
 				}
 
-				def.field3309 = new sbyte[var3];
+				def.field3309 = new byte[var3];
 
 				for (var5 = 0; var5 < var3; ++var5)
 				{

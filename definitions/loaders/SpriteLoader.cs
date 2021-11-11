@@ -33,7 +33,7 @@ namespace OSRSCache.definitions.loaders
 		public static readonly int FLAG_VERTICAL = 0b01;
 		public static readonly int FLAG_ALPHA = 0b10;
 
-		public virtual SpriteDefinition[] load(int id, sbyte[] b)
+		public virtual SpriteDefinition[] load(int id, byte[] b)
 		{
 			InputStream @is = new InputStream(b);
 
@@ -103,8 +103,8 @@ namespace OSRSCache.definitions.loaders
 				int spriteWidth = def.width;
 				int spriteHeight = def.height;
 				int dimension = spriteWidth * spriteHeight;
-				sbyte[] pixelPaletteIndicies = new sbyte[dimension];
-				sbyte[] pixelAlphas = new sbyte[dimension];
+				byte[] pixelPaletteIndicies = new byte[dimension];
+				byte[] pixelAlphas = new byte[dimension];
 				def.pixelIdx = pixelPaletteIndicies;
 				def.palette = palette;
 
@@ -162,7 +162,7 @@ namespace OSRSCache.definitions.loaders
 
 						if (index != 0)
 						{
-							pixelAlphas[j] = unchecked((sbyte) 0xFF);
+							pixelAlphas[j] = unchecked((byte) 0xFF);
 						}
 					}
 				}

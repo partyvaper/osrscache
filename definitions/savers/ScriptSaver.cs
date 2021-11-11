@@ -1,21 +1,14 @@
 ﻿using System.Collections.Generic;
+using OSRSCache.script;
 
 namespace OSRSCache.definitions.savers
 {
 	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
 	using OutputStream = OSRSCache.io.OutputStream;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static OSRSCache.script.Opcodes.SCONST;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static OSRSCache.script.Opcodes.POP_INT;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static OSRSCache.script.Opcodes.POP_STRING;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static OSRSCache.script.Opcodes.RETURN;
 
 	public class ScriptSaver
 	{
-		public virtual sbyte[] save(ScriptDefinition script)
+		public virtual byte[] save(ScriptDefinition script)
 		{
 			int[] instructions = script.instructions;
 			int[] intOperands = script.intOperands;
@@ -28,11 +21,11 @@ namespace OSRSCache.definitions.savers
 			{
 				int opcode = instructions[i];
 				@out.writeShort(opcode);
-				if (opcode == SCONST)
+				if (opcode == (int) Opcodes.SCONST)
 				{
 					@out.writeString(stringOperands[i]);
 				}
-				else if (opcode < 100 && opcode != RETURN && opcode != POP_INT && opcode != POP_STRING)
+				else if (opcode < 100 && opcode != (int) Opcodes.RETURN && opcode != (int) Opcodes.POP_INT && opcode != (int) Opcodes.POP_STRING)
 				{
 					@out.writeInt(intOperands[i]);
 				}

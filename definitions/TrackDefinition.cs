@@ -29,7 +29,7 @@ namespace OSRSCache.definitions
 //ORIGINAL LINE: @Data public class TrackDefinition
 	public class TrackDefinition
 	{
-		public sbyte[] midi; // midi file contents
+		public byte[] midi; // midi file contents
 	}
 
 }

@@ -31,7 +31,7 @@ namespace OSRSCache.definitions.savers
 
 	public class ItemSaver
 	{
-		public virtual sbyte[] save(ItemDefinition item)
+		public virtual byte[] save(ItemDefinition item)
 		{
 			OutputStream @out = new OutputStream();
 			if (item.inventoryModel != 0)

@@ -32,7 +32,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class FrameLoader
 	{
-		public virtual FrameDefinition load(FramemapDefinition framemap, int id, sbyte[] b)
+		public virtual FrameDefinition load(FramemapDefinition framemap, int id, byte[] b)
 		{
 			FrameDefinition def = new FrameDefinition();
 			InputStream @in = new InputStream(b);

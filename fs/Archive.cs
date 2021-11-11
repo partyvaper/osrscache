@@ -41,7 +41,7 @@ namespace OSRSCache.fs
 		private int revision;
 		private int compression;
 		private FileData[] fileData;
-		private sbyte[] hash; // used by webservice, sha256 hash of content
+		private byte[] hash; // used by webservice, sha256 hash of content
 
 		public Archive(Index index, int id)
 		{
@@ -96,21 +96,21 @@ namespace OSRSCache.fs
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public byte[] decompress(byte[] data) throws java.io.IOException
-		public virtual sbyte[] decompress(sbyte[] data)
+		public virtual byte[] decompress(byte[] data)
 		{
 			return decompress(data, null);
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public byte[] decompress(byte[] data, int[] keys) throws java.io.IOException
-		public virtual sbyte[] decompress(sbyte[] data, int[] keys)
+		public virtual byte[] decompress(byte[] data, int[] keys)
 		{
 			if (data == null)
 			{
 				return null;
 			}
 
-			sbyte[] encryptedData = data;
+			byte[] encryptedData = data;
 
 			Container container = Container.decompress(encryptedData, keys);
 			if (container == null)
@@ -119,7 +119,7 @@ namespace OSRSCache.fs
 				return null;
 			}
 
-			sbyte[] decompressedData = container.data;
+			byte[] decompressedData = container.data;
 
 			if (this.crc != container.crc)
 			{
@@ -144,16 +144,16 @@ namespace OSRSCache.fs
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public ArchiveFiles getFiles(byte[] data) throws java.io.IOException
-		public virtual ArchiveFiles getFiles(sbyte[] data)
+		public virtual ArchiveFiles getFiles(byte[] data)
 		{
 			return getFiles(data, null);
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public ArchiveFiles getFiles(byte[] data, int[] keys) throws java.io.IOException
-		public virtual ArchiveFiles getFiles(sbyte[] data, int[] keys)
+		public virtual ArchiveFiles getFiles(byte[] data, int[] keys)
 		{
-			sbyte[] decompressedData = decompress(data, keys);
+			byte[] decompressedData = decompress(data, keys);
 
 			ArchiveFiles files = new ArchiveFiles();
 			foreach (FileData fileEntry in fileData)
@@ -239,7 +239,7 @@ namespace OSRSCache.fs
 		}
 
 
-		public virtual sbyte[] Hash
+		public virtual byte[] Hash
 		{
 			get
 			{

@@ -30,7 +30,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class SpotAnimLoader
 	{
-		public virtual SpotAnimDefinition load(int id, sbyte[] b)
+		public virtual SpotAnimDefinition load(int id, byte[] b)
 		{
 			SpotAnimDefinition def = new SpotAnimDefinition();
 			InputStream @is = new InputStream(b);

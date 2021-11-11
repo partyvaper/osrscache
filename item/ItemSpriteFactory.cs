@@ -259,13 +259,13 @@ namespace OSRSCache.item
 					}
 				}
 
-				litModel.field1840 = new sbyte[def.faceCount];
+				litModel.field1840 = new byte[def.faceCount];
 
 				for (int i = 0; i < def.faceCount; ++i)
 				{
 					if (def.textureCoordinates[i] != -1)
 					{
-						litModel.field1840[i] = (sbyte) var9[def.textureCoordinates[i] & 255];
+						litModel.field1840[i] = (byte) var9[def.textureCoordinates[i] & 255];
 					}
 					else
 					{
@@ -276,7 +276,7 @@ namespace OSRSCache.item
 
 			for (int faceIdx = 0; faceIdx < def.faceCount; ++faceIdx)
 			{
-				sbyte faceType;
+				byte faceType;
 				if (def.faceRenderTypes == null)
 				{
 					faceType = 0;
@@ -286,7 +286,7 @@ namespace OSRSCache.item
 					faceType = def.faceRenderTypes[faceIdx];
 				}
 
-				sbyte faceAlpha;
+				byte faceAlpha;
 				if (def.faceAlphas == null)
 				{
 					faceAlpha = 0;

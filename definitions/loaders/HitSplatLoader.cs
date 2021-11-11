@@ -29,7 +29,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class HitSplatLoader
 	{
-		public virtual HitSplatDefinition load(sbyte[] data)
+		public virtual HitSplatDefinition load(byte[] data)
 		{
 			HitSplatDefinition def = new HitSplatDefinition();
 			InputStream stream = new InputStream(data);

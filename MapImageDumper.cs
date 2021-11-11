@@ -923,7 +923,7 @@ namespace OSRSCache
 			Index index = store.getIndex(IndexType.CONFIGS);
 			Archive archive = index.getArchive(ConfigType.UNDERLAY.Id);
 
-			sbyte[] archiveData = storage.loadArchive(archive);
+			byte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
 
 			foreach (FSFile file in files.Files)
@@ -948,7 +948,7 @@ namespace OSRSCache
 			Index index = store.getIndex(IndexType.CONFIGS);
 			Archive archive = index.getArchive(ConfigType.OVERLAY.Id);
 
-			sbyte[] archiveData = storage.loadArchive(archive);
+			byte[] archiveData = storage.loadArchive(archive);
 			ArchiveFiles files = archive.getFiles(archiveData);
 
 			foreach (FSFile file in files.Files)
@@ -977,7 +977,7 @@ namespace OSRSCache
 
 			foreach (Archive a in index.Archives)
 			{
-				sbyte[] contents = a.decompress(storage.loadArchive(a));
+				byte[] contents = a.decompress(storage.loadArchive(a));
 
 				SpriteLoader loader = new SpriteLoader();
 				SpriteDefinition[] sprites = loader.load(a.ArchiveId, contents);

@@ -35,12 +35,12 @@ namespace OSRSCache.io
 
 		private readonly ByteBuffer buffer;
 
-		public InputStream(sbyte[] buffer)
+		public InputStream(byte[] buffer)
 		{
 			this.buffer = ByteBuffer.wrap(buffer);
 		}
 
-		public virtual sbyte[] Array
+		public virtual byte[] Array
 		{
 			get
 			{
@@ -92,17 +92,17 @@ namespace OSRSCache.io
 			return buffer.remaining();
 		}
 
-		public virtual sbyte readByte()
+		public virtual byte readByte()
 		{
 			return buffer.get();
 		}
 
-		public virtual void readBytes(sbyte[] buffer, int off, int len)
+		public virtual void readBytes(byte[] buffer, int off, int len)
 		{
 			this.buffer.get(buffer, off, len);
 		}
 
-		public virtual void readBytes(sbyte[] buffer)
+		public virtual void readBytes(byte[] buffer)
 		{
 			this.buffer.get(buffer);
 		}
@@ -127,7 +127,7 @@ namespace OSRSCache.io
 			return buffer.getInt();
 		}
 
-		public virtual sbyte peek()
+		public virtual byte peek()
 		{
 			return buffer.get(buffer.position());
 		}
@@ -229,7 +229,7 @@ namespace OSRSCache.io
 
 		public virtual int readVarInt()
 		{
-			sbyte var1 = this.readByte();
+			byte var1 = this.readByte();
 
 			int var2;
 			for (var2 = 0; var1 < 0; var1 = this.readByte())
@@ -240,11 +240,11 @@ namespace OSRSCache.io
 			return var2 | var1;
 		}
 
-		public virtual sbyte[] Remaining
+		public virtual byte[] Remaining
 		{
 			get
 			{
-				sbyte[] b = new sbyte[buffer.remaining()];
+				byte[] b = new byte[buffer.remaining()];
 				buffer.get(b);
 				return b;
 			}

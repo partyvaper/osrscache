@@ -205,8 +205,8 @@ namespace OSRSCache.script.assembler
 			script.stringStackCount = stringStackCount;
 			script.localIntCount = localIntCount;
 			script.localStringCount = localStringCount;
-			script.instructions = opcodes.Select(int.valueOf).ToArray();
-			script.intOperands = iops.Select(i => i == null ? 0 : i).Select(int.valueOf).ToArray();
+			script.instructions = ((List<int>)opcodes).ToArray(); // opcodes.Select(int.valueOf).ToArray();
+			script.intOperands = iops.Select(i => i == null ? 0 : i).ToArray(); // .Select(int.valueOf).ToArray();
 			script.stringOperands = ((List<string>)sops).ToArray();
 			script.switches = buildSwitches();
 			return script;
@@ -228,7 +228,7 @@ namespace OSRSCache.script.assembler
 
 		private IDictionary<int, int>[] buildSwitches()
 		{
-			int count = (int) switches.Where(Objects.nonNull).Count();
+			int count = (int) switches.Where(Object.nonNull).Count();
 
 			if (count == 0)
 			{

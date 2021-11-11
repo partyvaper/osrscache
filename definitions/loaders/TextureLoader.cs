@@ -30,7 +30,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class TextureLoader
 	{
-		public virtual TextureDefinition load(int id, sbyte[] b)
+		public virtual TextureDefinition load(int id, byte[] b)
 		{
 			TextureDefinition def = new TextureDefinition();
 			InputStream @is = new InputStream(b);

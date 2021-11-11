@@ -9,7 +9,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class NpcLoader
 	{
-		public virtual NpcDefinition load(int id, sbyte[] b)
+		public virtual NpcDefinition load(int id, byte[] b)
 		{
 			NpcDefinition def = new NpcDefinition(id);
 			InputStream @is = new InputStream(b);

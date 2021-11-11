@@ -39,7 +39,7 @@ namespace OSRSCache.definitions
 		public string[] field3298 = new string[5];
 		public int[] field3300;
 		public string field3308;
-		public sbyte[] field3309;
+		public byte[] field3309;
 		public int field3310;
 
 	}

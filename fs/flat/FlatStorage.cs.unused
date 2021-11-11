@@ -44,7 +44,7 @@ namespace OSRSCache.fs.flat
 		protected internal const string EXTENSION = ".flatcache";
 
 		private readonly string directory;
-		private readonly IDictionary<long, sbyte[]> data = new Dictionary<long, sbyte[]>();
+		private readonly IDictionary<long, byte[]> data = new Dictionary<long, byte[]>();
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public FlatStorage(java.io.File directory) throws java.io.IOException
@@ -240,7 +240,7 @@ namespace OSRSCache.fs.flat
 							br.append("\n");
 						}
 
-						sbyte[] contents = store.Storage.loadArchive(archive);
+						byte[] contents = store.Storage.loadArchive(archive);
 						if (contents != null)
 						{
 							br.append("contents=");
@@ -260,14 +260,14 @@ namespace OSRSCache.fs.flat
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: @Override public byte[] loadArchive(OSRSCache.fs.Archive archive) throws java.io.IOException
-		public virtual sbyte[] loadArchive(Archive archive)
+		public virtual byte[] loadArchive(Archive archive)
 		{
 			return data[(long) archive.Index.Id << 32 | archive.ArchiveId];
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: @Override public void saveArchive(OSRSCache.fs.Archive archive, byte[] bytes) throws java.io.IOException
-		public virtual void saveArchive(Archive archive, sbyte[] bytes)
+		public virtual void saveArchive(Archive archive, byte[] bytes)
 		{
 			data[(long) archive.Index.Id << 32 | archive.ArchiveId] = bytes;
 		}

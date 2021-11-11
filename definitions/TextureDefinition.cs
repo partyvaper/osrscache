@@ -28,7 +28,7 @@ namespace OSRSCache.definitions
 			{
 				SpriteDefinition var7 = spriteProvider.provide(fileIds[var6], 0);
 				var7.normalize();
-				sbyte[] var8 = var7.pixelIdx;
+				byte[] var8 = var7.pixelIdx;
 				int[] var9 = var7.palette;
 				int var10 = this.field1786[var6];
 

@@ -35,11 +35,11 @@ namespace OSRSCache.definitions
 		{
 			public int? height; // public int? height;
 			public int attrOpcode;
-			public sbyte settings;
-			public sbyte overlayId;
-			public sbyte overlayPath;
-			public sbyte overlayRotation;
-			public sbyte underlayId;
+			public byte settings;
+			public byte overlayId;
+			public byte overlayPath;
+			public byte overlayRotation;
+			public byte underlayId;
 		}
 
 		public int regionX; // was private, is now public

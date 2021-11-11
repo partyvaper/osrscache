@@ -34,7 +34,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class EnumLoader
 	{
-		public virtual EnumDefinition load(int id, sbyte[] b)
+		public virtual EnumDefinition load(int id, byte[] b)
 		{
 			if (b.Length == 1 && b[0] == 0)
 			{

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OSRSCache.script;
 
 namespace OSRSCache.definitions.loaders
 {
@@ -16,7 +17,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class ScriptLoader
 	{
-		public virtual ScriptDefinition load(int id, sbyte[] b)
+		public virtual ScriptDefinition load(int id, byte[] b)
 		{
 			ScriptDefinition def = new ScriptDefinition(id);
 			InputStream @in = new InputStream(b);
@@ -74,11 +75,11 @@ namespace OSRSCache.definitions.loaders
 			for (int i = 0; @in.Offset < endIdx; instructions[i++] = opcode)
 			{
 				opcode = @in.readUnsignedShort();
-				if (opcode == SCONST)
+				if (opcode == (int) Opcodes.SCONST)
 				{
 					stringOperands[i] = @in.readString();
 				}
-				else if (opcode < 100 && opcode != RETURN && opcode != POP_INT && opcode != POP_STRING)
+				else if (opcode < 100 && opcode != (int) Opcodes.RETURN && opcode != (int) Opcodes.POP_INT && opcode != (int) Opcodes.POP_STRING)
 				{
 					intOperands[i] = @in.readInt();
 				}

@@ -31,7 +31,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class StructLoader
 	{
-		public virtual StructDefinition load(int id, sbyte[] b)
+		public virtual StructDefinition load(int id, byte[] b)
 		{
 			StructDefinition def = new StructDefinition(id);
 			InputStream @is = new InputStream(b);

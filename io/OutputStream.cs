@@ -27,7 +27,7 @@ using System.IO;
  */
 namespace OSRSCache.io
 {
-	using Preconditions = com.google.common.@base.Preconditions;
+	// using Preconditions = com.google.common.@base.Preconditions;
 
 	public sealed class OutputStream : Stream
 	{
@@ -42,7 +42,7 @@ namespace OSRSCache.io
 		{
 		}
 
-		public sbyte[] Array
+		public byte[] Array
 		{
 			get
 			{
@@ -86,12 +86,12 @@ namespace OSRSCache.io
 		}
 
 
-		public void writeBytes(sbyte[] b)
+		public void writeBytes(byte[] b)
 		{
 			writeBytes(b, 0, b.Length);
 		}
 
-		public void writeBytes(sbyte[] b, int offset, int length)
+		public void writeBytes(byte[] b, int offset, int length)
 		{
 			ensureRemaining(length);
 			buffer.put(b, offset, length);
@@ -100,12 +100,12 @@ namespace OSRSCache.io
 		public void writeByte(int i)
 		{
 			ensureRemaining(1);
-			buffer.put((sbyte) i);
+			buffer.put((byte) i);
 		}
 
 		public void writeBigSmart(int value)
 		{
-			Preconditions.checkArgument(value >= 0);
+			// Preconditions.checkArgument(value >= 0);
 			if (value >= 32768)
 			{
 				ensureRemaining(4);
@@ -126,7 +126,11 @@ namespace OSRSCache.io
 
 		public void writeShortSmart(int value)
 		{
-			Preconditions.checkArgument(value >= 0);
+			// Preconditions.checkArgument(value >= 0);
+			if (value < 1)
+			{
+				return;
+			}
 			if (value < 128)
 			{
 				writeByte(value);
@@ -140,9 +144,9 @@ namespace OSRSCache.io
 		public void write24BitInt(int i)
 		{
 			ensureRemaining(3);
-			buffer.put((sbyte)((int)((uint)i >> 16)));
-			buffer.put((sbyte)((int)((uint)i >> 8)));
-			buffer.put(unchecked((sbyte)(i & 0xFF)));
+			buffer.put((byte)((int)((uint)i >> 16)));
+			buffer.put((byte)((int)((uint)i >> 8)));
+			buffer.put(unchecked((byte)(i & 0xFF)));
 		}
 
 		public void writeInt(int i)
@@ -178,10 +182,10 @@ namespace OSRSCache.io
 
 		public void writeLengthFromMark(int var1)
 		{
-			this.Array[this.Offset - var1 - 4] = (sbyte)(var1 >> 24);
-			this.Array[this.Offset - var1 - 3] = (sbyte)(var1 >> 16);
-			this.Array[this.Offset - var1 - 2] = (sbyte)(var1 >> 8);
-			this.Array[this.Offset - var1 - 1] = (sbyte) var1;
+			this.Array[this.Offset - var1 - 4] = (byte)(var1 >> 24);
+			this.Array[this.Offset - var1 - 3] = (byte)(var1 >> 16);
+			this.Array[this.Offset - var1 - 2] = (byte)(var1 >> 8);
+			this.Array[this.Offset - var1 - 1] = (byte) var1;
 		}
 
 		public void writeString(string str)
@@ -190,10 +194,10 @@ namespace OSRSCache.io
 			writeByte(0);
 		}
 
-		public sbyte[] flip()
+		public byte[] flip()
 		{
 			buffer.flip();
-			sbyte[] b = new sbyte[buffer.limit()];
+			byte[] b = new byte[buffer.limit()];
 			buffer.get(b);
 			return b;
 		}
@@ -202,7 +206,7 @@ namespace OSRSCache.io
 //ORIGINAL LINE: @Override public void write(int b) throws java.io.IOException
 		public override void write(int b)
 		{
-			buffer.put((sbyte) b);
+			buffer.put((byte) b);
 		}
 
 	}

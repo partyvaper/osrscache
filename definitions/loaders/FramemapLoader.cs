@@ -29,7 +29,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class FramemapLoader
 	{
-		public virtual FramemapDefinition load(int id, sbyte[] b)
+		public virtual FramemapDefinition load(int id, byte[] b)
 		{
 			FramemapDefinition def = new FramemapDefinition();
 			InputStream @in = new InputStream(b);

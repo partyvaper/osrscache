@@ -30,7 +30,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class KitLoader
 	{
-		public virtual KitDefinition load(int id, sbyte[] b)
+		public virtual KitDefinition load(int id, byte[] b)
 		{
 			KitDefinition def = new KitDefinition(id);
 			InputStream @is = new InputStream(b);

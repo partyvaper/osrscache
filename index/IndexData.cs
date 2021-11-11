@@ -36,7 +36,7 @@ namespace OSRSCache.index
 		private bool named;
 		private ArchiveData[] archives;
 
-		public virtual void load(sbyte[] data)
+		public virtual void load(byte[] data)
 		{
 			InputStream stream = new InputStream(data);
 			protocol = stream.readUnsignedByte();
@@ -138,7 +138,7 @@ namespace OSRSCache.index
 			}
 		}
 
-		public virtual sbyte[] writeIndexData()
+		public virtual byte[] writeIndexData()
 		{
 			OutputStream stream = new OutputStream();
 			stream.writeByte(protocol);

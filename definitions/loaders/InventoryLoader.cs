@@ -29,7 +29,7 @@ namespace OSRSCache.definitions.loaders
 
 	public class InventoryLoader
 	{
-		public virtual InventoryDefinition load(int id, sbyte[] b)
+		public virtual InventoryDefinition load(int id, byte[] b)
 		{
 			InventoryDefinition def = new InventoryDefinition();
 			def.id = id;

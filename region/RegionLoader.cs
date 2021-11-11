@@ -93,7 +93,7 @@ namespace OSRSCache.region
 				return null;
 			}
 
-			sbyte[] data = map.decompress(storage.loadArchive(map));
+			byte[] data = map.decompress(storage.loadArchive(map));
 
 			MapDefinition mapDef = (new MapLoader()).load(x, y, data);
 

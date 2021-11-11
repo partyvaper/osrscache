@@ -31,7 +31,7 @@ namespace OSRSCache.definitions.savers
 
 	public class NpcSaver
 	{
-		public virtual sbyte[] save(NpcDefinition npc)
+		public virtual byte[] save(NpcDefinition npc)
 		{
 			OutputStream @out = new OutputStream();
 			if (npc.models != null)
