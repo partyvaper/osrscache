@@ -44,7 +44,7 @@ namespace OSRSCache.script.assembler
 			string text = ctx.getText();
 			text = text.Substring(0, text.Length - 1); // remove trailing :
 
-			Console.WriteLine("Label {} is on instruction {}", text, pos);
+			Console.WriteLine("Label {0} is on instruction {1}", text, pos);
 
 			map[text] = pos;
 		}

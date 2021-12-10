@@ -206,7 +206,7 @@ namespace OSRSCache.fs
 
 			byte[] fileData = stream.flip();
 
-			Console.WriteLine("Saved contents of archive ({} files), {} bytes", files.Count, fileData.Length);
+			Console.WriteLine("Saved contents of archive ({0} files), {1} bytes", files.Count, fileData.Length);
 			return fileData;
 		}
 	}

@@ -98,7 +98,7 @@ namespace OSRSCache.script.assembler
 			Instruction i = instructions.find(text);
 			if (i == null)
 			{
-				Console.WriteLine("Unknown instruction {}", text);
+				Console.WriteLine("Unknown instruction {0}", text);
 				throw new Exception("Unknown instruction " + text);
 			}
 
@@ -236,7 +236,7 @@ namespace OSRSCache.script.assembler
 			}
 
 			int index = 0;
-			IDictionary<int, int>[] maps = new System.Collections.IDictionary[count];
+			IDictionary<int, int>[] maps = new Dictionary<int, int>[count];
 			foreach (LookupSwitch lswitch in switches)
 			{
 				if (lswitch == null)

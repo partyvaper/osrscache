@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using OSRSCache.script;
 
 namespace OSRSCache.definitions.loaders
@@ -37,7 +38,7 @@ namespace OSRSCache.definitions.loaders
 			int numSwitches = @in.readUnsignedByte();
 			if (numSwitches > 0)
 			{
-				IDictionary<int, int>[] switches = new System.Collections.IDictionary[numSwitches];
+				IDictionary<int, int>[] switches = new Dictionary<int, int>[numSwitches];
 				def.switches = switches;
 
 				for (int i = 0; i < numSwitches; ++i)

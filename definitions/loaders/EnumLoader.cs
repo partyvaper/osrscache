@@ -108,7 +108,7 @@ namespace OSRSCache.definitions.loaders
 					break;
 				}
 				default:
-					Console.WriteLine("EnumLoader: unrecognized opcode {}", opcode);
+					Console.WriteLine("EnumLoader: unrecognized opcode {0}", opcode);
 					break;
 			}
 		}

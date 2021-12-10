@@ -1,20 +1,4 @@
-﻿//-------------------------------------------------------------------------------------------
-//	Copyright © 2007 - 2021 Tangible Software Solutions, Inc.
-//	This class can be used by anyone provided that the copyright notice remains intact.
-//
-//	This class is used to replicate the java.nio.ByteBuffer class in C#.
-//
-//	Instances are only obtainable via the static 'allocate' method.
-//
-//	Some methods are not available:
-//		All methods which create shared views of the buffer such as: array,
-//		asCharBuffer, asDoubleBuffer, asFloatBuffer, asIntBuffer, asLongBuffer,
-//		asReadOnlyBuffer, asShortBuffer, duplicate, slice, & wrap.
-//
-//		Other methods such as: mark, reset, isReadOnly, order, compareTo,
-//		arrayOffset, & the limit setter method.
-//-------------------------------------------------------------------------------------------
-using System.IO;
+﻿using System.IO;
 
 public class ByteBuffer
 {

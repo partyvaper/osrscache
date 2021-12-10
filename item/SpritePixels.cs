@@ -194,22 +194,22 @@ namespace OSRSCache.item
 
 		}
 
-		public virtual BufferedImage toBufferedImage()
-		{
-			int[] transPixels = new int[pixels.Length];
-			BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-			for (int i = 0; i < pixels.Length; i++)
-			{
-				if (pixels[i] != 0)
-				{
-					transPixels[i] = pixels[i] | unchecked((int)0xff000000);
-				}
-			}
-
-			img.setRGB(0, 0, width, height, transPixels, 0, width);
-			return img;
-		}
+		// public virtual BufferedImage toBufferedImage()
+		// {
+		// 	int[] transPixels = new int[pixels.Length];
+		// 	BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		//
+		// 	for (int i = 0; i < pixels.Length; i++)
+		// 	{
+		// 		if (pixels[i] != 0)
+		// 		{
+		// 			transPixels[i] = pixels[i] | unchecked((int)0xff000000);
+		// 		}
+		// 	}
+		//
+		// 	img.setRGB(0, 0, width, height, transPixels, 0, width);
+		// 	return img;
+		// }
 
 	}
 

@@ -36,43 +36,33 @@ namespace OSRSCache.fs.jagex
 
 		private readonly RandomAccessFile dat;
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public DataFile(java.io.File file) throws java.io.FileNotFoundException
 		public DataFile(string file)
 		{
 			this.dat = new RandomAccessFile(file, "rw");
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public void close() throws java.io.IOException
 		public virtual void Dispose()
 		{
 			dat.close();
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public void clear() throws java.io.IOException
 		public virtual void clear()
 		{
 			dat.setLength(0L);
 		}
 
-		/// 
 		/// <param name="indexId"> expected index of archive of contents being read </param>
 		/// <param name="archiveId"> expected archive of contents being read </param>
 		/// <param name="sector"> sector to start reading at </param>
 		/// <param name="size"> size of file
 		/// @return </param>
-		/// <exception cref="IOException"> </exception>
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public synchronized byte[] read(int indexId, int archiveId, int sector, int size) throws java.io.IOException
 		public virtual byte[] read(int indexId, int archiveId, int sector, int size)
 		{
 			lock (this)
 			{
 				if (sector <= 0L || dat.length() / SECTOR_SIZE < (long) sector)
 				{
-					Console.WriteLine("bad read, dat length {}, requested sector {}", dat.length(), sector);
+					Console.WriteLine("bad read, dat length {0}, requested sector {1}", dat.length(), sector);
 					return null;
 				}
         
@@ -105,7 +95,7 @@ namespace OSRSCache.fs.jagex
 						int i = dat.read(readBuffer, 0, headerSize + dataBlockSize);
 						if (i != headerSize + dataBlockSize)
 						{
-							Console.WriteLine("Short read when reading file data for {}/{}", indexId, archiveId);
+							Console.WriteLine("Short read when reading file data for {0}/{1}", indexId, archiveId);
 							return null;
 						}
         
@@ -137,7 +127,7 @@ namespace OSRSCache.fs.jagex
         
 					if (archiveId != currentArchive || currentPart != part || indexId != currentIndex)
 					{
-						Console.WriteLine("data mismatch {} != {}, {} != {}, {} != {}", archiveId, currentArchive, part, currentPart, indexId, currentIndex);
+						Console.WriteLine("data mismatch {0} != {1}, {2} != {3}, {4} != {5}", archiveId, currentArchive, part, currentPart, indexId, currentIndex);
 						return null;
 					}
         

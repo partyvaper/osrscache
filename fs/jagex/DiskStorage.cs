@@ -130,7 +130,7 @@ namespace OSRSCache.fs.jagex
 //ORIGINAL LINE: private void loadIndex(OSRSCache.fs.Index index) throws java.io.IOException
 		private void loadIndex(Index index)
 		{
-			Console.WriteLine("Loading index {}", index.Id);
+			Console.WriteLine("Loading index {0}", index.Id);
 
 			byte[] indexData = readIndex(index.Id);
 			if (indexData == null)
@@ -180,7 +180,7 @@ namespace OSRSCache.fs.jagex
 
 			Debug.Assert(entry.Id == archive.ArchiveId);
 
-			Console.WriteLine("Loading archive {} for index {} from sector {} length {}", archive.ArchiveId, index.Id, entry.Sector, entry.Length);
+			Console.WriteLine("Loading archive {0} for index {1} from sector {2} length {3}", archive.ArchiveId, index.Id, entry.Sector, entry.Length);
 
 			byte[] archiveData = data.read(index.Id, entry.Id, entry.Sector, entry.Length);
 			return archiveData;
@@ -240,7 +240,7 @@ namespace OSRSCache.fs.jagex
 			crc.update(archiveData, 0, length);
 			a.Crc = crc.Hash;
 
-			Console.WriteLine("Saved archive {}/{} at sector {}, compressed length {}", index.Id, a.ArchiveId, res.sector, res.compressedLength);
+			Console.WriteLine("Saved archive {0}/{1} at sector {2}, compressed length {3}", index.Id, a.ArchiveId, res.sector, res.compressedLength);
 		}
 	}
 

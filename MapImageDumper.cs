@@ -91,7 +91,7 @@ namespace OSRSCache
 
 		private readonly IDictionary<int, UnderlayDefinition> underlays = new Dictionary<int, UnderlayDefinition>();
 		private readonly IDictionary<int, OverlayDefinition> overlays = new Dictionary<int, OverlayDefinition>();
-		private readonly IDictionary<int, MediaTypeNames.Image> scaledMapIcons = new Dictionary<int, MediaTypeNames.Image>();
+		// private readonly IDictionary<int, MediaTypeNames.Image> scaledMapIcons = new Dictionary<int, MediaTypeNames.Image>();
 
 		private RegionLoader regionLoader;
 		private readonly AreaManager areas;
@@ -124,112 +124,108 @@ namespace OSRSCache
 			loadRegions(store);
 			areas.load();
 			sprites.load();
-			loadSprites();
+			// loadSprites();
 		}
 
-		public virtual BufferedImage drawMap(int z)
-		{
-			int minX = regionLoader.LowestX.BaseX;
-			int minY = regionLoader.LowestY.BaseY;
+		// public virtual BufferedImage drawMap(int z)
+		// {
+		// 	int minX = regionLoader.LowestX.BaseX;
+		// 	int minY = regionLoader.LowestY.BaseY;
+		//
+		// 	int maxX = regionLoader.HighestX.BaseX + Region.X;
+		// 	int maxY = regionLoader.HighestY.BaseY + Region.Y;
+		//
+		// 	int dimX = maxX - minX;
+		// 	int dimY = maxY - minY;
+		//
+		// 	int pixelsX = dimX * MAP_SCALE;
+		// 	int pixelsY = dimY * MAP_SCALE;
+		//
+		// 	Console.WriteLine("Map image dimensions: {}px x {}px, {}px per map square ({} MB). Max memory: {}mb", pixelsX, pixelsY, MAP_SCALE, (pixelsX * pixelsY * 3 / 1024 / 1024), Runtime.getRuntime().maxMemory() / 1024L / 1024L);
+		//
+		// 	BufferedImage image = new BufferedImage(pixelsX, pixelsY, BufferedImage.TYPE_INT_RGB);
+		//
+		// 	drawMap(image, z);
+		// 	drawObjects(image, z);
+		// 	drawMapIcons(image, z);
+		//
+		// 	return image;
+		// }
 
-			int maxX = regionLoader.HighestX.BaseX + Region.X;
-			int maxY = regionLoader.HighestY.BaseY + Region.Y;
+		// public virtual BufferedImage drawRegion(Region region, int z)
+		// {
+		// 	int pixelsX = Region.X * MAP_SCALE;
+		// 	int pixelsY = Region.Y * MAP_SCALE;
+		//
+		// 	BufferedImage image = new BufferedImage(pixelsX, pixelsY, BufferedImage.TYPE_INT_RGB);
+		//
+		// 	drawMap(image, 0, 0, z, region);
+		// 	drawObjects(image, 0, 0, region, z);
+		// 	drawMapIcons(image, 0, 0, region, z);
+		//
+		// 	return image;
+		// }
 
-			int dimX = maxX - minX;
-			int dimY = maxY - minY;
+		// private void drawMap(BufferedImage image, int drawBaseX, int drawBaseY, int z, Region region)
+		// {
+		// 	int[][] map = RectangularArrays.RectangularIntArray(Region.X * MAP_SCALE, Region.Y * MAP_SCALE);
+		// 	drawMap(map, region, z);
+		//
+		// 	int[][] above = null;
+		// 	if (z < 3)
+		// 	{
+		// 		above = RectangularArrays.RectangularIntArray(Region.X * MAP_SCALE, Region.Y * MAP_SCALE);
+		// 		drawMap(above, region, z + 1);
+		// 	}
+		//
+		// 	for (int x = 0; x < Region.X; ++x)
+		// 	{
+		// 		for (int y = 0; y < Region.Y; ++y)
+		// 		{
+		// 			bool isBridge = (region.getTileSetting(1, x, Region.Y - y - 1) & 2) != 0;
+		//
+		// 			int tileSetting = region.getTileSetting(z, x, Region.Y - y - 1);
+		// 			if (!isBridge && ((tileSetting & 24) == 0))
+		// 			{
+		// 				drawTile(image, map, drawBaseX, drawBaseY, x, y);
+		// 			}
+		//
+		// 			if (z < 3 && isBridge) // client also has a check for &8 != 0 here
+		// 			{
+		// 				drawTile(image, above, drawBaseX, drawBaseY, x, y);
+		// 			}
+		// 		}
+		// 	}
+		// }
 
-			int pixelsX = dimX * MAP_SCALE;
-			int pixelsY = dimY * MAP_SCALE;
+		// private void drawMap(BufferedImage image, int z)
+		// {
+		// 	foreach (Region region in regionLoader.Regions)
+		// 	{
+		// 		int baseX = region.BaseX;
+		// 		int baseY = region.BaseY;
+		//
+		// 		// to pixel X
+		// 		int drawBaseX = baseX - regionLoader.LowestX.BaseX;
+		//
+		// 		// to pixel Y. top most y is 0, but the top most
+		// 		// region has the greatest y, so invert
+		// 		int drawBaseY = regionLoader.HighestY.BaseY - baseY;
+		//
+		// 		drawMap(image, drawBaseX, drawBaseY, z, region);
+		// 	}
+		// }
 
-			Console.WriteLine("Map image dimensions: {}px x {}px, {}px per map square ({} MB). Max memory: {}mb", pixelsX, pixelsY, MAP_SCALE, (pixelsX * pixelsY * 3 / 1024 / 1024), Runtime.getRuntime().maxMemory() / 1024L / 1024L);
-
-			BufferedImage image = new BufferedImage(pixelsX, pixelsY, BufferedImage.TYPE_INT_RGB);
-
-			drawMap(image, z);
-			drawObjects(image, z);
-			drawMapIcons(image, z);
-
-			return image;
-		}
-
-		public virtual BufferedImage drawRegion(Region region, int z)
-		{
-			int pixelsX = Region.X * MAP_SCALE;
-			int pixelsY = Region.Y * MAP_SCALE;
-
-			BufferedImage image = new BufferedImage(pixelsX, pixelsY, BufferedImage.TYPE_INT_RGB);
-
-			drawMap(image, 0, 0, z, region);
-			drawObjects(image, 0, 0, region, z);
-			drawMapIcons(image, 0, 0, region, z);
-
-			return image;
-		}
-
-		private void drawMap(BufferedImage image, int drawBaseX, int drawBaseY, int z, Region region)
-		{
-//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-//ORIGINAL LINE: int[][] map = new int[Region.X * MAP_SCALE][Region.Y * MAP_SCALE];
-			int[][] map = RectangularArrays.RectangularIntArray(Region.X * MAP_SCALE, Region.Y * MAP_SCALE);
-			drawMap(map, region, z);
-
-			int[][] above = null;
-			if (z < 3)
-			{
-//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-//ORIGINAL LINE: above = new int[Region.X * MAP_SCALE][Region.Y * MAP_SCALE];
-				above = RectangularArrays.RectangularIntArray(Region.X * MAP_SCALE, Region.Y * MAP_SCALE);
-				drawMap(above, region, z + 1);
-			}
-
-			for (int x = 0; x < Region.X; ++x)
-			{
-				for (int y = 0; y < Region.Y; ++y)
-				{
-					bool isBridge = (region.getTileSetting(1, x, Region.Y - y - 1) & 2) != 0;
-
-					int tileSetting = region.getTileSetting(z, x, Region.Y - y - 1);
-					if (!isBridge && ((tileSetting & 24) == 0))
-					{
-						drawTile(image, map, drawBaseX, drawBaseY, x, y);
-					}
-
-					if (z < 3 && isBridge) // client also has a check for &8 != 0 here
-					{
-						drawTile(image, above, drawBaseX, drawBaseY, x, y);
-					}
-				}
-			}
-		}
-
-		private void drawMap(BufferedImage image, int z)
-		{
-			foreach (Region region in regionLoader.Regions)
-			{
-				int baseX = region.BaseX;
-				int baseY = region.BaseY;
-
-				// to pixel X
-				int drawBaseX = baseX - regionLoader.LowestX.BaseX;
-
-				// to pixel Y. top most y is 0, but the top most
-				// region has the greatest y, so invert
-				int drawBaseY = regionLoader.HighestY.BaseY - baseY;
-
-				drawMap(image, drawBaseX, drawBaseY, z, region);
-			}
-		}
-
-		private void drawTile(BufferedImage to, int[][] pixels, int drawBaseX, int drawBaseY, int x, int y)
-		{
-			for (int i = 0; i < MAP_SCALE; ++i)
-			{
-				for (int j = 0; j < MAP_SCALE; ++j)
-				{
-					to.setRGB(drawBaseX * MAP_SCALE + x * MAP_SCALE + i, drawBaseY * MAP_SCALE + y * MAP_SCALE + j, pixels[x * MAP_SCALE + i][y * MAP_SCALE + j]);
-				}
-			}
-		}
+		// private void drawTile(BufferedImage to, int[][] pixels, int drawBaseX, int drawBaseY, int x, int y)
+		// {
+		// 	for (int i = 0; i < MAP_SCALE; ++i)
+		// 	{
+		// 		for (int j = 0; j < MAP_SCALE; ++j)
+		// 		{
+		// 			to.setRGB(drawBaseX * MAP_SCALE + x * MAP_SCALE + i, drawBaseY * MAP_SCALE + y * MAP_SCALE + j, pixels[x * MAP_SCALE + i][y * MAP_SCALE + j]);
+		// 		}
+		// 	}
+		// }
 
 		private void drawMap(int[][] pixels, Region region, int z)
 		{
@@ -494,273 +490,273 @@ namespace OSRSCache
 			}
 		}
 
-		private void drawObjects(BufferedImage image, int drawBaseX, int drawBaseY, Region region, int z)
-		{
-			Graphics2D graphics = image.createGraphics();
+		// private void drawObjects(BufferedImage image, int drawBaseX, int drawBaseY, Region region, int z)
+		// {
+		// 	Graphics2D graphics = image.createGraphics();
+		// 	
+		// 	foreach (Location location in region.Locations)
+		// 	{
+		// 	
+		// 		int rotation = location.orientation;
+		// 		int type = location.type;
+		// 	
+		// 		int localX = location.position.X - region.BaseX;
+		// 		int localY = location.position.Y - region.BaseY;
+		// 	
+		// 		bool isBridge = (region.getTileSetting(1, localX, localY) & 2) != 0;
+		// 	
+		// 		if (location.position.Z == z + 1)
+		// 		{
+		// 			if (!isBridge)
+		// 			{
+		// 				continue;
+		// 			}
+		// 		}
+		// 		else if (location.position.Z == z)
+		// 		{
+		// 			if (isBridge)
+		// 			{
+		// 				continue;
+		// 			}
+		// 	
+		// 			if ((region.getTileSetting(z, localX, localY) & 24) != 0)
+		// 			{
+		// 				continue;
+		// 			}
+		// 		}
+		// 		else
+		// 		{
+		// 			continue;
+		// 		}
+		// 	
+		// 		ObjectDefinition @object = findObject(location.id);
+		// 	
+		// 		int drawX = (drawBaseX + localX) * MAP_SCALE;
+		// 		int drawY = (drawBaseY + (Region.Y - 1 - localY)) * MAP_SCALE;
+		// 	
+		// 		if (type >= 0 && type <= 3)
+		// 		{
+		// 			// this is a wall
+		// 			int hash = (localY << 7) + localX + (location.id << 14) + 0x4000_0000;
+		// 			if (@object.wallOrDoor == 0)
+		// 			{
+		// 				hash -= int.MinValue;
+		// 			}
+		// 	
+		// 			int rgb = wallColor;
+		// 			if (hash > 0)
+		// 			{
+		// 				rgb = doorColor;
+		// 			}
+		// 	
+		// 			if (@object.mapSceneID != -1)
+		// 			{
+		// 				MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
+		// 				graphics.drawImage(spriteImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
+		// 			}
+		// 			else
+		// 			{
+		// 				if (type == 0 || type == 2)
+		// 				{
+		// 					if (rotation == 0)
+		// 					{
+		// 						image.setRGB(drawX + 0, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 0, drawY + 1, rgb);
+		// 						image.setRGB(drawX + 0, drawY + 2, rgb);
+		// 						image.setRGB(drawX + 0, drawY + 3, rgb);
+		// 					}
+		// 					else if (rotation == 1)
+		// 					{
+		// 						image.setRGB(drawX + 0, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 1, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 2, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 0, rgb);
+		// 					}
+		// 					else if (rotation == 2)
+		// 					{
+		// 						image.setRGB(drawX + 3, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 1, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 2, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 3, rgb);
+		// 					}
+		// 					else if (rotation == 3)
+		// 					{
+		// 						image.setRGB(drawX + 0, drawY + 3, rgb);
+		// 						image.setRGB(drawX + 1, drawY + 3, rgb);
+		// 						image.setRGB(drawX + 2, drawY + 3, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 3, rgb);
+		// 					}
+		// 				}
+		// 	
+		// 				if (type == 3)
+		// 				{
+		// 					if (rotation == 0)
+		// 					{
+		// 						image.setRGB(drawX + 0, drawY + 0, rgb);
+		// 					}
+		// 					else if (rotation == 1)
+		// 					{
+		// 						image.setRGB(drawX + 3, drawY + 0, rgb);
+		// 					}
+		// 					else if (rotation == 2)
+		// 					{
+		// 						image.setRGB(drawX + 3, drawY + 3, rgb);
+		// 					}
+		// 					else if (rotation == 3)
+		// 					{
+		// 						image.setRGB(drawX + 0, drawY + 3, rgb);
+		// 					}
+		// 				}
+		// 	
+		// 				if (type == 2)
+		// 				{
+		// 					if (rotation == 3)
+		// 					{
+		// 						image.setRGB(drawX + 0, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 0, drawY + 1, rgb);
+		// 						image.setRGB(drawX + 0, drawY + 2, rgb);
+		// 						image.setRGB(drawX + 0, drawY + 3, rgb);
+		// 					}
+		// 					else if (rotation == 0)
+		// 					{
+		// 						image.setRGB(drawX + 0, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 1, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 2, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 0, rgb);
+		// 					}
+		// 					else if (rotation == 1)
+		// 					{
+		// 						image.setRGB(drawX + 3, drawY + 0, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 1, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 2, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 3, rgb);
+		// 					}
+		// 					else if (rotation == 2)
+		// 					{
+		// 						image.setRGB(drawX + 0, drawY + 3, rgb);
+		// 						image.setRGB(drawX + 1, drawY + 3, rgb);
+		// 						image.setRGB(drawX + 2, drawY + 3, rgb);
+		// 						image.setRGB(drawX + 3, drawY + 3, rgb);
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 		else if (type == 9)
+		// 		{
+		// 			if (@object.mapSceneID != -1)
+		// 			{
+		// 				MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
+		// 				graphics.drawImage(spriteImage, drawX, drawY, null);
+		// 				continue;
+		// 			}
+		// 	
+		// 			int hash = (localY << 7) + localX + (location.id << 14) + 0x4000_0000;
+		// 			if (@object.wallOrDoor == 0)
+		// 			{
+		// 				hash -= int.MinValue;
+		// 			}
+		// 	
+		// 			if ((hash >> 29 & 3) != 2)
+		// 			{
+		// 				continue;
+		// 			}
+		// 	
+		// 			int rgb = 0xEE_EEEE;
+		// 			if (hash > 0)
+		// 			{
+		// 				rgb = 0xEE_0000;
+		// 			}
+		// 	
+		// 			if (rotation != 0 && rotation != 2)
+		// 			{
+		// 				image.setRGB(drawX + 0, drawY + 0, rgb);
+		// 				image.setRGB(drawX + 1, drawY + 1, rgb);
+		// 				image.setRGB(drawX + 2, drawY + 2, rgb);
+		// 				image.setRGB(drawX + 3, drawY + 3, rgb);
+		// 			}
+		// 			else
+		// 			{
+		// 				image.setRGB(drawX + 0, drawY + 3, rgb);
+		// 				image.setRGB(drawX + 1, drawY + 2, rgb);
+		// 				image.setRGB(drawX + 2, drawY + 1, rgb);
+		// 				image.setRGB(drawX + 3, drawY + 0, rgb);
+		// 			}
+		// 		}
+		// 		else if (type == 22 || (type >= 9 && type <= 11))
+		// 		{
+		// 			// ground object
+		// 			if (@object.mapSceneID != -1)
+		// 			{
+		// 				MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
+		// 				graphics.drawImage(spriteImage, drawX, drawY, null);
+		// 			}
+		// 		}
+		// 	}
+		// 	
+		// 	graphics.dispose();
+		// }
 
-			foreach (Location location in region.Locations)
-			{
+		// private void drawObjects(BufferedImage image, int z)
+		// {
+		// 	foreach (Region region in regionLoader.Regions)
+		// 	{
+		// 		int baseX = region.BaseX;
+		// 		int baseY = region.BaseY;
+		//
+		// 		// to pixel X
+		// 		int drawBaseX = baseX - regionLoader.LowestX.BaseX;
+		//
+		// 		// to pixel Y. top most y is 0, but the top most
+		// 		// region has the greatest y, so invert
+		// 		int drawBaseY = regionLoader.HighestY.BaseY - baseY;
+		//
+		// 		drawObjects(image, drawBaseX, drawBaseY, region, z);
+		// 	}
+		// }
 
-				int rotation = location.orientation;
-				int type = location.type;
+		// private void drawMapIcons(BufferedImage image, int drawBaseX, int drawBaseY, Region region, int z)
+		// {
+		// 	int baseX = region.BaseX;
+		// 	int baseY = region.BaseY;
+		// 	
+		// 	Graphics2D graphics = image.createGraphics();
+		// 	
+		// 	drawMapIcons(graphics, region, z, drawBaseX, drawBaseY);
+		// 	
+		// 	if (labelRegions)
+		// 	{
+		// 		graphics.setColor(Color.WHITE);
+		// 		string str = baseX + "," + baseY + " (" + region.RegionX + "," + region.RegionY + ")";
+		// 		graphics.drawString(str, drawBaseX * MAP_SCALE, drawBaseY * MAP_SCALE + graphics.getFontMetrics().getHeight());
+		// 	}
+		// 	
+		// 	if (outlineRegions)
+		// 	{
+		// 		graphics.setColor(Color.WHITE);
+		// 		graphics.drawRect(drawBaseX * MAP_SCALE, drawBaseY * MAP_SCALE, Region.X * MAP_SCALE, Region.Y * MAP_SCALE);
+		// 	}
+		// 	
+		// 	graphics.dispose();
+		// }
 
-				int localX = location.position.X - region.BaseX;
-				int localY = location.position.Y - region.BaseY;
-
-				bool isBridge = (region.getTileSetting(1, localX, localY) & 2) != 0;
-
-				if (location.position.Z == z + 1)
-				{
-					if (!isBridge)
-					{
-						continue;
-					}
-				}
-				else if (location.position.Z == z)
-				{
-					if (isBridge)
-					{
-						continue;
-					}
-
-					if ((region.getTileSetting(z, localX, localY) & 24) != 0)
-					{
-						continue;
-					}
-				}
-				else
-				{
-					continue;
-				}
-
-				ObjectDefinition @object = findObject(location.id);
-
-				int drawX = (drawBaseX + localX) * MAP_SCALE;
-				int drawY = (drawBaseY + (Region.Y - 1 - localY)) * MAP_SCALE;
-
-				if (type >= 0 && type <= 3)
-				{
-					// this is a wall
-					int hash = (localY << 7) + localX + (location.id << 14) + 0x4000_0000;
-					if (@object.wallOrDoor == 0)
-					{
-						hash -= int.MinValue;
-					}
-
-					int rgb = wallColor;
-					if (hash > 0)
-					{
-						rgb = doorColor;
-					}
-
-					if (@object.mapSceneID != -1)
-					{
-						MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
-						graphics.drawImage(spriteImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
-					}
-					else
-					{
-						if (type == 0 || type == 2)
-						{
-							if (rotation == 0)
-							{
-								image.setRGB(drawX + 0, drawY + 0, rgb);
-								image.setRGB(drawX + 0, drawY + 1, rgb);
-								image.setRGB(drawX + 0, drawY + 2, rgb);
-								image.setRGB(drawX + 0, drawY + 3, rgb);
-							}
-							else if (rotation == 1)
-							{
-								image.setRGB(drawX + 0, drawY + 0, rgb);
-								image.setRGB(drawX + 1, drawY + 0, rgb);
-								image.setRGB(drawX + 2, drawY + 0, rgb);
-								image.setRGB(drawX + 3, drawY + 0, rgb);
-							}
-							else if (rotation == 2)
-							{
-								image.setRGB(drawX + 3, drawY + 0, rgb);
-								image.setRGB(drawX + 3, drawY + 1, rgb);
-								image.setRGB(drawX + 3, drawY + 2, rgb);
-								image.setRGB(drawX + 3, drawY + 3, rgb);
-							}
-							else if (rotation == 3)
-							{
-								image.setRGB(drawX + 0, drawY + 3, rgb);
-								image.setRGB(drawX + 1, drawY + 3, rgb);
-								image.setRGB(drawX + 2, drawY + 3, rgb);
-								image.setRGB(drawX + 3, drawY + 3, rgb);
-							}
-						}
-
-						if (type == 3)
-						{
-							if (rotation == 0)
-							{
-								image.setRGB(drawX + 0, drawY + 0, rgb);
-							}
-							else if (rotation == 1)
-							{
-								image.setRGB(drawX + 3, drawY + 0, rgb);
-							}
-							else if (rotation == 2)
-							{
-								image.setRGB(drawX + 3, drawY + 3, rgb);
-							}
-							else if (rotation == 3)
-							{
-								image.setRGB(drawX + 0, drawY + 3, rgb);
-							}
-						}
-
-						if (type == 2)
-						{
-							if (rotation == 3)
-							{
-								image.setRGB(drawX + 0, drawY + 0, rgb);
-								image.setRGB(drawX + 0, drawY + 1, rgb);
-								image.setRGB(drawX + 0, drawY + 2, rgb);
-								image.setRGB(drawX + 0, drawY + 3, rgb);
-							}
-							else if (rotation == 0)
-							{
-								image.setRGB(drawX + 0, drawY + 0, rgb);
-								image.setRGB(drawX + 1, drawY + 0, rgb);
-								image.setRGB(drawX + 2, drawY + 0, rgb);
-								image.setRGB(drawX + 3, drawY + 0, rgb);
-							}
-							else if (rotation == 1)
-							{
-								image.setRGB(drawX + 3, drawY + 0, rgb);
-								image.setRGB(drawX + 3, drawY + 1, rgb);
-								image.setRGB(drawX + 3, drawY + 2, rgb);
-								image.setRGB(drawX + 3, drawY + 3, rgb);
-							}
-							else if (rotation == 2)
-							{
-								image.setRGB(drawX + 0, drawY + 3, rgb);
-								image.setRGB(drawX + 1, drawY + 3, rgb);
-								image.setRGB(drawX + 2, drawY + 3, rgb);
-								image.setRGB(drawX + 3, drawY + 3, rgb);
-							}
-						}
-					}
-				}
-				else if (type == 9)
-				{
-					if (@object.mapSceneID != -1)
-					{
-						MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
-						graphics.drawImage(spriteImage, drawX, drawY, null);
-						continue;
-					}
-
-					int hash = (localY << 7) + localX + (location.id << 14) + 0x4000_0000;
-					if (@object.wallOrDoor == 0)
-					{
-						hash -= int.MinValue;
-					}
-
-					if ((hash >> 29 & 3) != 2)
-					{
-						continue;
-					}
-
-					int rgb = 0xEE_EEEE;
-					if (hash > 0)
-					{
-						rgb = 0xEE_0000;
-					}
-
-					if (rotation != 0 && rotation != 2)
-					{
-						image.setRGB(drawX + 0, drawY + 0, rgb);
-						image.setRGB(drawX + 1, drawY + 1, rgb);
-						image.setRGB(drawX + 2, drawY + 2, rgb);
-						image.setRGB(drawX + 3, drawY + 3, rgb);
-					}
-					else
-					{
-						image.setRGB(drawX + 0, drawY + 3, rgb);
-						image.setRGB(drawX + 1, drawY + 2, rgb);
-						image.setRGB(drawX + 2, drawY + 1, rgb);
-						image.setRGB(drawX + 3, drawY + 0, rgb);
-					}
-				}
-				else if (type == 22 || (type >= 9 && type <= 11))
-				{
-					// ground object
-					if (@object.mapSceneID != -1)
-					{
-						MediaTypeNames.Image spriteImage = scaledMapIcons[@object.mapSceneID];
-						graphics.drawImage(spriteImage, drawX, drawY, null);
-					}
-				}
-			}
-
-			graphics.dispose();
-		}
-
-		private void drawObjects(BufferedImage image, int z)
-		{
-			foreach (Region region in regionLoader.Regions)
-			{
-				int baseX = region.BaseX;
-				int baseY = region.BaseY;
-
-				// to pixel X
-				int drawBaseX = baseX - regionLoader.LowestX.BaseX;
-
-				// to pixel Y. top most y is 0, but the top most
-				// region has the greatest y, so invert
-				int drawBaseY = regionLoader.HighestY.BaseY - baseY;
-
-				drawObjects(image, drawBaseX, drawBaseY, region, z);
-			}
-		}
-
-		private void drawMapIcons(BufferedImage image, int drawBaseX, int drawBaseY, Region region, int z)
-		{
-			int baseX = region.BaseX;
-			int baseY = region.BaseY;
-
-			Graphics2D graphics = image.createGraphics();
-
-			drawMapIcons(graphics, region, z, drawBaseX, drawBaseY);
-
-			if (labelRegions)
-			{
-				graphics.setColor(Color.WHITE);
-				string str = baseX + "," + baseY + " (" + region.RegionX + "," + region.RegionY + ")";
-				graphics.drawString(str, drawBaseX * MAP_SCALE, drawBaseY * MAP_SCALE + graphics.getFontMetrics().getHeight());
-			}
-
-			if (outlineRegions)
-			{
-				graphics.setColor(Color.WHITE);
-				graphics.drawRect(drawBaseX * MAP_SCALE, drawBaseY * MAP_SCALE, Region.X * MAP_SCALE, Region.Y * MAP_SCALE);
-			}
-
-			graphics.dispose();
-		}
-
-		private void drawMapIcons(BufferedImage image, int z)
-		{
-			// map icons
-			foreach (Region region in regionLoader.Regions)
-			{
-				int baseX = region.BaseX;
-				int baseY = region.BaseY;
-
-				// to pixel X
-				int drawBaseX = baseX - regionLoader.LowestX.BaseX;
-
-				// to pixel Y. top most y is 0, but the top most
-				// region has the greatest y, so invert
-				int drawBaseY = regionLoader.HighestY.BaseY - baseY;
-
-				drawMapIcons(image, drawBaseX, drawBaseY, region, z);
-			}
-		}
+		// private void drawMapIcons(BufferedImage image, int z)
+		// {
+		// 	// map icons
+		// 	foreach (Region region in regionLoader.Regions)
+		// 	{
+		// 		int baseX = region.BaseX;
+		// 		int baseY = region.BaseY;
+		//
+		// 		// to pixel X
+		// 		int drawBaseX = baseX - regionLoader.LowestX.BaseX;
+		//
+		// 		// to pixel Y. top most y is 0, but the top most
+		// 		// region has the greatest y, so invert
+		// 		int drawBaseY = regionLoader.HighestY.BaseY - baseY;
+		//
+		// 		drawMapIcons(image, drawBaseX, drawBaseY, region, z);
+		// 	}
+		// }
 
 		private ObjectDefinition findObject(int id)
 		{
@@ -864,59 +860,55 @@ namespace OSRSCache
 			}
 		}
 
-		private void drawMapIcons(Graphics2D graphics, Region region, int z, int drawBaseX, int drawBaseY)
-		{
-			foreach (Location location in region.Locations)
-			{
-				int localZ = location.position.Z;
-				if (z != 0 && localZ != z)
-				{
-					// draw all icons on z=0
-					continue;
-				}
+		// private void drawMapIcons(Graphics2D graphics, Region region, int z, int drawBaseX, int drawBaseY)
+		// {
+		// 	foreach (Location location in region.Locations)
+		// 	{
+		// 		int localZ = location.position.Z;
+		// 		if (z != 0 && localZ != z)
+		// 		{
+		// 			// draw all icons on z=0
+		// 			continue;
+		// 		}
+		//
+		// 		ObjectDefinition od = findObject(location.id);
+		//
+		// 		Debug.Assert(od != null);
+		//
+		// 		int localX = location.position.X - region.BaseX;
+		// 		int localY = location.position.Y - region.BaseY;
+		//
+		// 		int drawX = drawBaseX + localX;
+		// 		int drawY = drawBaseY + (Region.Y - 1 - localY);
+		//
+		// 		if (od.mapAreaId != -1)
+		// 		{
+		// 			AreaDefinition area = areas.getArea(od.mapAreaId);
+		// 			Debug.Assert(area != null);
+		//
+		// 			int spriteId = area.spriteId;
+		//
+		// 			SpriteDefinition sprite = sprites.findSprite(spriteId, 0);
+		// 			Debug.Assert(sprite != null);
+		//
+		// 			BufferedImage iconImage = sprites.getSpriteImage(sprite);
+		// 			graphics.drawImage(iconImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
+		// 		}
+		// 	}
+		// }
 
-				ObjectDefinition od = findObject(location.id);
-
-				Debug.Assert(od != null);
-
-				int localX = location.position.X - region.BaseX;
-				int localY = location.position.Y - region.BaseY;
-
-				int drawX = drawBaseX + localX;
-				int drawY = drawBaseY + (Region.Y - 1 - localY);
-
-				if (od.mapAreaId != -1)
-				{
-					AreaDefinition area = areas.getArea(od.mapAreaId);
-					Debug.Assert(area != null);
-
-					int spriteId = area.spriteId;
-
-					SpriteDefinition sprite = sprites.findSprite(spriteId, 0);
-					Debug.Assert(sprite != null);
-
-					BufferedImage iconImage = sprites.getSpriteImage(sprite);
-					graphics.drawImage(iconImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
-				}
-			}
-		}
-
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void loadRegions(OSRSCache.fs.Store store) throws java.io.IOException
 		private void loadRegions(Store store)
 		{
 			regionLoader = new RegionLoader(store);
 			regionLoader.loadRegions();
 			regionLoader.calculateBounds();
 
-			Console.WriteLine("North most region: {}", regionLoader.LowestY.BaseY);
-			Console.WriteLine("South most region: {}", regionLoader.HighestY.BaseY);
-			Console.WriteLine("West most region:  {}", regionLoader.LowestX.BaseX);
-			Console.WriteLine("East most region:  {}", regionLoader.HighestX.BaseX);
+			Console.WriteLine("North most region: {0}", regionLoader.LowestY.BaseY);
+			Console.WriteLine("South most region: {0}", regionLoader.HighestY.BaseY);
+			Console.WriteLine("West most region:  {0}", regionLoader.LowestX.BaseX);
+			Console.WriteLine("East most region:  {0}", regionLoader.HighestX.BaseX);
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void loadUnderlays(OSRSCache.fs.Store store) throws java.io.IOException
 		private void loadUnderlays(Store store)
 		{
 			Storage storage = store.Storage;
@@ -940,8 +932,6 @@ namespace OSRSCache
 			return underlays[id];
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void loadOverlays(OSRSCache.fs.Store store) throws java.io.IOException
 		private void loadOverlays(Store store)
 		{
 			Storage storage = store.Storage;
@@ -965,44 +955,40 @@ namespace OSRSCache
 			return overlays[id];
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private void loadSprites() throws java.io.IOException
-		private void loadSprites()
-		{
-			Storage storage = store.Storage;
-			Index index = store.getIndex(IndexType.SPRITES);
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final int mapsceneHash = OSRSCache.util.Djb2.hash("mapscene");
-			int mapsceneHash = Djb2.hash("mapscene");
-
-			foreach (Archive a in index.Archives)
-			{
-				byte[] contents = a.decompress(storage.loadArchive(a));
-
-				SpriteLoader loader = new SpriteLoader();
-				SpriteDefinition[] sprites = loader.load(a.ArchiveId, contents);
-
-				foreach (SpriteDefinition sprite in sprites)
-				{
-					if (sprite.height <= 0 || sprite.width <= 0)
-					{
-						continue;
-					}
-
-					if (a.NameHash == mapsceneHash)
-					{
-						BufferedImage spriteImage = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
-						spriteImage.setRGB(0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
-
-						// scale image down so it fits
-						MediaTypeNames.Image scaledImage = spriteImage.getScaledInstance(MAPICON_MAX_WIDTH, MAPICON_MAX_HEIGHT, 0);
-
-						Debug.Assert(scaledMapIcons.ContainsKey(sprite.frame) == false);
-						scaledMapIcons[sprite.frame] = scaledImage;
-					}
-				}
-			}
-		}
+		// private void loadSprites()
+		// {
+		// 	Storage storage = store.Storage;
+		// 	Index index = store.getIndex(IndexType.SPRITES);
+		// 	int mapsceneHash = Djb2.hash("mapscene");
+		//
+		// 	foreach (Archive a in index.Archives)
+		// 	{
+		// 		byte[] contents = a.decompress(storage.loadArchive(a));
+		//
+		// 		SpriteLoader loader = new SpriteLoader();
+		// 		SpriteDefinition[] sprites = loader.load(a.ArchiveId, contents);
+		//
+		// 		foreach (SpriteDefinition sprite in sprites)
+		// 		{
+		// 			if (sprite.height <= 0 || sprite.width <= 0)
+		// 			{
+		// 				continue;
+		// 			}
+		//
+		// 			if (a.NameHash == mapsceneHash)
+		// 			{
+		// 				BufferedImage spriteImage = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
+		// 				spriteImage.setRGB(0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
+		//
+		// 				scale image down so it fits
+		// 				MediaTypeNames.Image scaledImage = spriteImage.getScaledInstance(MAPICON_MAX_WIDTH, MAPICON_MAX_HEIGHT, 0);
+		//
+		// 				Debug.Assert(scaledMapIcons.ContainsKey(sprite.frame) == false);
+		// 				scaledMapIcons[sprite.frame] = scaledImage;
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 	}
 

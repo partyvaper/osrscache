@@ -260,7 +260,7 @@ namespace OSRSCache.definitions.loaders
 			}
 			else
 			{
-				Console.WriteLine("NpcLoader: unrecognized opcode {}", opcode);
+				Console.WriteLine("NpcLoader: unrecognized opcode {0}", opcode);
 			}
 		}
 	}

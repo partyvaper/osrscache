@@ -374,7 +374,7 @@ namespace OSRSCache.definitions.loaders
 			}
 			else
 			{
-				Console.WriteLine("ObjectLoader: unrecognized opcode {}", opcode);
+				Console.WriteLine("ObjectLoader: unrecognized opcode {0}", opcode);
 			}
 		}
 

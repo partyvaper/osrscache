@@ -40,7 +40,7 @@ namespace OSRSCache
 	public class SpriteManager : SpriteProvider
 	{
 		private readonly Store store;
-		private readonly Multimap<int, SpriteDefinition> sprites = LinkedListMultimap.create();
+		private readonly Dictionary<int, SpriteDefinition> sprites;
 
 		public SpriteManager(Store store)
 		{
@@ -63,7 +63,7 @@ namespace OSRSCache
 
 				foreach (SpriteDefinition sprite in defs)
 				{
-					sprites.put(sprite.id, sprite);
+					sprites.Add(sprite.id, sprite);
 				}
 			}
 		}
@@ -72,15 +72,15 @@ namespace OSRSCache
 		{
 			get
 			{
-				return Collections.unmodifiableCollection(sprites.values());
+				return new List<SpriteDefinition>(sprites.Values);
 			}
 		}
 
 		public virtual SpriteDefinition findSprite(int spriteId, int frameId)
 		{
-			foreach (SpriteDefinition sprite in sprites.get(spriteId))
+			foreach (SpriteDefinition sprite in sprites.Values)
 			{
-				if (sprite.frame == frameId)
+				if (sprite.id == spriteId && sprite.frame == frameId)
 				{
 					return sprite;
 				}
@@ -88,18 +88,18 @@ namespace OSRSCache
 			return null;
 		}
 
-		public virtual BufferedImage getSpriteImage(SpriteDefinition sprite)
-		{
-			BufferedImage image = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
-			image.setRGB(0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
-			return image;
-		}
+		// public virtual BufferedImage getSpriteImage(SpriteDefinition sprite)
+		// {
+		// 	BufferedImage image = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
+		// 	image.setRGB(0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
+		// 	return image;
+		// }
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: public void export(java.io.File outDir) throws java.io.IOException
 		public virtual void export(string outDir)
 		{
-			foreach (SpriteDefinition sprite in sprites.values())
+			foreach (SpriteDefinition sprite in sprites.Values)
 			{
 				// I don't know why this happens
 				if (sprite.height <= 0 || sprite.width <= 0)

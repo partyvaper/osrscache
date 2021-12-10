@@ -26,7 +26,7 @@ namespace OSRSCache.util
 				hashes[hash] = value;
 			}
 
-			Console.WriteLine("Loaded {} djb2 hashes", hashes.Count);
+			Console.WriteLine("Loaded {0} djb2 hashes", hashes.Count);
 		}
 
 		public virtual string getName(int hash)

@@ -37,16 +37,12 @@ namespace OSRSCache.item
 
 	public class ItemSpriteFactory
 	{
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: public static final java.awt.image.BufferedImage createSprite(OSRSCache.definitions.providers.ItemProvider itemProvider, OSRSCache.definitions.providers.ModelProvider modelProvider, OSRSCache.definitions.providers.SpriteProvider spriteProvider, OSRSCache.definitions.providers.TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, boolean noted) throws java.io.IOException
-		public static BufferedImage createSprite(ItemProvider itemProvider, ModelProvider modelProvider, SpriteProvider spriteProvider, TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, bool noted)
-		{
-			SpritePixels spritePixels = createSpritePixels(itemProvider, modelProvider, spriteProvider, textureProvider, itemId, quantity, border, shadowColor, noted);
-			return spritePixels == null ? null : spritePixels.toBufferedImage();
-		}
+		// public static BufferedImage createSprite(ItemProvider itemProvider, ModelProvider modelProvider, SpriteProvider spriteProvider, TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, bool noted)
+		// {
+		// 	SpritePixels spritePixels = createSpritePixels(itemProvider, modelProvider, spriteProvider, textureProvider, itemId, quantity, border, shadowColor, noted);
+		// 	return spritePixels == null ? null : spritePixels.toBufferedImage();
+		// }
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: private static final SpritePixels createSpritePixels(OSRSCache.definitions.providers.ItemProvider itemProvider, OSRSCache.definitions.providers.ModelProvider modelProvider, OSRSCache.definitions.providers.SpriteProvider spriteProvider, OSRSCache.definitions.providers.TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, boolean noted) throws java.io.IOException
 		private static SpritePixels createSpritePixels(ItemProvider itemProvider, ModelProvider modelProvider, SpriteProvider spriteProvider, TextureProvider textureProvider, int itemId, int quantity, int border, int shadowColor, bool noted)
 		{
 			ItemDefinition item = itemProvider.provide(itemId);
@@ -269,7 +265,7 @@ namespace OSRSCache.item
 					}
 					else
 					{
-						litModel.field1840[i] = -1;
+						litModel.field1840[i] = 0; // TODO: sbyte -1;
 					}
 				}
 			}

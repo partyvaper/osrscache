@@ -263,7 +263,7 @@ namespace OSRSCache.definitions.loaders
 			}
 			else
 			{
-				Console.WriteLine("ItemLoader: unrecognized opcode {}", opcode);
+				Console.WriteLine("ItemLoader: unrecognized opcode {00}", opcode);
 			}
 		}
 	}

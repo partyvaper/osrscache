@@ -24,8 +24,8 @@
  */
 namespace OSRSCache.util
 {
-	using ByteBuf = io.netty.buffer.ByteBuf;
-	using Unpooled = io.netty.buffer.Unpooled;
+	// using ByteBuf = io.netty.buffer.ByteBuf;
+	// using Unpooled = io.netty.buffer.Unpooled;
 
 	public class Xtea
 	{

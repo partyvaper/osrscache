@@ -623,7 +623,7 @@
 					}
 					else
 					{
-						model.textureCoordinates[var18] = -1;
+						model.textureCoordinates[var18] = 0; // TODO: sbyte -1;
 						model.faceTextures[var18] = -1;
 					}
 				}
@@ -721,7 +721,7 @@
 					{
 						if ((model.textureTriangleVertexIndices1[var21] & '\uffff') == model.faceVertexIndices1[var22] && (model.textureTriangleVertexIndices2[var21] & '\uffff') == model.faceVertexIndices2[var22] && (model.textureTriangleVertexIndices3[var21] & '\uffff') == model.faceVertexIndices3[var22])
 						{
-							model.textureCoordinates[var22] = -1;
+							model.textureCoordinates[var22] = 0; // TODO: sbyte -1;
 						}
 						else
 						{

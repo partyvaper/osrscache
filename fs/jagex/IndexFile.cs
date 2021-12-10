@@ -126,7 +126,7 @@ namespace OSRSCache.fs.jagex
 				int i = idx.read(buffer);
 				if (i != INDEX_ENTRY_LEN)
 				{
-					Console.WriteLine("short read for id {} on index {}: {}", id, indexFileId, i);
+					Console.WriteLine("short read for id {0} on index {1}: {2}", id, indexFileId, i);
 					return null;
 				}
         
@@ -135,7 +135,7 @@ namespace OSRSCache.fs.jagex
         
 				if (length <= 0 || sector <= 0)
 				{
-					Console.WriteLine("invalid length or sector {}/{}", length, sector);
+					Console.WriteLine("invalid length or sector {0}/{1}", length, sector);
 					return null;
 				}
         

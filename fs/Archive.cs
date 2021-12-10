@@ -115,7 +115,7 @@ namespace OSRSCache.fs
 			Container container = Container.decompress(encryptedData, keys);
 			if (container == null)
 			{
-				Console.WriteLine("Unable to decrypt archive {}", this);
+				Console.WriteLine("Unable to decrypt archive {0}", this);
 				return null;
 			}
 
@@ -123,14 +123,14 @@ namespace OSRSCache.fs
 
 			if (this.crc != container.crc)
 			{
-				Console.WriteLine("crc mismatch for archive {}/{}", index.Id, this.ArchiveId);
+				Console.WriteLine("crc mismatch for archive {0}/{1}", index.Id, this.ArchiveId);
 				throw new IOException("CRC mismatch for " + index.Id + "/" + this.ArchiveId);
 			}
 
 			if (container.revision != -1 && this.Revision != container.revision)
 			{
 				// compressed data doesn't always include a revision, but check it if it does
-				Console.WriteLine("revision mismatch for archive {}/{}, expected {} was {}", index.Id, this.ArchiveId, this.Revision, container.revision);
+				Console.WriteLine("revision mismatch for archive {0}/{1}, expected {2} was {3}", index.Id, this.ArchiveId, this.Revision, container.revision);
 				// I've seen this happen with vanilla caches where the
 				// revision in the index data differs from the revision
 				// stored for the archive data on disk... I assume this

@@ -155,44 +155,44 @@ namespace OSRSCache.item
 				{
 					int sinZ = Model_sine[zRotation];
 					int cosZ = Model_cosine[zRotation];
-					int tmp;
-					tmp = y * sinZ + x * cosZ >> 16;
+					int tmp1;
+					tmp1 = y * sinZ + x * cosZ >> 16;
 					y = y * cosZ - x * sinZ >> 16;
-					x = tmp;
+					x = tmp1;
 				}
 
 				if (rotation_1 != 0)
 				{
 					int sinR1 = Model_sine[rotation_1];
 					int cosR1 = Model_cosine[rotation_1];
-					int tmp;
-					tmp = y * cosR1 - z * sinR1 >> 16;
+					int tmp2;
+					tmp2 = y * cosR1 - z * sinR1 >> 16;
 					z = y * sinR1 + z * cosR1 >> 16;
-					y = tmp;
+					y = tmp2;
 				}
 
 				if (yRotation != 0)
 				{
 					int sinY = Model_sine[yRotation];
 					int cosY = Model_cosine[yRotation];
-					int tmp;
-					tmp = z * sinY + x * cosY >> 16;
+					int tmp3;
+					tmp3 = z * sinY + x * cosY >> 16;
 					z = z * cosY - x * sinY >> 16;
-					x = tmp;
+					x = tmp3;
 				}
 
 				x += xOffset;
 				y += yOffset;
 				z += zOffset;
-				int tmp = y * cosX - z * sinX >> 16;
+				int tmp4 = y * cosX - z * sinX >> 16;
 				z = y * sinX + z * cosX >> 16;
 				modelViewportZs[i] = z - zRelatedVariable;
 				modelViewportYs[i] = x * graphics.Rasterizer3D_zoom / z + graphics.centerX;
-				modelViewportXs[i] = tmp * graphics.Rasterizer3D_zoom / z + graphics.centerY;
+				modelViewportXs[i] = tmp4 * graphics.Rasterizer3D_zoom / z + graphics.centerY;
 				if (this.field1852 > 0)
 				{
 					yViewportBuffer[i] = x;
-					field1839[i] = tmp;
+					field1839[i] = tmp4;
 					field1869[i] = z;
 				}
 			}

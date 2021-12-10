@@ -12,26 +12,27 @@ namespace OSRSCache.definitions.savers
 	{
 		public virtual byte[] save(LocationsDefinition locs)
 		{
-			Multimap<int, Location> locById = LinkedListMultimap.create();
-			IList<Location> sortedLocs = new List<Location>(locs.getLocations());
-			sortedLocs.Sort((l1, l2) => Integer.compare(l1.getId(), l2.getId()));
+			IDictionary<int, Location> locById = new Dictionary<int, Location>();
+			IList<Location> sortedLocs = new List<Location>(locs.locations);
+			// sortedLocs.Sort((l1, l2) => Integer.compare(l1.getId(), l2.getId()));
 			foreach (Location loc in sortedLocs)
 			{
-				locById.put(loc.id, loc);
+				locById.Add(loc.id, loc);
 			}
 			OutputStream @out = new OutputStream();
 			int prevId = -1;
-			foreach (int? id in locById.keySet())
+			foreach (int id in locById.Keys)
 			{
-				int diffId = id.Value - prevId;
-				prevId = id.Value;
+				int diffId = id - prevId;
+				prevId = id;
 
 				@out.writeShortSmart(diffId);
 
-				ICollection<Location> locations = locById.get(id);
+				// ICollection<Location> locations = locById[id];
 				int position = 0;
-				foreach (Location loc in locations)
-				{
+				// foreach (Location loc in locations)
+				// {
+					Location loc = locById[id];
 					int packedPosition = (loc.position.Z << 12) | (loc.position.X << 6) | (loc.position.Y);
 
 					int diffPos = packedPosition - position;
@@ -41,7 +42,7 @@ namespace OSRSCache.definitions.savers
 
 					int packedAttributes = (loc.type << 2) | loc.orientation;
 					@out.writeByte(packedAttributes);
-				}
+				// }
 
 				@out.writeShortSmart(0);
 			}
