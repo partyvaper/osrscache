@@ -1,3 +1,6 @@
+﻿using System;
+using System.Diagnostics;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,128 +25,124 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.awt.Color;
-// import java.awt.image.BufferedImage;
-// import java.io.IOException;
-using OSRSCache.fs.Store;
-using OSRSCache.region.Region;
-using OSRSCache.region.RegionLoader;
-
-public class HeightMapDumper
+namespace OSRSCache
 {
-	private const int MAP_SCALE = 1;
-	private const float MAX_HEIGHT = 2048f;
+	using Store = OSRSCache.fs.Store;
+	using Region = OSRSCache.region.Region;
+	using RegionLoader = OSRSCache.region.RegionLoader;
 
-	private readonly Store store;
-	private RegionLoader regionLoader;
 
-	public HeightMapDumper(Store store)
+	public class HeightMapDumper
 	{
-		this.store = store;
-	}
+		private const int MAP_SCALE = 1;
+		private const float MAX_HEIGHT = 2048f;
 
-	public void load() // throws IOException
-	{
-		regionLoader = new RegionLoader(store);
-		regionLoader.loadRegions();
-		regionLoader.calculateBounds();
-	}
+		private readonly Store store;
+		private RegionLoader regionLoader;
 
-	public BufferedImage drawHeightMap(int z)
-	{
-		int minX = regionLoader.getLowestX().getBaseX();
-		int minY = regionLoader.getLowestY().getBaseY();
-
-		int maxX = regionLoader.getHighestX().getBaseX() + Region.X;
-		int maxY = regionLoader.getHighestY().getBaseY() + Region.Y;
-
-		int dimX = maxX - minX;
-		int dimY = maxY - minY;
-
-		dimX *= MAP_SCALE;
-		dimY *= MAP_SCALE;
-
-		Console.WriteLine("Map image dimensions: {}px x {}px, {}px per map square ({} MB)", dimX, dimY, MAP_SCALE, (dimX * dimY / 1024 / 1024));
-
-		BufferedImage image = new BufferedImage(dimX, dimY, BufferedImage.TYPE_INT_RGB);
-		draw(image, z);
-		return image;
-	}
-
-	private void draw(BufferedImage image, int z)
-	{
-		int max = Integer.MIN_VALUE;
-		int min = Integer.MAX_VALUE;
-
-		for (Region region : regionLoader.getRegions())
+		public HeightMapDumper(Store store)
 		{
-			int baseX = region.getBaseX();
-			int baseY = region.getBaseY();
-
-			// to pixel X
-			int drawBaseX = baseX - regionLoader.getLowestX().getBaseX();
-
-			// to pixel Y. top most y is 0, but the top most
-			// region has the greatest y, so invert
-			int drawBaseY = regionLoader.getHighestY().getBaseY() - baseY;
-
-			for (int x = 0; x < Region.X; ++x)
-			{
-				int drawX = drawBaseX + x;
-
-				for (int y = 0; y < Region.Y; ++y)
-				{
-					int drawY = drawBaseY + (Region.Y - 1 - y);
-
-					int height = region.getTileHeight(z, x, y);
-					if (height > max)
-					{
-						max = height;
-					}
-					if (height < min)
-					{
-						min = height;
-					}
-
-					int rgb = toColor(height);
-
-					drawMapSquare(image, drawX, drawY, rgb);
-				}
-			}
+			this.store = store;
 		}
-		Console.WriteLine("max " + max);
-		Console.WriteLine("min " + min);
-	}
 
-	private int toColor(int height)
-	{
-		// height seems to be between -2040 and 0, inclusive
-		height = -height;
-		// Convert to between 0 and 1
-		float color = (float) height / MAX_HEIGHT;
-
-		assert color >= 0.0f && color <= 1.0f;
-
-		return new Color(color, color, color).getRGB();
-	}
-
-	private void drawMapSquare(BufferedImage image, int x, int y, int rgb)
-	{
-		x *= MAP_SCALE;
-		y *= MAP_SCALE;
-
-		for (int i = 0; i < MAP_SCALE; ++i)
+		public virtual void load()
 		{
-			for (int j = 0; j < MAP_SCALE; ++j)
-			{
-				image.setRGB(x + i, y + j, rgb);
-			}
+			regionLoader = new RegionLoader(store);
+			regionLoader.loadRegions();
+			regionLoader.calculateBounds();
 		}
+
+		// public virtual BufferedImage drawHeightMap(int z)
+		// {
+		// 	int minX = regionLoader.LowestX.BaseX;
+		// 	int minY = regionLoader.LowestY.BaseY;
+		//
+		// 	int maxX = regionLoader.HighestX.BaseX + Region.X;
+		// 	int maxY = regionLoader.HighestY.BaseY + Region.Y;
+		//
+		// 	int dimX = maxX - minX;
+		// 	int dimY = maxY - minY;
+		//
+		// 	dimX *= MAP_SCALE;
+		// 	dimY *= MAP_SCALE;
+		//
+		// 	Console.WriteLine("Map image dimensions: {}px x {}px, {}px per map square ({} MB)", dimX, dimY, MAP_SCALE, (dimX * dimY / 1024 / 1024));
+		//
+		// 	BufferedImage image = new BufferedImage(dimX, dimY, BufferedImage.TYPE_INT_RGB);
+		// 	draw(image, z);
+		// 	return image;
+		// }
+
+		// private void draw(BufferedImage image, int z)
+		// {
+		// 	int max = int.MinValue;
+		// 	int min = int.MaxValue;
+		//
+		// 	foreach (Region region in regionLoader.Regions)
+		// 	{
+		// 		int baseX = region.BaseX;
+		// 		int baseY = region.BaseY;
+		//
+		// 		// to pixel X
+		// 		int drawBaseX = baseX - regionLoader.LowestX.BaseX;
+		//
+		// 		// to pixel Y. top most y is 0, but the top most
+		// 		// region has the greatest y, so invert
+		// 		int drawBaseY = regionLoader.HighestY.BaseY - baseY;
+		//
+		// 		for (int x = 0; x < Region.X; ++x)
+		// 		{
+		// 			int drawX = drawBaseX + x;
+		//
+		// 			for (int y = 0; y < Region.Y; ++y)
+		// 			{
+		// 				int drawY = drawBaseY + (Region.Y - 1 - y);
+		//
+		// 				int height = region.getTileHeight(z, x, y);
+		// 				if (height > max)
+		// 				{
+		// 					max = height;
+		// 				}
+		// 				if (height < min)
+		// 				{
+		// 					min = height;
+		// 				}
+		//
+		// 				int rgb = toColor(height);
+		//
+		// 				drawMapSquare(image, drawX, drawY, rgb);
+		// 			}
+		// 		}
+		// 	}
+		// 	Console.WriteLine("max " + max);
+		// 	Console.WriteLine("min " + min);
+		// }
+
+		// private int toColor(int height)
+		// {
+		// 	// height seems to be between -2040 and 0, inclusive
+		// 	height = -height;
+		// 	// Convert to between 0 and 1
+		// 	float color = (float) height / MAX_HEIGHT;
+		//
+		// 	Debug.Assert(color >= 0.0f && color <= 1.0f);
+		//
+		// 	return (new Color(color, color, color)).getRGB();
+		// }
+
+		// private void drawMapSquare(BufferedImage image, int x, int y, int rgb)
+		// {
+		// 	x *= MAP_SCALE;
+		// 	y *= MAP_SCALE;
+		//
+		// 	for (int i = 0; i < MAP_SCALE; ++i)
+		// 	{
+		// 		for (int j = 0; j < MAP_SCALE; ++j)
+		// 		{
+		// 			image.setRGB(x + i, y + j, rgb);
+		// 		}
+		// 	}
+		// }
 	}
+
 }

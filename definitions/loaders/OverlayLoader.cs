@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,51 +22,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.OverlayDefinition;
-using OSRSCache.io.InputStream;
-
-public class OverlayLoader
+namespace OSRSCache.definitions.loaders
 {
-	public OverlayDefinition load(int id, byte[] b)
+	using OverlayDefinition = OSRSCache.definitions.OverlayDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
+
+	public class OverlayLoader
 	{
-		OverlayDefinition def = new OverlayDefinition();
-		InputStream is = new InputStream(b);
-
-		def.setId(id);
-
-		for (;;)
+		public virtual OverlayDefinition load(int id, byte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			OverlayDefinition def = new OverlayDefinition();
+			InputStream @is = new InputStream(b);
+
+			def.id = id;
+
+			for (;;)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				if (opcode == 1)
+				{
+					int color = @is.read24BitInt();
+					def.rgbColor = color;
+				}
+				else if (opcode == 2)
+				{
+					int texture = @is.readUnsignedByte();
+					def.texture = texture;
+				}
+				else if (opcode == 5)
+				{
+					def.hideUnderlay = false;
+				}
+				else if (opcode == 7)
+				{
+					int secondaryColor = @is.read24BitInt();
+					def.secondaryRgbColor = secondaryColor;
+				}
 			}
 
-			if (opcode == 1)
-			{
-				int color = is.read24BitInt();
-				def.setRgbColor(color);
-			}
-			else if (opcode == 2)
-			{
-				int texture = is.readUnsignedByte();
-				def.setTexture(texture);
-			}
-			else if (opcode == 5)
-			{
-				def.setHideUnderlay(false);
-			}
-			else if (opcode == 7)
-			{
-				int secondaryColor = is.read24BitInt();
-				def.setSecondaryRgbColor(secondaryColor);
-			}
+			def.calculateHsl();
+
+			return def;
 		}
-
-		def.calculateHsl();
-
-		return def;
 	}
+
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2020, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,43 +22,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.ParamDefinition;
-using OSRSCache.io.InputStream;
-using OSRSCache.util.ScriptVarType;
-
-public class ParamLoader
+namespace OSRSCache.definitions.loaders
 {
-	public ParamDefinition load(byte[] data)
+	using ParamDefinition = OSRSCache.definitions.ParamDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+	using ScriptVarType = OSRSCache.util.ScriptVarType;
+
+	public class ParamLoader
 	{
-		ParamDefinition def = new ParamDefinition();
-		InputStream b = new InputStream(data);
-
-		for (; ; )
+		public virtual ParamDefinition load(byte[] data)
 		{
-			int opcode = b.readUnsignedByte();
+			ParamDefinition def = new ParamDefinition();
+			InputStream b = new InputStream(data);
 
-			switch (opcode)
+			for (; ;)
 			{
-				case 0:
-					return def;
-				case 1:
+				int opcode = b.readUnsignedByte();
+
+				switch (opcode)
 				{
-					int idx = b.readByte();
-					def.setType(ScriptVarType.forCharKey((char) idx));
-					break;
+					case 0:
+						return def;
+					case 1:
+					{
+						int idx = b.readByte();
+						def.type = ScriptVarType.forCharKey((char) idx);
+						break;
+					}
+					case 2:
+						def.defaultInt = b.readInt();
+						break;
+					case 4:
+						def.isMembers = false;
+						break;
+					case 5:
+						def.defaultString = b.readString();
+						break;
 				}
-				case 2:
-					def.setDefaultInt(b.readInt());
-					break;
-				case 4:
-					def.setMembers(false);
-					break;
-				case 5:
-					def.setDefaultstring(b.readstring());
-					break;
 			}
 		}
 	}
+
 }

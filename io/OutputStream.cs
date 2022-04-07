@@ -1,3 +1,6 @@
+﻿using System.Diagnostics;
+using System.IO;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,181 +25,190 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.io;
-
-// import com.google.common.base.Preconditions;
-// import java.io.IOException;
-// import java.nio.ByteBuffer;
-// import java.nio.charset.StandardCharsets;
-
-public sealed class OutputStream extends java.io.OutputStream
+namespace OSRSCache.io
 {
-	private ByteBuffer buffer;
+	// using Preconditions = com.google.common.@base.Preconditions;
 
-	public OutputStream(int capacity)
+	public sealed class OutputStream : Stream
 	{
-		buffer = ByteBuffer.allocate(capacity);
-	}
+		private ByteBuffer buffer;
 
-	public OutputStream()
-	{
-		this(16);
-	}
-
-	public byte[] getArray()
-	{
-		assert buffer.hasArray();
-		return buffer.array();
-	}
-
-	private void ensureRemaining(int remaining)
-	{
-		while (remaining > buffer.remaining())
+		public OutputStream(int capacity)
 		{
-			int newCapacity = buffer.capacity() * 2;
-
-			ByteBuffer old = buffer;
-			old.flip();
-
-			buffer = ByteBuffer.allocate(newCapacity);
-
-			buffer.put(old);
+			buffer = ByteBuffer.allocate(capacity);
 		}
-	}
 
-	public void skip(int length)
-	{
-		int pos = buffer.position();
-		pos += length;
-		buffer.position(pos);
-	}
-
-	public int getOffset()
-	{
-		return buffer.position();
-	}
-
-	public void setOffset(int offset)
-	{
-		buffer.position(offset);
-	}
-
-	public void writeBytes(byte[] b)
-	{
-		writeBytes(b, 0, b.length);
-	}
-
-	public void writeBytes(byte[] b, int offset, int length)
-	{
-		ensureRemaining(length);
-		buffer.put(b, offset, length);
-	}
-
-	public void writeByte(int i)
-	{
-		ensureRemaining(1);
-		buffer.put((byte) i);
-	}
-
-	public void writeBigSmart(int value)
-	{
-		Preconditions.checkArgument(value >= 0);
-		if (value >= 32768)
+		public OutputStream() : this(16)
 		{
-			ensureRemaining(4);
-			this.writeInt((1 << 31) | value);
 		}
-		else
+
+		public byte[] Array
+		{
+			get
+			{
+				Debug.Assert(buffer.hasArray());
+				return buffer.array();
+			}
+		}
+
+		private void ensureRemaining(int remaining)
+		{
+			while (remaining > buffer.remaining())
+			{
+				int newCapacity = buffer.capacity() * 2;
+
+				ByteBuffer old = buffer;
+				old.flip();
+
+				buffer = ByteBuffer.allocate(newCapacity);
+
+				buffer.put(old);
+			}
+		}
+
+		public void skip(int length)
+		{
+			int pos = buffer.position();
+			pos += length;
+			buffer.position(pos);
+		}
+
+		public int Offset
+		{
+			get
+			{
+				return buffer.position();
+			}
+			set
+			{
+				buffer.position(value);
+			}
+		}
+
+
+		public void writeBytes(byte[] b)
+		{
+			writeBytes(b, 0, b.Length);
+		}
+
+		public void writeBytes(byte[] b, int offset, int length)
+		{
+			ensureRemaining(length);
+			buffer.put(b, offset, length);
+		}
+
+		public void writeByte(int i)
+		{
+			ensureRemaining(1);
+			buffer.put((byte) i);
+		}
+
+		public void writeBigSmart(int value)
+		{
+			// Preconditions.checkArgument(value >= 0);
+			if (value >= 32768)
+			{
+				ensureRemaining(4);
+				this.writeInt((1 << 31) | value);
+			}
+			else
+			{
+				ensureRemaining(2);
+				this.writeShort(value);
+			}
+		}
+
+		public void writeShort(int i)
 		{
 			ensureRemaining(2);
-			this.writeShort(value);
+			buffer.putShort((short) i);
 		}
-	}
 
-	public void writeShort(int i)
-	{
-		ensureRemaining(2);
-		buffer.putShort((short) i);
-	}
-
-	public void writeShortSmart(int value)
-	{
-		Preconditions.checkArgument(value >= 0);
-		if (value < 128)
+		public void writeShortSmart(int value)
 		{
-			writeByte(value);
-		}
-		else
-		{
-			writeShort(0x8000 | value);
-		}
-	}
-
-	public void write24BitInt(int i)
-	{
-		ensureRemaining(3);
-		buffer.put((byte) (i >>> 16));
-		buffer.put((byte) (i >>> 8));
-		buffer.put((byte) (i & 0xFF));
-	}
-
-	public void writeInt(int i)
-	{
-		ensureRemaining(4);
-		buffer.putInt(i);
-	}
-
-	public void writeVarInt(int var1)
-	{
-		if ((var1 & -128) != 0)
-		{
-			if ((var1 & -16384) != 0)
+			// Preconditions.checkArgument(value >= 0);
+			if (value < 1)
 			{
-				if ((var1 & -2097152) != 0)
+				return;
+			}
+			if (value < 128)
+			{
+				writeByte(value);
+			}
+			else
+			{
+				writeShort(0x8000 | value);
+			}
+		}
+
+		public void write24BitInt(int i)
+		{
+			ensureRemaining(3);
+			buffer.put((byte)((int)((uint)i >> 16)));
+			buffer.put((byte)((int)((uint)i >> 8)));
+			buffer.put(unchecked((byte)(i & 0xFF)));
+		}
+
+		public void writeInt(int i)
+		{
+			ensureRemaining(4);
+			buffer.putInt(i);
+		}
+
+		public void writeVarInt(int var1)
+		{
+			if ((var1 & -128) != 0)
+			{
+				if ((var1 & -16384) != 0)
 				{
-					if ((var1 & -268435456) != 0)
+					if ((var1 & -2097152) != 0)
 					{
-						this.writeByte(var1 >>> 28 | 128);
+						if ((var1 & -268435456) != 0)
+						{
+							this.writeByte((int)((uint)var1 >> 28) | 128);
+						}
+
+						this.writeByte((int)((uint)var1 >> 21) | 128);
 					}
 
-					this.writeByte(var1 >>> 21 | 128);
+					this.writeByte((int)((uint)var1 >> 14) | 128);
 				}
 
-				this.writeByte(var1 >>> 14 | 128);
+				this.writeByte((int)((uint)var1 >> 7) | 128);
 			}
 
-			this.writeByte(var1 >>> 7 | 128);
+			this.writeByte(var1 & 127);
 		}
 
-		this.writeByte(var1 & 127);
-	}
+		public void writeLengthFromMark(int var1)
+		{
+			this.Array[this.Offset - var1 - 4] = (byte)(var1 >> 24);
+			this.Array[this.Offset - var1 - 3] = (byte)(var1 >> 16);
+			this.Array[this.Offset - var1 - 2] = (byte)(var1 >> 8);
+			this.Array[this.Offset - var1 - 1] = (byte) var1;
+		}
 
-	public void writeLengthFromMark(int var1)
-	{
-		this.getArray()[this.getOffset() - var1 - 4] = (byte) (var1 >> 24);
-		this.getArray()[this.getOffset() - var1 - 3] = (byte) (var1 >> 16);
-		this.getArray()[this.getOffset() - var1 - 2] = (byte) (var1 >> 8);
-		this.getArray()[this.getOffset() - var1 - 1] = (byte) var1;
-	}
+		public void writeString(string str)
+		{
+			writeBytes(str.GetBytes(StandardCharsets.ISO_8859_1));
+			writeByte(0);
+		}
 
-	public void writestring(string str)
-	{
-		writeBytes(str.getBytes(StandardCharsets.ISO_8859_1));
-		writeByte(0);
-	}
+		public byte[] flip()
+		{
+			buffer.flip();
+			byte[] b = new byte[buffer.limit()];
+			buffer.get(b);
+			return b;
+		}
 
-	public byte[] flip()
-	{
-		buffer.flip();
-		byte[] b = new byte[buffer.limit()];
-		buffer.get(b);
-		return b;
-	}
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void write(int b) throws java.io.IOException
+		public override void write(int b)
+		{
+			buffer.put((byte) b);
+		}
 
-	// @Override
-	public void write(int b) // throws IOException
-	{
-		buffer.put((byte) b);
 	}
 
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,37 +22,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.UnderlayDefinition;
-using OSRSCache.io.InputStream;
-
-public class UnderlayLoader
+namespace OSRSCache.definitions.loaders
 {
-	public UnderlayDefinition load(int id, byte[] b)
+	using UnderlayDefinition = OSRSCache.definitions.UnderlayDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
+
+	public class UnderlayLoader
 	{
-		UnderlayDefinition def = new UnderlayDefinition();
-		InputStream is = new InputStream(b);
-
-		def.setId(id);
-
-		for (;;)
+		public virtual UnderlayDefinition load(int id, byte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			UnderlayDefinition def = new UnderlayDefinition(id);
+			InputStream @is = new InputStream(b);
+
+			for (;;)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				if (opcode == 1)
+				{
+					int color = @is.read24BitInt();
+					def.color = color;
+				}
 			}
 
-			if (opcode == 1)
-			{
-				int color = is.read24BitInt();
-				def.setColor(color);
-			}
+			def.calculateHsl();
+
+			return def;
 		}
-
-		def.calculateHsl();
-
-		return def;
 	}
+
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,25 +22,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class WorldMapType3 // , WorldMapTypeBase
+namespace OSRSCache.definitions
 {
-	public int chunk_oldXHigh;
-	public int numberOfPlanes;
-	public int oldX;
-	public int chunk_oldYHigh;
-	public int newX;
-	public int newY;
-	public int chunk_oldXLow;
-	public int oldY;
-	public int chunk_newYLow;
-	public int chunk_oldYLow;
-	public int chunk_newXLow;
-	public int oldPlane;
-	public int chunk_newXHigh;
-	public int chunk_newYHigh;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class WorldMapType3 implements WorldMapTypeBase
+	public class WorldMapType3 : WorldMapTypeBase
+	{
+		public int chunk_oldXHigh;
+		public int numberOfPlanes;
+		public int oldX;
+		public int chunk_oldYHigh;
+		public int newX;
+		public int newY;
+		public int chunk_oldXLow;
+		public int oldY;
+		public int chunk_newYLow;
+		public int chunk_oldYLow;
+		public int chunk_newXLow;
+		public int oldPlane;
+		public int chunk_newXHigh;
+		public int chunk_newYHigh;
+	}
+
 }

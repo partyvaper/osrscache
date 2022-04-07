@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,74 +24,72 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.Generic;
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.io.IOException;
-// import java.util.ArrayList;
-// import java.util.List;
-using OSRSCache.definitions.TextureDefinition;
-using OSRSCache.definitions.loaders.TextureLoader;
-using OSRSCache.definitions.providers.TextureProvider;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-
-public class TextureManager // , TextureProvider
+namespace OSRSCache
 {
-	private readonly Store store;
-	private readonly List<TextureDefinition> textures = new ArrayList<>();
+	using TextureDefinition = OSRSCache.definitions.TextureDefinition;
+	using TextureLoader = OSRSCache.definitions.loaders.TextureLoader;
+	using TextureProvider = OSRSCache.definitions.providers.TextureProvider;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
 
-	public TextureManager(Store store)
+	public class TextureManager : TextureProvider
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly IList<TextureDefinition> textures = new List<TextureDefinition>();
 
-	public void load() // throws IOException
-	{
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.TEXTURES);
-		Archive archive = index.getArchive(0);
-
-		byte[] archiveData = storage.loadArchive(archive);
-		ArchiveFiles files = archive.getFiles(archiveData);
-
-		TextureLoader loader = new TextureLoader();
-
-		for (FSFile file : files.getFiles())
+		public TextureManager(Store store)
 		{
-			TextureDefinition texture = loader.load(file.getFileId(), file.getContents());
-			textures.add(texture);
+			this.store = store;
 		}
-	}
 
-	public List<TextureDefinition> getTextures()
-	{
-		return textures;
-	}
-
-	public TextureDefinition findTexture(int id)
-	{
-		for (TextureDefinition td : textures)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
 		{
-			if (td.getId() == id)
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.TEXTURES);
+			Archive archive = index.getArchive(0);
+
+			byte[] archiveData = storage.loadArchive(archive);
+			ArchiveFiles files = archive.getFiles(archiveData);
+
+			TextureLoader loader = new TextureLoader();
+
+			foreach (FSFile file in files.Files)
 			{
-				return td;
+				TextureDefinition texture = loader.load(file.FileId, file.Contents);
+				textures.Add(texture);
 			}
 		}
-		return null;
+
+		public virtual IList<TextureDefinition> Textures
+		{
+			get
+			{
+				return textures;
+			}
+		}
+
+		public virtual TextureDefinition findTexture(int id)
+		{
+			foreach (TextureDefinition td in textures)
+			{
+				if (td.id == id)
+				{
+					return td;
+				}
+			}
+			return null;
+		}
+
+		public virtual TextureDefinition[] provide()
+		{
+			return ((List<TextureDefinition>)textures).ToArray();
+		}
 	}
 
-	// @Override
-	public TextureDefinition[] provide()
-	{
-		return textures.toArray(new TextureDefinition[textures.size()]);
-	}
 }

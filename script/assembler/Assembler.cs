@@ -1,3 +1,7 @@
+﻿using System;
+using System.IO;
+using System.Text;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,60 +26,60 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.script.assembler;
-
-// import java.io.IOException;
-// import java.io.InputStream;
-// import java.io.InputStreamReader;
-// import java.nio.charset.StandardCharsets;
-using OSRSCache.definitions.ScriptDefinition;
-using OSRSCache.script.Instructions;
-using OSRSCache.script.assembler.rs2asmParser.ProgContext;
-// import org.antlr.v4.runtime.ANTLRInputStream;
-// import org.antlr.v4.runtime.CommonTokenStream;
-// import org.antlr.v4.runtime.tree.ParseTreeWalker;
-
-public class Assembler
+namespace OSRSCache.script.assembler
 {
-	private readonly Instructions instructions;
+	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
+	using Instructions = OSRSCache.script.Instructions;
+	using ProgContext = OSRSCache.script.assembler.rs2asmParser.ProgContext;
+	using ANTLRInputStream = org.antlr.v4.runtime.ANTLRInputStream;
+	using CommonTokenStream = org.antlr.v4.runtime.CommonTokenStream;
+	using ParseTreeWalker = org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-	public Assembler(Instructions instructions)
+	public class Assembler
 	{
-		this.instructions = instructions;
-	}
+		private readonly Instructions instructions;
 
-	public ScriptDefinition assemble(InputStream in) // throws IOException
-	{
-		// Get our lexer
-		rs2asmLexer lexer = new rs2asmLexer(new ANTLRInputStream(new InputStreamReader(in, StandardCharsets.UTF_8)));
-
-		LexerErrorListener errorListener = new LexerErrorListener();
-		lexer.addErrorListener(errorListener);
-
-		// Get a list of matched tokens
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-		// Pass the tokens to the parser
-		rs2asmParser parser = new rs2asmParser(tokens);
-
-		// Specify our entry point
-		ProgContext progContext = parser.prog();
-
-		if (errorListener.getErrors() > 0)
+		public Assembler(Instructions instructions)
 		{
-			throw new RuntimeException("syntax error");
+			this.instructions = instructions;
 		}
 
-		// Walk it and attach our listener
-		ParseTreeWalker walker = new ParseTreeWalker();
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public OSRSCache.definitions.ScriptDefinition assemble(java.io.InputStream in) throws java.io.IOException
+		public virtual ScriptDefinition assemble(Stream @in)
+		{
+			// Get our lexer
+			rs2asmLexer lexer = new rs2asmLexer(new ANTLRInputStream(new StreamReader(@in, Encoding.UTF8)));
 
-		// walk through first and resolve labels
-		LabelVisitor labelVisitor = new LabelVisitor();
-		walker.walk(labelVisitor, progContext);
+			LexerErrorListener errorListener = new LexerErrorListener();
+			lexer.addErrorListener(errorListener);
 
-		ScriptWriter listener = new ScriptWriter(instructions, labelVisitor);
-		walker.walk(listener, progContext);
+			// Get a list of matched tokens
+			CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-		return listener.buildScript();
+			// Pass the tokens to the parser
+			rs2asmParser parser = new rs2asmParser(tokens);
+
+			// Specify our entry point
+			ProgContext progContext = parser.prog();
+
+			if (errorListener.Errors > 0)
+			{
+				throw new Exception("syntax error");
+			}
+
+			// Walk it and attach our listener
+			ParseTreeWalker walker = new ParseTreeWalker();
+
+			// walk through first and resolve labels
+			LabelVisitor labelVisitor = new LabelVisitor();
+			walker.walk(labelVisitor, progContext);
+
+			ScriptWriter listener = new ScriptWriter(instructions, labelVisitor);
+			walker.walk(listener, progContext);
+
+			return listener.buildScript();
+		}
 	}
+
 }

@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,20 +24,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.Generic;
-
-namespace OSRSCache.script.assembler;
-
-// import java.util.ArrayList;
-// import java.util.List;
-
-public class LookupSwitch
+namespace OSRSCache.script.assembler
 {
-	private readonly List<LookupCase> cases = new ArrayList<>();
 
-	public List<LookupCase> getCases()
+	public class LookupSwitch
 	{
-		return cases;
+		private readonly IList<LookupCase> cases = new List<LookupCase>();
+
+		public virtual IList<LookupCase> Cases
+		{
+			get
+			{
+				return cases;
+			}
+		}
 	}
+
 }

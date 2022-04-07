@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -26,199 +26,231 @@
 using System;
 using System.IO;
 
-namespace OSRSCache.fs;
-
-// import java.io.IOException;
-using OSRSCache.index.FileData;
-
-public class Archive
+namespace OSRSCache.fs
 {
-	private readonly Index index; // member of this index
+	using FileData = OSRSCache.index.FileData;
 
-	private readonly int archiveId;
-	private int nameHash;
-	private int crc;
-	private int revision;
-	private int compression;
-	private FileData[] fileData;
-	private byte[] hash; // used by webservice, sha256 hash of content
 
-	public Archive(Index index, int id)
+	public class Archive
 	{
-		this.index = index;
-		this.archiveId = id;
-	}
+		private readonly Index index; // member of this index
 
-	// @Override
-	public int hashCode()
-	{
-		int hash = 7;
-		hash = 47 * hash + this.archiveId;
-		hash = 47 * hash + this.nameHash;
-		hash = 47 * hash + this.revision;
-		return hash;
-	}
+		private readonly int archiveId;
+		private int nameHash;
+		private int crc;
+		private int revision;
+		private int compression;
+		private FileData[] fileData;
+		private byte[] hash; // used by webservice, sha256 hash of content
 
-	// @Override
-	public bool equals(Object obj)
-	{
-		if (obj == null)
+		public Archive(Index index, int id)
 		{
-			return false;
-		}
-		if (getClass() != obj.getClass())
-		{
-			return false;
-		}
-		final Archive other = (Archive) obj;
-		if (this.archiveId != other.archiveId)
-		{
-			return false;
-		}
-		if (this.nameHash != other.nameHash)
-		{
-			return false;
-		}
-		if (this.revision != other.revision)
-		{
-			return false;
-		}
-		return true;
-	}
-
-	public Index getIndex()
-	{
-		return index;
-	}
-
-	public byte[] decompress(byte[] data) // throws IOException
-	{
-		return decompress(data, null);
-	}
-
-	public byte[] decompress(byte[] data, int[] keys) // throws IOException
-	{
-		if (data == null)
-		{
-			return null;
+			this.index = index;
+			this.archiveId = id;
 		}
 
-		byte[] encryptedData = data;
-
-		Container container = Container.decompress(encryptedData, keys);
-		if (container == null)
+		public override int GetHashCode()
 		{
-			Console.WriteLine("Unable to decrypt archive {}", this);
-			return null;
+			int hash = 7;
+			hash = 47 * hash + this.archiveId;
+			hash = 47 * hash + this.nameHash;
+			hash = 47 * hash + this.revision;
+			return hash;
 		}
 
-		byte[] decompressedData = container.data;
-
-		if (this.crc != container.crc)
+		public override bool Equals(object obj)
 		{
-			Console.WriteLine("crc mismatch for archive {}/{}", index.getId(), this.getArchiveId());
-			throw new IOException("CRC mismatch for " + index.getId() + "/" + this.getArchiveId());
+			if (obj == null)
+			{
+				return false;
+			}
+			if (this.GetType() != obj.GetType())
+			{
+				return false;
+			}
+//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+//ORIGINAL LINE: final Archive other = (Archive) obj;
+			Archive other = (Archive) obj;
+			if (this.archiveId != other.archiveId)
+			{
+				return false;
+			}
+			if (this.nameHash != other.nameHash)
+			{
+				return false;
+			}
+			if (this.revision != other.revision)
+			{
+				return false;
+			}
+			return true;
 		}
 
-		if (container.revision != -1 && this.getRevision() != container.revision)
+		public virtual Index Index
 		{
-			// compressed data doesn't always include a revision, but check it if it does
-			Console.WriteLine("revision mismatch for archive {}/{}, expected {} was {}",
-				index.getId(), this.getArchiveId(),
-				this.getRevision(), container.revision);
-			// I've seen this happen with vanilla caches where the
-			// revision in the index data differs from the revision
-			// stored for the archive data on disk... I assume this
-			// is more correct
-			this.setRevision(container.revision);
+			get
+			{
+				return index;
+			}
 		}
 
-		setCompression(container.compression);
-		return decompressedData;
-	}
-
-	public ArchiveFiles getFiles(byte[] data) // throws IOException
-	{
-		return getFiles(data, null);
-	}
-
-	public ArchiveFiles getFiles(byte[] data, int[] keys) // throws IOException
-	{
-		byte[] decompressedData = decompress(data, keys);
-
-		ArchiveFiles files = new ArchiveFiles();
-		for (FileData fileEntry : fileData)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public byte[] decompress(byte[] data) throws java.io.IOException
+		public virtual byte[] decompress(byte[] data)
 		{
-			FSFile file = new FSFile(fileEntry.getId());
-			file.setNameHash(fileEntry.getNameHash());
-			files.addFile(file);
+			return decompress(data, null);
 		}
-		files.loadContents(decompressedData);
-		return files;
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public byte[] decompress(byte[] data, int[] keys) throws java.io.IOException
+		public virtual byte[] decompress(byte[] data, int[] keys)
+		{
+			if (data == null)
+			{
+				return null;
+			}
+
+			byte[] encryptedData = data;
+
+			Container container = Container.decompress(encryptedData, keys);
+			if (container == null)
+			{
+				Console.WriteLine("Unable to decrypt archive {0}", this);
+				return null;
+			}
+
+			byte[] decompressedData = container.data;
+
+			if (this.crc != container.crc)
+			{
+				Console.WriteLine("crc mismatch for archive {0}/{1}", index.Id, this.ArchiveId);
+				throw new IOException("CRC mismatch for " + index.Id + "/" + this.ArchiveId);
+			}
+
+			if (container.revision != -1 && this.Revision != container.revision)
+			{
+				// compressed data doesn't always include a revision, but check it if it does
+				Console.WriteLine("revision mismatch for archive {0}/{1}, expected {2} was {3}", index.Id, this.ArchiveId, this.Revision, container.revision);
+				// I've seen this happen with vanilla caches where the
+				// revision in the index data differs from the revision
+				// stored for the archive data on disk... I assume this
+				// is more correct
+				this.Revision = container.revision;
+			}
+
+			Compression = container.compression;
+			return decompressedData;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public ArchiveFiles getFiles(byte[] data) throws java.io.IOException
+		public virtual ArchiveFiles getFiles(byte[] data)
+		{
+			return getFiles(data, null);
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public ArchiveFiles getFiles(byte[] data, int[] keys) throws java.io.IOException
+		public virtual ArchiveFiles getFiles(byte[] data, int[] keys)
+		{
+			byte[] decompressedData = decompress(data, keys);
+
+			ArchiveFiles files = new ArchiveFiles();
+			foreach (FileData fileEntry in fileData)
+			{
+				FSFile file = new FSFile(fileEntry.Id);
+				file.NameHash = fileEntry.NameHash;
+				files.addFile(file);
+			}
+			files.loadContents(decompressedData);
+			return files;
+		}
+
+		public virtual int ArchiveId
+		{
+			get
+			{
+				return archiveId;
+			}
+		}
+
+		public virtual int NameHash
+		{
+			get
+			{
+				return nameHash;
+			}
+			set
+			{
+				this.nameHash = value;
+			}
+		}
+
+
+		public virtual int Crc
+		{
+			get
+			{
+				return crc;
+			}
+			set
+			{
+				this.crc = value;
+			}
+		}
+
+
+		public virtual int Revision
+		{
+			get
+			{
+				return revision;
+			}
+			set
+			{
+				this.revision = value;
+			}
+		}
+
+
+		public virtual int Compression
+		{
+			get
+			{
+				return compression;
+			}
+			set
+			{
+				this.compression = value;
+			}
+		}
+
+
+		public virtual FileData[] FileData
+		{
+			get
+			{
+				return fileData;
+			}
+			set
+			{
+				this.fileData = value;
+			}
+		}
+
+
+		public virtual byte[] Hash
+		{
+			get
+			{
+				return hash;
+			}
+			set
+			{
+				this.hash = value;
+			}
+		}
+
 	}
 
-	public int getArchiveId()
-	{
-		return archiveId;
-	}
-
-	public int getNameHash()
-	{
-		return nameHash;
-	}
-
-	public void setNameHash(int nameHash)
-	{
-		this.nameHash = nameHash;
-	}
-
-	public int getCrc()
-	{
-		return crc;
-	}
-
-	public void setCrc(int crc)
-	{
-		this.crc = crc;
-	}
-
-	public int getRevision()
-	{
-		return revision;
-	}
-
-	public void setRevision(int revision)
-	{
-		this.revision = revision;
-	}
-
-	public int getCompression()
-	{
-		return compression;
-	}
-
-	public void setCompression(int compression)
-	{
-		this.compression = compression;
-	}
-
-	public FileData[] getFileData()
-	{
-		return fileData;
-	}
-
-	public void setFileData(FileData[] fileData)
-	{
-		this.fileData = fileData;
-	}
-
-	public byte[] getHash()
-	{
-		return hash;
-	}
-
-	public void setHash(byte[] hash)
-	{
-		this.hash = hash;
-	}
 }

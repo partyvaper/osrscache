@@ -1,43 +1,27 @@
-/*
- * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+﻿using System;
+using Force.Crc32;
 
-namespace OSRSCache.util;
-
-// import java.util.zip.CRC32;
-
-public class Crc32
+namespace OSRSCache.util
 {
-	private readonly CRC32 crc32 = new CRC32();
 
-	public void update(byte[] data, int offset, int length)
+	public class Crc32
 	{
-		crc32.update(data, offset, length);
+		private readonly Crc32Algorithm crc32 = new Crc32Algorithm();
+		private byte[] hash;
+
+		public virtual void update(byte[] data, int offset, int length)
+		{
+			hash = crc32.ComputeHash(data, offset, length);
+		}
+
+		public virtual int Hash
+		{
+			get
+			{
+				// return Convert.ToInt32(hash);
+				return Convert.ToInt32(crc32.Hash);
+			}
+		}
 	}
 
-	public int getHash()
-	{
-		return (int) crc32.getValue();
-	}
 }

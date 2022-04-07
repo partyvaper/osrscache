@@ -1,3 +1,6 @@
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 /*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,64 +25,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System.Collections.ObjectModel;
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.io.IOException;
-// import java.util.Collection;
-// import java.util.Collections;
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.UnderlayDefinition;
-using OSRSCache.definitions.loaders.UnderlayLoader;
-using OSRSCache.definitions.providers.UnderlayProvider;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-
-public class UnderlayManager // , UnderlayProvider
+namespace OSRSCache
 {
-	private readonly Store store;
-	private readonly Map<Integer, UnderlayDefinition> underlays = new HashMap<>();
+	using UnderlayDefinition = OSRSCache.definitions.UnderlayDefinition;
+	using UnderlayLoader = OSRSCache.definitions.loaders.UnderlayLoader;
+	using UnderlayProvider = OSRSCache.definitions.providers.UnderlayProvider;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
 
-	public UnderlayManager(Store store)
+	public class UnderlayManager : UnderlayProvider
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly IDictionary<int, UnderlayDefinition> underlays = new Dictionary<int, UnderlayDefinition>();
 
-	public void load() // throws IOException
-	{
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.CONFIGS);
-		Archive archive = index.getArchive(ConfigType.UNDERLAY.getId());
-
-		byte[] archiveData = storage.loadArchive(archive);
-		ArchiveFiles files = archive.getFiles(archiveData);
-
-		for (FSFile file : files.getFiles())
+		public UnderlayManager(Store store)
 		{
-			UnderlayLoader loader = new UnderlayLoader();
-			UnderlayDefinition underlay = loader.load(file.getFileId(), file.getContents());
+			this.store = store;
+		}
 
-			underlays.put(underlay.getId(), underlay);
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
+		{
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.CONFIGS);
+			Archive archive = index.getArchive(ConfigType.UNDERLAY.Id);
+
+			byte[] archiveData = storage.loadArchive(archive);
+			ArchiveFiles files = archive.getFiles(archiveData);
+
+			foreach (FSFile file in files.Files)
+			{
+				UnderlayLoader loader = new UnderlayLoader();
+				UnderlayDefinition underlay = loader.load(file.FileId, file.Contents);
+
+				underlays[underlay.id] = underlay;
+			}
+		}
+
+		public virtual ICollection<UnderlayDefinition> Underlays
+		{
+			get
+			{
+				// return Collections.unmodifiableCollection(underlays.Values);
+				return new List<UnderlayDefinition>(underlays.Values);
+			}
+		}
+
+		public virtual UnderlayDefinition provide(int underlayId)
+		{
+			return underlays[underlayId];
 		}
 	}
 
-	public Collection<UnderlayDefinition> getUnderlays()
-	{
-		return Collections.unmodifiableCollection(underlays.values());
-	}
-
-	// @Override
-	public UnderlayDefinition provide(int underlayId)
-	{
-		return underlays.get(underlayId);
-	}
 }

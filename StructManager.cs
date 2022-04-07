@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2018, Joshua Filby <joshua@filby.me>
  * All rights reserved.
@@ -22,67 +24,65 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache;
-
-// import java.io.IOException;
-// import java.util.Collections;
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.StructDefinition;
-using OSRSCache.definitions.loaders.StructLoader;
-using OSRSCache.definitions.providers.StructProvider;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-
-public class StructManager // , StructProvider
+namespace OSRSCache
 {
-	private readonly Store store;
-	private readonly Map<Integer, StructDefinition> structs = new HashMap<>();
+	using StructDefinition = OSRSCache.definitions.StructDefinition;
+	using StructLoader = OSRSCache.definitions.loaders.StructLoader;
+	using StructProvider = OSRSCache.definitions.providers.StructProvider;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
 
-	public StructManager(Store store)
+	public class StructManager : StructProvider
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly IDictionary<int, StructDefinition> structs = new Dictionary<int, StructDefinition>();
 
-	public void load() // throws IOException
-	{
-		StructLoader loader = new StructLoader();
-
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.CONFIGS);
-		Archive archive = index.getArchive(ConfigType.STRUCT.getId());
-
-		byte[] archiveData = storage.loadArchive(archive);
-		ArchiveFiles files = archive.getFiles(archiveData);
-
-		for (FSFile f : files.getFiles())
+		public StructManager(Store store)
 		{
-			StructDefinition def = loader.load(f.getFileId(), f.getContents());
-			structs.put(f.getFileId(), def);
+			this.store = store;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
+		{
+			StructLoader loader = new StructLoader();
+
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.CONFIGS);
+			Archive archive = index.getArchive(ConfigType.STRUCT.Id);
+
+			byte[] archiveData = storage.loadArchive(archive);
+			ArchiveFiles files = archive.getFiles(archiveData);
+
+			foreach (FSFile f in files.Files)
+			{
+				StructDefinition def = loader.load(f.FileId, f.Contents);
+				structs[f.FileId] = def;
+			}
+		}
+
+		public virtual IDictionary<int, StructDefinition> Structs
+		{
+			get
+			{
+				return new Dictionary<int, StructDefinition>(structs);
+			}
+		}
+
+		public virtual StructDefinition getStruct(int structId)
+		{
+			return structs[structId];
+		}
+
+		public virtual StructDefinition provide(int structId)
+		{
+			return getStruct(structId);
 		}
 	}
 
-	public Map<Integer, StructDefinition> getStructs()
-	{
-		return Collections.unmodifiableMap(structs);
-	}
-
-	public StructDefinition getStruct(int structId)
-	{
-		return structs.get(structId);
-	}
-
-	// @Override
-	public StructDefinition provide(int structId)
-	{
-		return getStruct(structId);
-	}
 }

@@ -1,3 +1,6 @@
+﻿using System;
+using System.Collections.Generic;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,38 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-
-namespace OSRSCache.script.assembler;
-
-// import java.util.HashMap;
-// import java.util.Map;
-
-public class LabelVisitor extends rs2asmBaseListener
+namespace OSRSCache.script.assembler
 {
-	private int pos;
-	private readonly Map<string, Integer> map = new HashMap<>();
 
-	// @Override
-	public void exitInstruction(rs2asmParser.InstructionContext ctx)
+
+	public class LabelVisitor : rs2asmBaseListener
 	{
-		++pos;
+		private int pos;
+		private readonly IDictionary<string, int> map = new Dictionary<string, int>();
+
+		public override void exitInstruction(rs2asmParser.InstructionContext ctx)
+		{
+			++pos;
+		}
+
+		public override void enterLabel(rs2asmParser.LabelContext ctx)
+		{
+			string text = ctx.getText();
+			text = text.Substring(0, text.Length - 1); // remove trailing :
+
+			Console.WriteLine("Label {0} is on instruction {1}", text, pos);
+
+			map[text] = pos;
+		}
+
+		public virtual int? getInstructionForLabel(string label)
+		{
+			return map[label];
+		}
 	}
 
-	// @Override
-	public void enterLabel(rs2asmParser.LabelContext ctx)
-	{
-		string text = ctx.getText();
-		text = text.substring(0, text.length() - 1); // remove trailing :
-
-		Console.WriteLine("Label {} is on instruction {}", text, pos);
-
-		map.put(text, pos);
-	}
-
-	public Integer getInstructionForLabel(string label)
-	{
-		return map.get(label);
-	}
 }

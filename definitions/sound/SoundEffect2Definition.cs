@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,27 +22,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.sound;
-
-public class SoundEffect2Definition
+namespace OSRSCache.definitions.sound
 {
-	public int field1085;
-	public int[] field1086 = new int[2];
-	public int field1087;
-	public int field1088;
-	public int field1089;
-	public int[] field1090 = new int[2];
-	public int field1091;
-	public int field1092 = 2;
-	public int field1093;
-	public int field1094;
-	public int field1095;
-
-	public SoundEffect2Definition()
+	public class SoundEffect2Definition
 	{
-		this.field1086[0] = 0;
-		this.field1086[1] = '\uffff';
-		this.field1090[0] = 0;
-		this.field1090[1] = '\uffff';
+		public int field1085;
+		public int[] field1086 = new int[2];
+		public int field1087;
+		public int field1088;
+		public int field1089;
+		public int[] field1090 = new int[2];
+		public int field1091;
+		public int field1092 = 2;
+		public int field1093;
+		public int field1094;
+		public int field1095;
+
+		public SoundEffect2Definition()
+		{
+			this.field1086[0] = 0;
+			this.field1086[1] = '\uffff';
+			this.field1090[0] = 0;
+			this.field1090[1] = '\uffff';
+		}
 	}
+
 }

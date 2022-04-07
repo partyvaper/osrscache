@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -25,89 +25,93 @@
 
 using System;
 
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.EnumDefinition;
-using OSRSCache.io.InputStream;
-using OSRSCache.util.ScriptVarType;
-
-public class EnumLoader
+namespace OSRSCache.definitions.loaders
 {
-	public EnumDefinition load(int id, byte[] b)
+	using EnumDefinition = OSRSCache.definitions.EnumDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+	using ScriptVarType = OSRSCache.util.ScriptVarType;
+
+
+	public class EnumLoader
 	{
-		if (b.length == 1 && b[0] == 0)
+		public virtual EnumDefinition load(int id, byte[] b)
 		{
-			return null;
-		}
-
-		EnumDefinition def = new EnumDefinition();
-		InputStream is = new InputStream(b);
-
-		def.setId(id);
-
-		for (;;)
-		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			if (b.Length == 1 && b[0] == 0)
 			{
-				break;
+				return null;
 			}
 
-			processOp(opcode, def, is);
+			EnumDefinition def = new EnumDefinition();
+			InputStream @is = new InputStream(b);
+
+			def.id = id;
+
+			for (;;)
+			{
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				processOp(opcode, def, @is);
+			}
+
+			return def;
 		}
 
-		return def;
+		private void processOp(int opcode, EnumDefinition def, InputStream @is)
+		{
+			switch (opcode)
+			{
+				case 1:
+					def.keyType = ScriptVarType.forCharKey((char) @is.readUnsignedByte());
+					break;
+				case 2:
+					def.valType = ScriptVarType.forCharKey((char) @is.readUnsignedByte());
+					break;
+				case 3:
+					def.defaultString = @is.readString();
+					break;
+				case 4:
+					def.defaultInt = @is.readInt();
+					break;
+				case 5:
+				{
+					int size = @is.readUnsignedShort();
+					int[] keys = new int[size];
+					string[] stringVals = new string[size];
+					for (int index = 0; index < size; ++index)
+					{
+						keys[index] = @is.readInt();
+						stringVals[index] = @is.readString();
+					}
+
+					def.size = size;
+					def.keys = keys;
+					def.stringVals = stringVals;
+					break;
+				}
+				case 6:
+				{
+					int size = @is.readUnsignedShort();
+					int[] keys = new int[size];
+					int[] intVals = new int[size];
+					for (int index = 0; index < size; ++index)
+					{
+						keys[index] = @is.readInt();
+						intVals[index] = @is.readInt();
+					}
+					def.size = size;
+					def.keys = keys;
+					def.intVals = intVals;
+					break;
+				}
+				default:
+					Console.WriteLine("EnumLoader: unrecognized opcode {0}", opcode);
+					break;
+			}
+		}
 	}
 
-	private void processOp(int opcode, EnumDefinition def, InputStream is)
-	{
-		switch (opcode)
-		{
-			case 1:
-				def.setKeyType(ScriptVarType.forCharKey((char) is.readUnsignedByte()));
-				break;
-			case 2:
-				def.setValType(ScriptVarType.forCharKey((char) is.readUnsignedByte()));
-				break;
-			case 3:
-				def.setDefaultstring(is.readstring());
-				break;
-			case 4:
-				def.setDefaultInt(is.readInt());
-				break;
-			case 5:
-			{
-				int size = is.readUnsignedShort();
-				int[] keys = new int[size];
-				string[] stringVals = new string[size];
-				for (int index = 0; index < size; ++index)
-				{
-					keys[index] = is.readInt();
-					stringVals[index] = is.readstring();
-				}
-				def.setSize(size);
-				def.setKeys(keys);
-				def.setstringVals(stringVals);
-				break;
-			}
-			case 6:
-			{
-				int size = is.readUnsignedShort();
-				int[] keys = new int[size];
-				int[] intVals = new int[size];
-				for (int index = 0; index < size; ++index)
-				{
-					keys[index] = is.readInt();
-					intVals[index] = is.readInt();
-				}
-				def.setSize(size);
-				def.setKeys(keys);
-				def.setIntVals(intVals);
-				break;
-			}
-			default:
-				Console.WriteLine("Unrecognized opcode {}", opcode);
-				break;
-		}
-	}
 }

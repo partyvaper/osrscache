@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,74 +22,77 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.KitDefinition;
-using OSRSCache.io.InputStream;
-
-public class KitLoader
+namespace OSRSCache.definitions.loaders
 {
-	public KitDefinition load(int id, byte[] b)
+	using KitDefinition = OSRSCache.definitions.KitDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
+
+	public class KitLoader
 	{
-		KitDefinition def = new KitDefinition(id);
-		InputStream is = new InputStream(b);
-
-		for (;;)
+		public virtual KitDefinition load(int id, byte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
-			{
-				break;
-			}
+			KitDefinition def = new KitDefinition(id);
+			InputStream @is = new InputStream(b);
 
-			if (opcode == 1)
+			for (;;)
 			{
-				def.bodyPartId = is.readUnsignedByte();
-			}
-			else if (opcode == 2)
-			{
-				int length = is.readUnsignedByte();
-				def.models = new int[length];
-
-				for (int index = 0; index < length; ++index)
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
 				{
-					def.models[index] = is.readUnsignedShort();
+					break;
+				}
+
+				if (opcode == 1)
+				{
+					def.bodyPartId = @is.readUnsignedByte();
+				}
+				else if (opcode == 2)
+				{
+					int length = @is.readUnsignedByte();
+					def.models = new int[length];
+
+					for (int index = 0; index < length; ++index)
+					{
+						def.models[index] = @is.readUnsignedShort();
+					}
+				}
+				else if (opcode == 3)
+				{
+					def.nonSelectable = true;
+				}
+				else if (opcode == 40)
+				{
+					int length = @is.readUnsignedByte();
+					def.recolorToFind = new short[length];
+					def.recolorToReplace = new short[length];
+
+					for (int index = 0; index < length; ++index)
+					{
+						def.recolorToFind[index] = @is.readShort();
+						def.recolorToReplace[index] = @is.readShort();
+					}
+				}
+				else if (opcode == 41)
+				{
+					int length = @is.readUnsignedByte();
+					def.retextureToFind = new short[length];
+					def.retextureToReplace = new short[length];
+
+					for (int index = 0; index < length; ++index)
+					{
+						def.retextureToFind[index] = @is.readShort();
+						def.retextureToReplace[index] = @is.readShort();
+					}
+				}
+				else if (opcode >= 60 && opcode < 70)
+				{
+					def.chatheadModels[opcode - 60] = @is.readUnsignedShort();
 				}
 			}
-			else if (opcode == 3)
-			{
-				def.nonSelectable = true;
-			}
-			else if (opcode == 40)
-			{
-				int length = is.readUnsignedByte();
-				def.recolorToFind = new short[length];
-				def.recolorToReplace = new short[length];
 
-				for (int index = 0; index < length; ++index)
-				{
-					def.recolorToFind[index] = is.readShort();
-					def.recolorToReplace[index] = is.readShort();
-				}
-			}
-			else if (opcode == 41)
-			{
-				int length = is.readUnsignedByte();
-				def.retextureToFind = new short[length];
-				def.retextureToReplace = new short[length];
-
-				for (int index = 0; index < length; ++index)
-				{
-					def.retextureToFind[index] = is.readShort();
-					def.retextureToReplace[index] = is.readShort();
-				}
-			}
-			else if (opcode >= 60 && opcode < 70)
-			{
-				def.chatheadModels[opcode - 60] = is.readUnsignedShort();
-			}
+			return def;
 		}
-
-		return def;
 	}
+
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,36 +22,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.VarbitDefinition;
-using OSRSCache.io.InputStream;
-
-public class VarbitLoader
+namespace OSRSCache.definitions.loaders
 {
-	public VarbitDefinition load(int id, byte[] b)
+	using VarbitDefinition = OSRSCache.definitions.VarbitDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
+	public class VarbitLoader
 	{
-		VarbitDefinition def = new VarbitDefinition();
-		InputStream is = new InputStream(b);
-
-		def.setId(id);
-
-		for (;;)
+		public virtual VarbitDefinition load(int id, byte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			VarbitDefinition def = new VarbitDefinition(id);
+			InputStream @is = new InputStream(b);
+
+			for (;;)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				if (opcode == 1)
+				{
+					def.index = @is.readUnsignedShort();
+					def.leastSignificantBit = @is.readUnsignedByte();
+					def.mostSignificantBit = @is.readUnsignedByte();
+				}
 			}
 
-			if (opcode == 1)
-			{
-				def.setIndex(is.readUnsignedShort());
-				def.setLeastSignificantBit(is.readUnsignedByte());
-				def.setMostSignificantBit(is.readUnsignedByte());
-			}
+			return def;
 		}
-
-		return def;
 	}
+
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018, Joshua Filby <joshua@filby.me>
  * All rights reserved.
  *
@@ -22,11 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.providers;
-
-using OSRSCache.definitions.StructDefinition;
-
-public interface StructProvider
+namespace OSRSCache.definitions.providers
 {
-	StructDefinition provide(int structId);
+	using StructDefinition = OSRSCache.definitions.StructDefinition;
+
+	public interface StructProvider
+	{
+		StructDefinition provide(int structId);
+	}
+
 }

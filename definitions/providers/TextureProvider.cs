@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,11 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.providers;
-
-using OSRSCache.definitions.TextureDefinition;
-
-public interface TextureProvider
+namespace OSRSCache.definitions.providers
 {
-	TextureDefinition[] provide();
+	using TextureDefinition = OSRSCache.definitions.TextureDefinition;
+
+	public interface TextureProvider
+	{
+		TextureDefinition[] provide();
+	}
+
 }

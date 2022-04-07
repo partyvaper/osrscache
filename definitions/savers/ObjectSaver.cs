@@ -1,239 +1,215 @@
-/*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+﻿using System.Collections.Generic;
 
-using System;
-
-namespace OSRSCache.definitions.savers;
-
-// import java.util.Map;
-using OSRSCache.definitions.ObjectDefinition;
-using OSRSCache.io.OutputStream;
-
-public class ObjectSaver
+namespace OSRSCache.definitions.savers
 {
-	public byte[] save(ObjectDefinition obj)
-	{
-		OutputStream out = new OutputStream();
-		if (obj.getObjectTypes() != null && obj.getObjectModels() != null)
-		{
-			out.writeByte(1);
-			out.writeByte(obj.getObjectTypes().length);
-			for (int i = 0; i < obj.getObjectTypes().length; ++i)
-			{
-				out.writeShort(obj.getObjectModels()[i]);
-				out.writeByte(obj.getObjectTypes()[i]);
-			}
-		}
-		if (obj.getName() != null)
-		{
-			out.writeByte(2);
-			out.writestring(obj.getName());
-		}
-		if (obj.getObjectTypes() == null && obj.getObjectModels() != null)
-		{
-			out.writeByte(5);
-			out.writeByte(obj.getObjectModels().length);
-			for (int i = 0; i < obj.getObjectModels().length; ++i)
-			{
-				out.writeShort(obj.getObjectModels()[i]);
-			}
-		}
-		out.writeByte(14);
-		out.writeByte(obj.getSizeX());
-		out.writeByte(15);
-		out.writeByte(obj.getSizeY());
-		if (obj.getInteractType() == 0 && !obj.isBlocksProjectile())
-		{
-			out.writeByte(17);
-		}
-		else if (!obj.isBlocksProjectile())
-		{
-			out.writeByte(18);
-		}
-		if (obj.getWallOrDoor() != -1)
-		{
-			out.writeByte(19);
-			out.writeByte(obj.getWallOrDoor());
-		}
-		if (obj.getContouredGround() == 0)
-		{
-			out.writeByte(21);
-		}
-		if (!obj.isMergeNormals())
-		{
-			out.writeByte(22);
-		}
-		if (obj.isABool2111())
-		{
-			out.writeByte(23);
-		}
-		if (obj.getAnimationID() != -1)
-		{
-			out.writeByte(24);
-			out.writeShort(obj.getAnimationID());
-		}
-		if (obj.getInteractType() == 1)
-		{
-			out.writeByte(27);
-		}
-		out.writeByte(28);
-		out.writeByte(obj.getDecorDisplacement());
-		out.writeByte(29);
-		out.writeByte(obj.getAmbient());
-		out.writeByte(39);
-		out.writeByte(obj.getContrast() / 25);
-		for (int i = 0; i < 5; ++i)
-		{
-			out.writeByte(30 + i);
-			string action = obj.getActions()[i];
-			out.writestring(action != null ? action : "Hidden");
-		}
-		if (obj.getRecolorToFind() != null && obj.getRecolorToReplace() != null)
-		{
-			out.writeByte(40);
-			out.writeByte(obj.getRecolorToFind().length);
-			for (int i = 0; i < obj.getRecolorToFind().length; ++i)
-			{
-				out.writeShort(obj.getRecolorToFind()[i]);
-				out.writeShort(obj.getRecolorToReplace()[i]);
-			}
-		}
-		if (obj.getRetextureToFind() != null && obj.getTextureToReplace() != null)
-		{
-			out.writeByte(41);
-			out.writeByte(obj.getRetextureToFind().length);
-			for (int i = 0; i < obj.getRetextureToFind().length; ++i)
-			{
-				out.writeShort(obj.getRetextureToFind()[i]);
-				out.writeShort(obj.getTextureToReplace()[i]);
-			}
-		}
-		if (obj.isRotated())
-		{
-			out.writeByte(62);
-		}
-		if (!obj.isShadow())
-		{
-			out.writeByte(64);
-		}
-		out.writeByte(65);
-		out.writeShort(obj.getModelSizeX());
-		out.writeByte(66);
-		out.writeShort(obj.getModelSizeHeight());
-		out.writeByte(67);
-		out.writeShort(obj.getModelSizeY());
-		if (obj.getMapSceneID() != -1)
-		{
-			out.writeByte(68);
-			out.writeShort(obj.getMapSceneID());
-		}
-		if (obj.getBlockingMask() != 0)
-		{
-			out.writeByte(69);
-			out.writeByte(obj.getBlockingMask());
-		}
-		out.writeByte(70);
-		out.writeShort(obj.getOffsetX());
-		out.writeByte(71);
-		out.writeShort(obj.getOffsetHeight());
-		out.writeByte(72);
-		out.writeShort(obj.getOffsetY());
-		if (obj.isObstructsGround())
-		{
-			out.writeByte(73);
-		}
-		if (obj.isHollow())
-		{
-			out.writeByte(74);
-		}
-		if (obj.getSupportsItems() != -1)
-		{
-			out.writeByte(75);
-			out.writeByte(obj.getSupportsItems());
-		}
-		if (obj.getAmbientSoundId() != -1)
-		{
-			out.writeByte(78);
-			out.writeShort(obj.getAmbientSoundId());
-			out.writeByte(obj.getAnInt2083());
-		}
-		if (obj.getAmbientSoundIds() != null)
-		{
-			out.writeByte(79);
-			out.writeShort(obj.getAnInt2112());
-			out.writeShort(obj.getAnInt2113());
-			out.writeByte(obj.getAnInt2083());
-			out.writeByte(obj.getAmbientSoundIds().length);
-			for (int i : obj.getAmbientSoundIds())
-			{
-				out.writeShort(i);
-			}
-		}
-		if (obj.getContouredGround() != -1)
-		{
-			out.writeByte(81);
-			out.writeByte(obj.getContouredGround() / 256);
-		}
-		if (obj.getMapAreaId() != -1)
-		{
-			out.writeByte(82);
-			out.writeShort(obj.getMapAreaId());
-		}
-		if (obj.getConfigChangeDest() != null)
-		{
-			out.writeByte(92);
-			out.writeShort(obj.getVarbitID());
-			out.writeShort(obj.getVarpID());
+	using ObjectDefinition = OSRSCache.definitions.ObjectDefinition;
+	using OutputStream = OSRSCache.io.OutputStream;
 
-			int[] c = obj.getConfigChangeDest();
-			out.writeShort(c[c.length - 1]);
-			out.writeByte(c.length - 2);
-			for (int i = 0; i <= c.length - 2; ++i)
-			{
-				out.writeShort(c[i]);
-			}
-		}
-		if (obj.getParams() != null)
+	public class ObjectSaver
+	{
+		public virtual byte[] save(ObjectDefinition obj)
 		{
-			out.writeByte(249);
-			out.writeByte(obj.getParams().size());
-			for (Map.Entry<Integer, Object> entry : obj.getParams().entrySet())
+			OutputStream @out = new OutputStream();
+			if (obj.objectTypes != null && obj.objectModels != null)
 			{
-				out.writeByte(entry.getValue() instanceof string ? 1 : 0);
-				out.write24BitInt(entry.getKey());
-				if (entry.getValue() instanceof string)
+				@out.writeByte(1);
+				@out.writeByte(obj.objectTypes.Length);
+				for (int i = 0; i < obj.objectTypes.Length; ++i)
 				{
-					out.writestring((string) entry.getValue());
-				}
-				else
-				{
-					out.writeInt((Integer) entry.getValue());
+					@out.writeShort(obj.objectModels[i]);
+					@out.writeByte(obj.objectTypes[i]);
 				}
 			}
+			if (obj.name != null)
+			{
+				@out.writeByte(2);
+				@out.writeString(obj.name);
+			}
+			if (obj.objectTypes == null && obj.objectModels != null)
+			{
+				@out.writeByte(5);
+				@out.writeByte(obj.objectModels.Length);
+				for (int i = 0; i < obj.objectModels.Length; ++i)
+				{
+					@out.writeShort(obj.objectModels[i]);
+				}
+			}
+			@out.writeByte(14);
+			@out.writeByte(obj.sizeX);
+			@out.writeByte(15);
+			@out.writeByte(obj.sizeY);
+			if (obj.interactType == 0 && !obj.blocksProjectile)
+			{
+				@out.writeByte(17);
+			}
+			else if (!obj.blocksProjectile)
+			{
+				@out.writeByte(18);
+			}
+			if (obj.wallOrDoor != -1)
+			{
+				@out.writeByte(19);
+				@out.writeByte(obj.wallOrDoor);
+			}
+			if (obj.contouredGround == 0)
+			{
+				@out.writeByte(21);
+			}
+			if (!obj.mergeNormals)
+			{
+				@out.writeByte(22);
+			}
+			if (obj.aBool2111)
+			{
+				@out.writeByte(23);
+			}
+			if (obj.animationID != -1)
+			{
+				@out.writeByte(24);
+				@out.writeShort(obj.animationID);
+			}
+			if (obj.interactType == 1)
+			{
+				@out.writeByte(27);
+			}
+			@out.writeByte(28);
+			@out.writeByte(obj.decorDisplacement);
+			@out.writeByte(29);
+			@out.writeByte(obj.ambient);
+			@out.writeByte(39);
+			@out.writeByte(obj.contrast / 25);
+			for (int i = 0; i < 5; ++i)
+			{
+				@out.writeByte(30 + i);
+				string action = obj.actions[i];
+				@out.writeString(!string.ReferenceEquals(action, null) ? action : "Hidden");
+			}
+			if (obj.recolorToFind != null && obj.recolorToReplace != null)
+			{
+				@out.writeByte(40);
+				@out.writeByte(obj.recolorToFind.Length);
+				for (int i = 0; i < obj.recolorToFind.Length; ++i)
+				{
+					@out.writeShort(obj.recolorToFind[i]);
+					@out.writeShort(obj.recolorToReplace[i]);
+				}
+			}
+			if (obj.retextureToFind != null && obj.textureToReplace != null)
+			{
+				@out.writeByte(41);
+				@out.writeByte(obj.retextureToFind.Length);
+				for (int i = 0; i < obj.retextureToFind.Length; ++i)
+				{
+					@out.writeShort(obj.retextureToFind[i]);
+					@out.writeShort(obj.textureToReplace[i]);
+				}
+			}
+			if (obj.isRotated)
+			{
+				@out.writeByte(62);
+			}
+			if (!obj.shadow)
+			{
+				@out.writeByte(64);
+			}
+			@out.writeByte(65);
+			@out.writeShort(obj.modelSizeX);
+			@out.writeByte(66);
+			@out.writeShort(obj.modelSizeHeight);
+			@out.writeByte(67);
+			@out.writeShort(obj.modelSizeY);
+			if (obj.mapSceneID != -1)
+			{
+				@out.writeByte(68);
+				@out.writeShort(obj.mapSceneID);
+			}
+			if (obj.blockingMask != 0)
+			{
+				@out.writeByte(69);
+				@out.writeByte(obj.blockingMask);
+			}
+			@out.writeByte(70);
+			@out.writeShort(obj.offsetX);
+			@out.writeByte(71);
+			@out.writeShort(obj.offsetHeight);
+			@out.writeByte(72);
+			@out.writeShort(obj.offsetY);
+			if (obj.obstructsGround)
+			{
+				@out.writeByte(73);
+			}
+			if (obj.isHollow)
+			{
+				@out.writeByte(74);
+			}
+			if (obj.supportsItems != -1)
+			{
+				@out.writeByte(75);
+				@out.writeByte(obj.supportsItems);
+			}
+			if (obj.ambientSoundId != -1)
+			{
+				@out.writeByte(78);
+				@out.writeShort(obj.ambientSoundId);
+				@out.writeByte(obj.anInt2083);
+			}
+			if (obj.ambientSoundIds != null)
+			{
+				@out.writeByte(79);
+				@out.writeShort(obj.anInt2112);
+				@out.writeShort(obj.anInt2113);
+				@out.writeByte(obj.anInt2083);
+				@out.writeByte(obj.ambientSoundIds.Length);
+				foreach (int i in obj.ambientSoundIds)
+				{
+					@out.writeShort(i);
+				}
+			}
+			if (obj.contouredGround != -1)
+			{
+				@out.writeByte(81);
+				@out.writeByte(obj.contouredGround / 256);
+			}
+			if (obj.mapAreaId != -1)
+			{
+				@out.writeByte(82);
+				@out.writeShort(obj.mapAreaId);
+			}
+			if (obj.configChangeDest != null)
+			{
+				@out.writeByte(92);
+				@out.writeShort(obj.varbitID);
+				@out.writeShort(obj.varpID);
+
+				int[] c = obj.configChangeDest;
+				@out.writeShort(c[c.Length - 1]);
+				@out.writeByte(c.Length - 2);
+				for (int i = 0; i <= c.Length - 2; ++i)
+				{
+					@out.writeShort(c[i]);
+				}
+			}
+			if (obj.@params != null)
+			{
+				@out.writeByte(249);
+				@out.writeByte(obj.@params.Count);
+				foreach (KeyValuePair<int, object> entry in obj.@params.SetOfKeyValuePairs())
+				{
+					@out.writeByte(entry.Value is string ? 1 : 0);
+					@out.write24BitInt(entry.Key);
+					if (entry.Value is string)
+					{
+						@out.writeString((string) entry.Value);
+					}
+					else
+					{
+						@out.writeInt(((int?) entry.Value).Value);
+					}
+				}
+			}
+			@out.writeByte(0);
+			return @out.flip();
 		}
-		out.writeByte(0);
-		return out.flip();
 	}
+
 }

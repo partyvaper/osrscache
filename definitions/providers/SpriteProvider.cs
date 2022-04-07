@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,11 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.providers;
-
-using OSRSCache.definitions.SpriteDefinition;
-
-public interface SpriteProvider
+namespace OSRSCache.definitions.providers
 {
-	SpriteDefinition provide(int spriteId, int frameId);
+	using SpriteDefinition = OSRSCache.definitions.SpriteDefinition;
+
+	public interface SpriteProvider
+	{
+		SpriteDefinition provide(int spriteId, int frameId);
+	}
+
 }

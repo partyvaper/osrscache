@@ -1,3 +1,8 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,158 +27,169 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using OSRSCache;
-using OSRSCache.fs;
-
-namespace OSRSCache.region;
-
-// import java.io.IOException;
-// import java.util.Collection;
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.IndexType;
-using OSRSCache.definitions.LocationsDefinition;
-using OSRSCache.definitions.MapDefinition;
-using OSRSCache.definitions.loaders.LocationsLoader;
-using OSRSCache.definitions.loaders.MapLoader;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.util.XteaKeyManager;
-
-public class RegionLoader
+namespace OSRSCache.region
 {
-	private const int MAX_REGION = 32768;
+	using IndexType = OSRSCache.IndexType;
+	using LocationsDefinition = OSRSCache.definitions.LocationsDefinition;
+	using MapDefinition = OSRSCache.definitions.MapDefinition;
+	using LocationsLoader = OSRSCache.definitions.loaders.LocationsLoader;
+	using MapLoader = OSRSCache.definitions.loaders.MapLoader;
+	using Archive = OSRSCache.fs.Archive;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	using XteaKeyManager = OSRSCache.util.XteaKeyManager;
 
-	private readonly Store store;
-	private readonly Index index;
-	private readonly XteaKeyManager keyManager;
 
-	private readonly Map<Integer, Region> regions = new HashMap<>();
-	private Region lowestX = null, lowestY = null;
-	private Region highestX = null, highestY = null;
-
-	public RegionLoader(Store store)
+	public class RegionLoader
 	{
-		this.store = store;
-		index = store.getIndex(IndexType.MAPS);
-		keyManager = new XteaKeyManager();
-		keyManager.loadKeys();
-	}
+		private const int MAX_REGION = 32768;
 
-	public void loadRegions() // throws IOException
-	{
-		for (int i = 0; i < MAX_REGION; ++i)
+		private readonly Store store;
+		private readonly Index index;
+		private readonly XteaKeyManager keyManager;
+
+		private readonly IDictionary<int, Region> regions = new Dictionary<int, Region>();
+		private Region lowestX = null, lowestY = null;
+		private Region highestX = null, highestY = null;
+
+		public RegionLoader(Store store)
 		{
-			Region region = this.loadRegionFromArchive(i);
-			if (region != null)
+			this.store = store;
+			index = store.getIndex(IndexType.MAPS);
+			keyManager = new XteaKeyManager();
+			keyManager.loadKeys();
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void loadRegions() throws java.io.IOException
+		public virtual void loadRegions()
+		{
+			for (int i = 0; i < MAX_REGION; ++i)
 			{
-				regions.put(i, region);
+				Region region = this.loadRegionFromArchive(i);
+				if (region != null)
+				{
+					regions[i] = region;
+				}
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public Region loadRegionFromArchive(int i) throws java.io.IOException
+		public virtual Region loadRegionFromArchive(int i)
+		{
+			int x = i >> 8;
+			int y = i & 0xFF;
+
+			Storage storage = store.Storage;
+			Archive map = index.findArchiveByName("m" + x + "_" + y);
+			Archive land = index.findArchiveByName("l" + x + "_" + y);
+
+			Debug.Assert((map == null) == (land == null));
+
+			if (map == null || land == null)
+			{
+				return null;
+			}
+
+			byte[] data = map.decompress(storage.loadArchive(map));
+
+			MapDefinition mapDef = (new MapLoader()).load(x, y, data);
+
+			Region region = new Region(i);
+			region.loadTerrain(mapDef);
+
+			int[] keys = keyManager.getKeys(i);
+			if (keys != null)
+			{
+				try
+				{
+					data = land.decompress(storage.loadArchive(land), keys);
+					LocationsDefinition locDef = (new LocationsLoader()).load(x, y, data);
+					region.loadLocations(locDef);
+				}
+				catch (IOException ex)
+				{
+					Console.WriteLine("Can't decrypt region " + i, ex);
+				}
+			}
+
+			return region;
+		}
+
+		public virtual void calculateBounds()
+		{
+			foreach (Region region in regions.Values)
+			{
+				if (lowestX == null || region.BaseX < lowestX.BaseX)
+				{
+					lowestX = region;
+				}
+
+				if (highestX == null || region.BaseX > highestX.BaseX)
+				{
+					highestX = region;
+				}
+
+				if (lowestY == null || region.BaseY < lowestY.BaseY)
+				{
+					lowestY = region;
+				}
+
+				if (highestY == null || region.BaseY > highestY.BaseY)
+				{
+					highestY = region;
+				}
+			}
+		}
+
+		public virtual ICollection<Region> Regions
+		{
+			get
+			{
+				return regions.Values;
+			}
+		}
+
+		public virtual Region findRegionForWorldCoordinates(int x, int y)
+		{
+			x = (int)((uint)x >> 6);
+			y = (int)((uint)y >> 6);
+			return regions[(x << 8) | y];
+		}
+
+		public virtual Region LowestX
+		{
+			get
+			{
+				return lowestX;
+			}
+		}
+
+		public virtual Region LowestY
+		{
+			get
+			{
+				return lowestY;
+			}
+		}
+
+		public virtual Region HighestX
+		{
+			get
+			{
+				return highestX;
+			}
+		}
+
+		public virtual Region HighestY
+		{
+			get
+			{
+				return highestY;
 			}
 		}
 	}
 
-	public Region loadRegionFromArchive(int i) // throws IOException
-	{
-		int x = i >> 8;
-		int y = i & 0xFF;
-
-		Storage storage = store.getStorage();
-		Archive map = index.findArchiveByName("m" + x + "_" + y);
-		Archive land = index.findArchiveByName("l" + x + "_" + y);
-
-		assert (map == null) == (land == null);
-
-		if (map == null || land == null)
-		{
-			return null;
-		}
-
-		byte[] data = map.decompress(storage.loadArchive(map));
-
-		MapDefinition mapDef = new MapLoader().load(x, y, data);
-
-		Region region = new Region(i);
-		region.loadTerrain(mapDef);
-
-		int[] keys = keyManager.getKeys(i);
-		if (keys != null)
-		{
-			try
-			{
-				data = land.decompress(storage.loadArchive(land), keys);
-				LocationsDefinition locDef = new LocationsLoader().load(x, y, data);
-				region.loadLocations(locDef);
-			}
-			catch (IOException ex)
-			{
-				Console.WriteLine("Can't decrypt region " + i, ex);
-			}
-		}
-
-		return region;
-	}
-
-	public void calculateBounds()
-	{
-		for (Region region : regions.values())
-		{
-			if (lowestX == null || region.getBaseX() < lowestX.getBaseX())
-			{
-				lowestX = region;
-			}
-
-			if (highestX == null || region.getBaseX() > highestX.getBaseX())
-			{
-				highestX = region;
-			}
-
-			if (lowestY == null || region.getBaseY() < lowestY.getBaseY())
-			{
-				lowestY = region;
-			}
-
-			if (highestY == null || region.getBaseY() > highestY.getBaseY())
-			{
-				highestY = region;
-			}
-		}
-	}
-
-	public Collection<Region> getRegions()
-	{
-		return regions.values();
-	}
-
-	public Region findRegionForWorldCoordinates(int x, int y)
-	{
-		x >>>= 6;
-		y >>>= 6;
-		return regions.get((x << 8) | y);
-	}
-
-	public Region getLowestX()
-	{
-		return lowestX;
-	}
-
-	public Region getLowestY()
-	{
-		return lowestY;
-	}
-
-	public Region getHighestX()
-	{
-		return highestX;
-	}
-
-	public Region getHighestY()
-	{
-		return highestY;
-	}
 }

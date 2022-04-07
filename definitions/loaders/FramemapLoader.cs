@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,42 +22,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.FramemapDefinition;
-using OSRSCache.io.InputStream;
-
-public class FramemapLoader
+namespace OSRSCache.definitions.loaders
 {
-	public FramemapDefinition load(int id, byte[] b)
+	using FramemapDefinition = OSRSCache.definitions.FramemapDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
+	public class FramemapLoader
 	{
-		FramemapDefinition def = new FramemapDefinition();
-		InputStream in = new InputStream(b);
-
-		def.id = id;
-
-		def.length = in.readUnsignedByte();
-		def.types = new int[def.length];
-		def.frameMaps = new int[def.length][];
-
-		for (int i = 0; i < def.length; ++i)
+		public virtual FramemapDefinition load(int id, byte[] b)
 		{
-			def.types[i] = in.readUnsignedByte();
-		}
+			FramemapDefinition def = new FramemapDefinition();
+			InputStream @in = new InputStream(b);
 
-		for (int i = 0; i < def.length; ++i)
-		{
-			def.frameMaps[i] = new int[in.readUnsignedByte()];
-		}
+			def.id = id;
 
-		for (int i = 0; i < def.length; ++i)
-		{
-			for (int j = 0; j < def.frameMaps[i].length; ++j)
+			def.length = @in.readUnsignedByte();
+			def.types = new int[def.length];
+			def.frameMaps = new int[def.length][];
+
+			for (int i = 0; i < def.length; ++i)
 			{
-				def.frameMaps[i][j] = in.readUnsignedByte();
+				def.types[i] = @in.readUnsignedByte();
 			}
-		}
 
-		return def;
+			for (int i = 0; i < def.length; ++i)
+			{
+				def.frameMaps[i] = new int[@in.readUnsignedByte()];
+			}
+
+			for (int i = 0; i < def.length; ++i)
+			{
+				for (int j = 0; j < def.frameMaps[i].Length; ++j)
+				{
+					def.frameMaps[i][j] = @in.readUnsignedByte();
+				}
+			}
+
+			return def;
+		}
 	}
+
 }

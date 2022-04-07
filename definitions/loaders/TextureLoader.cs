@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,60 +22,65 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.TextureDefinition;
-using OSRSCache.io.InputStream;
-
-public class TextureLoader
+namespace OSRSCache.definitions.loaders
 {
-	public TextureDefinition load(int id, byte[] b)
+	using TextureDefinition = OSRSCache.definitions.TextureDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
+
+	public class TextureLoader
 	{
-		TextureDefinition def = new TextureDefinition();
-		InputStream is = new InputStream(b);
-
-		def.field1777 = is.readUnsignedShort();
-		def.field1778 = is.readByte() != 0;
-		def.setId(id);
-
-		int count = is.readUnsignedByte();
-		int[] files = new int[count];
-
-		for (int i = 0; i < count; ++i)
-			files[i] = is.readUnsignedShort();
-
-		def.setFileIds(files);
-
-		if (count > 1)
+		public virtual TextureDefinition load(int id, byte[] b)
 		{
-			def.field1780 = new int[count - 1];
+			TextureDefinition def = new TextureDefinition();
+			InputStream @is = new InputStream(b);
 
-			for (int var3 = 0; var3 < count - 1; ++var3)
+			def.field1777 = @is.readUnsignedShort();
+			def.field1778 = @is.readByte() != 0;
+			def.id = id;
+
+			int count = @is.readUnsignedByte();
+			int[] files = new int[count];
+
+			for (int i = 0; i < count; ++i)
 			{
-				def.field1780[var3] = is.readUnsignedByte();
+				files[i] = @is.readUnsignedShort();
 			}
-		}
 
-		if (count > 1)
-		{
-			def.field1781 = new int[count - 1];
+			def.fileIds = files;
 
-			for (int var3 = 0; var3 < count - 1; ++var3)
+			if (count > 1)
 			{
-				def.field1781[var3] = is.readUnsignedByte();
+				def.field1780 = new int[count - 1];
+
+				for (int var3 = 0; var3 < count - 1; ++var3)
+				{
+					def.field1780[var3] = @is.readUnsignedByte();
+				}
 			}
+
+			if (count > 1)
+			{
+				def.field1781 = new int[count - 1];
+
+				for (int var3 = 0; var3 < count - 1; ++var3)
+				{
+					def.field1781[var3] = @is.readUnsignedByte();
+				}
+			}
+
+			def.field1786 = new int[count];
+
+			for (int var3 = 0; var3 < count; ++var3)
+			{
+				def.field1786[var3] = @is.readInt();
+			}
+
+			def.field1783 = @is.readUnsignedByte();
+			def.field1782 = @is.readUnsignedByte();
+
+			return def;
 		}
-
-		def.field1786 = new int[count];
-
-		for (int var3 = 0; var3 < count; ++var3)
-		{
-			def.field1786[var3] = is.readInt();
-		}
-
-		def.field1783 = is.readUnsignedByte();
-		def.field1782 = is.readUnsignedByte();
-
-		return def;
 	}
+
 }

@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2018, Joshua Filby <joshua@filby.me>
  * All rights reserved.
@@ -22,62 +24,60 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-
-namespace OSRSCache.definitions.loaders;
-
-// import java.util.HashMap;
-using OSRSCache.definitions.StructDefinition;
-using OSRSCache.io.InputStream;
-
-public class StructLoader
+namespace OSRSCache.definitions.loaders
 {
-	public StructDefinition load(int id, byte[] b)
+	using StructDefinition = OSRSCache.definitions.StructDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+
+	public class StructLoader
 	{
-		StructDefinition def = new StructDefinition(id);
-		InputStream is = new InputStream(b);
-
-		while (true)
+		public virtual StructDefinition load(int id, byte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			StructDefinition def = new StructDefinition(id);
+			InputStream @is = new InputStream(b);
+
+			while (true)
 			{
-				break;
-			}
-
-			this.decodeValues(opcode, def, is);
-		}
-
-		return def;
-	}
-
-	private void decodeValues(int opcode, StructDefinition def, InputStream stream)
-	{
-		if (opcode == 249)
-		{
-			int length = stream.readUnsignedByte();
-
-			def.params = new HashMap<>(length);
-
-			for (int i = 0; i < length; i++)
-			{
-				boolean isstring = stream.readUnsignedByte() == 1;
-				int key = stream.read24BitInt();
-				Object value;
-
-				if (isstring)
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
 				{
-					value = stream.readstring();
-				}
-				else
-				{
-					value = stream.readInt();
+					break;
 				}
 
-				def.params.put(key, value);
+				this.decodeValues(opcode, def, @is);
+			}
+
+			return def;
+		}
+
+		private void decodeValues(int opcode, StructDefinition def, InputStream stream)
+		{
+			if (opcode == 249)
+			{
+				int length = stream.readUnsignedByte();
+
+				def.@params = new Dictionary<int, object>(length);
+
+				for (int i = 0; i < length; i++)
+				{
+					bool isString = stream.readUnsignedByte() == 1;
+					int key = stream.read24BitInt();
+					object value;
+
+					if (isString)
+					{
+						value = stream.readString();
+					}
+					else
+					{
+						value = stream.readInt();
+					}
+
+					def.@params[key] = value;
+				}
 			}
 		}
+
 	}
 
 }

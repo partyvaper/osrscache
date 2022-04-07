@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,15 +22,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class VarbitDefinition
+namespace OSRSCache.definitions
 {
-	private int id;
-	private int index;
-	private int leastSignificantBit;
-	private int mostSignificantBit;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class VarbitDefinition
+	public class VarbitDefinition
+	{
+		public int id; // all were private, is now public
+		public int index;
+		public int leastSignificantBit;
+		public int mostSignificantBit;
+
+		public VarbitDefinition(int id)
+		{
+			this.id = id;
+		}
+	}
+
 }

@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,46 +24,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-using System.IO;
-
-namespace OSRSCache.util;
-
-// import java.io.IOException;
-// import java.util.HashMap;
-// import java.util.Map;
-// import net.runelite.http.api.RuneLiteAPI;
-// import net.runelite.http.api.xtea.XteaClient;
-// import net.runelite.http.api.xtea.XteaKey;
-
-public class XteaKeyManager
+namespace OSRSCache.util
 {
-	private readonly Map<Integer, int[]> keys = new HashMap<>();
+	// TODO: Rewrite this whole file !?
 
-	public void loadKeys()
+	public class XteaKeyManager
 	{
-		XteaClient xteaClient = new XteaClient(RuneLiteAPI.CLIENT);
+		private readonly IDictionary<int, int[]> keys = new Dictionary<int, int[]>();
 
-		try
+		public virtual void loadKeys()
 		{
-			for (XteaKey key : xteaClient.get())
-			{
-				keys.put(key.getRegion(), key.getKeys());
-			}
-		}
-		catch (IOException ex)
-		{
-			// happens on release when it is not deployed yet
-			Console.WriteLine("unable to load xtea keys", ex);
-			return;
+			// TODO: JSON LOADER AND PARSER !!!!!
+			// XteaClient xteaClient = new XteaClient(RuneLiteAPI.CLIENT);
+			//
+			// try
+			// {
+			// 	foreach (XteaKey key in xteaClient.get())
+			// 	{
+			// 		keys[key.getRegion()] = key.getKeys();
+			// 	}
+			// }
+			// catch (IOException ex)
+			// {
+			// 	// happens on release when it is not deployed yet
+			// 	Console.WriteLine("unable to load xtea keys", ex);
+			// 	return;
+			// }
+			//
+			// Console.WriteLine("Loaded {} keys", keys.Count);
 		}
 
-		Console.WriteLine("Loaded {} keys", keys.size());
+		public virtual int[] getKeys(int region)
+		{
+			return keys[region];
+		}
 	}
 
-	public int[] getKeys(int region)
-	{
-		return keys.get(region);
-	}
 }
