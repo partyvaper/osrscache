@@ -1,3 +1,8 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
 /*
  * Copyright (c) 2018 Abex
  * All rights reserved.
@@ -22,254 +27,250 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using OSRSCache.fs;
-
-namespace OSRSCache.fs.flat;
-
-// import java.io.BufferedReader;
-// import java.io.File;
-// import java.io.FileInputStream;
-// import java.io.FileOutputStream;
-// import java.io.IOException;
-// import java.io.InputStream;
-// import java.io.InputStreamReader;
-// import java.io.OutputStream;
-// import java.io.PrintStream;
-// import java.nio.charset.StandardCharsets;
-// import java.util.ArrayList;
-// import java.util.Base64;
-// import java.util.Comparator;
-// import java.util.HashMap;
-// import java.util.List;
-// import java.util.Map;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.index.FileData;
-
-/**
- * A Storage that stores the cache as a series of flat files, designed
- * to be git revisioned.
- */
-public class FlatStorage // , Storage
+namespace OSRSCache.fs.flat
 {
-	protected const string EXTENSION = ".flatcache";
+	using Archive = OSRSCache.fs.Archive;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	using FileData = OSRSCache.index.FileData;
 
-	private readonly File directory;
-	private readonly Map<Long, byte[]> data = new HashMap<>();
-
-	public FlatStorage(File directory) // throws IOException
+	/// <summary>
+	/// A Storage that stores the cache as a series of flat files, designed
+	/// to be git revisioned.
+	/// </summary>
+	public class FlatStorage : Storage
 	{
-		this.directory = directory;
-	}
+		protected internal const string EXTENSION = ".flatcache";
 
-	protected FlatStorage()
-	{
-		this.directory = null;
-	}
+		private readonly string directory;
+		private readonly IDictionary<long, byte[]> data = new Dictionary<long, byte[]>();
 
-	protected InputStream openReader(string filename) // throws IOException
-	{
-		return new FileInputStream(new File(directory, filename));
-	}
-
-	protected OutputStream openWriter(string filename) // throws IOException
-	{
-		return new FileOutputStream(new File(directory, filename));
-	}
-
-	protected string[] listFlatcacheFiles() // throws IOException
-	{
-		return directory.list((dir, name) -> name.endsWith(EXTENSION));
-	}
-
-	// @Override
-	public void init(Store store) // throws IOException
-	{
-		string[] idxs = listFlatcacheFiles();
-		for (string idx : idxs)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public FlatStorage(java.io.File directory) throws java.io.IOException
+		public FlatStorage(string directory)
 		{
-			int id = Integer.parseInt(idx.substring(0, idx.length() - EXTENSION.length()));
-			store.addIndex(id);
+			this.directory = directory;
 		}
-	}
 
-	// @Override
-	public void close() // throws IOException
-	{
-	}
-
-	// @Override
-	public void load(Store store) // throws IOException
-	{
-		for (Index idx : store.getIndexes())
+		protected internal FlatStorage()
 		{
-			string file = idx.getId() + EXTENSION;
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(openReader(file), StandardCharsets.UTF_8)))
+			this.directory = null;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: protected java.io.InputStream openReader(String filename) throws java.io.IOException
+		protected internal virtual Stream openReader(string filename)
+		{
+			return new FileStream(directory, filename, FileMode.Open, FileAccess.Read);
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: protected java.io.OutputStream openWriter(String filename) throws java.io.IOException
+		protected internal virtual Stream openWriter(string filename)
+		{
+			return new FileStream(directory, filename, FileMode.Create, FileAccess.Write);
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: protected String[] listFlatcacheFiles() throws java.io.IOException
+		protected internal virtual string[] listFlatcacheFiles()
+		{
+			return directory.list((dir, name) => name.EndsWith(EXTENSION));
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void init(OSRSCache.fs.Store store) throws java.io.IOException
+		public virtual void init(Store store)
+		{
+			string[] idxs = listFlatcacheFiles();
+			foreach (string idx in idxs)
 			{
-				int lineNo = 0;
-				Archive archive = null;
-				List<FileData> fileData = null;
-				for (string line = br.readLine(); line != null; line = br.readLine())
-				{
-					lineNo++;
-
-					try
-					{
-						int lidx = line.indexOf('=');
-						string key = line.substring(0, lidx);
-						string value = line.substring(lidx + 1);
-
-						if ("file".equals(key))
-						{
-							if (fileData == null)
-							{
-								fileData = new ArrayList<>();
-							}
-
-							int vidx = value.indexOf('=');
-							FileData fd = new FileData();
-							fd.setId(Integer.parseInt(value.substring(0, vidx)));
-							fd.setNameHash(Integer.parseInt(value.substring(vidx + 1)));
-							fileData.add(fd);
-							continue;
-						}
-						else if (fileData != null)
-						{
-							archive.setFileData(fileData.toArray(new FileData[0]));
-							fileData = null;
-						}
-
-						if ("id".equals(key))
-						{
-							archive = idx.addArchive(Integer.parseInt(value));
-							continue;
-						}
-
-						if (archive == null)
-						{
-							switch (key)
-							{
-								case "protocol":
-									idx.setProtocol(Integer.parseInt(value));
-									continue;
-								case "revision":
-									idx.setRevision(Integer.parseInt(value));
-									continue;
-								case "compression":
-									idx.setCompression(Integer.parseInt(value));
-									continue;
-								case "crc":
-									idx.setCrc(Integer.parseInt(value));
-									continue;
-								case "named":
-									idx.setNamed(Boolean.parseBoolean(value));
-									continue;
-							}
-						}
-						else
-						{
-							switch (key)
-							{
-								case "namehash":
-									archive.setNameHash(Integer.parseInt(value));
-									continue;
-								case "revision":
-									archive.setRevision(Integer.parseInt(value));
-									continue;
-								case "crc":
-									archive.setCrc(Integer.parseInt(value));
-									continue;
-								case "hash":
-									archive.setHash(Base64.getDecoder().decode(value));
-									continue;
-								case "compression":
-									archive.setCompression(Integer.parseInt(value));
-									continue;
-								case "contents":
-									data.put((long) idx.getId() << 32 | archive.getArchiveId(), Base64.getDecoder().decode(value));
-									continue;
-							}
-						}
-						throw new IOException("unknown key: \"" + key + "\"");
-					}
-					catch (Exception e)
-					{
-						throw new IOException("error reading flatcache at " + file + ":" + lineNo, e);
-					}
-				}
-
-				if (fileData != null)
-				{
-					archive.setFileData(fileData.toArray(new FileData[0]));
-					fileData = null;
-				}
+				int id = int.Parse(idx.Substring(0, idx.Length - EXTENSION.Length));
+				store.addIndex(id);
 			}
 		}
-	}
 
-	// @Override
-	public void save(Store store) // throws IOException
-	{
-		store.getIndexes().sort(Comparator.comparing(Index::getId));
-		for (Index idx : store.getIndexes())
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void close() throws java.io.IOException
+		public virtual void close()
 		{
-			string file = idx.getId() + EXTENSION;
-			try (PrintStream br = new PrintStream(openWriter(file), false, StandardCharsets.UTF_8.name()))
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void load(OSRSCache.fs.Store store) throws java.io.IOException
+		public virtual void load(Store store)
+		{
+			foreach (Index idx in store.Indexes)
 			{
-				br.printf("protocol=%d\n", idx.getProtocol());
-				br.printf("revision=%d\n", idx.getRevision());
-				br.printf("compression=%d\n", idx.getCompression());
-				br.printf("crc=%d\n", idx.getCrc());
-				br.printf("named=%b\n", idx.isNamed());
-
-				idx.getArchives().sort(Comparator.comparing(Archive::getArchiveId));
-				for (Archive archive : idx.getArchives())
+				string file = idx.Id + EXTENSION;
+				using (StreamReader br = new StreamReader(openReader(file), Encoding.UTF8))
 				{
-					br.printf("id=%d\n", archive.getArchiveId());
-					br.printf("namehash=%d\n", archive.getNameHash());
-					br.printf("revision=%d\n", archive.getRevision());
-					br.printf("crc=%d\n", archive.getCrc());
-
-					if (archive.getHash() != null)
+					int lineNo = 0;
+					Archive archive = null;
+					IList<FileData> fileData = null;
+					for (string line = br.ReadLine(); !string.ReferenceEquals(line, null); line = br.ReadLine())
 					{
-						br.append("hash=");
-						br.write(Base64.getEncoder().encode(archive.getHash()));
-						br.append("\n");
+						lineNo++;
+
+						try
+						{
+							int lidx = line.IndexOf('=');
+							string key = line.Substring(0, lidx);
+							string value = line.Substring(lidx + 1);
+
+							if ("file".Equals(key))
+							{
+								if (fileData == null)
+								{
+									fileData = new List<FileData>();
+								}
+
+								int vidx = value.IndexOf('=');
+								FileData fd = new FileData();
+								fd.Id = int.Parse(value.Substring(0, vidx));
+								fd.NameHash = int.Parse(value.Substring(vidx + 1));
+								fileData.Add(fd);
+								continue;
+							}
+							else if (fileData != null)
+							{
+								archive.FileData = ((List<FileData>)fileData).ToArray();
+								fileData = null;
+							}
+
+							if ("id".Equals(key))
+							{
+								archive = idx.addArchive(int.Parse(value));
+								continue;
+							}
+
+							if (archive == null)
+							{
+								switch (key)
+								{
+									case "protocol":
+										idx.Protocol = int.Parse(value);
+										continue;
+									case "revision":
+										idx.Revision = int.Parse(value);
+										continue;
+									case "compression":
+										idx.Compression = int.Parse(value);
+										continue;
+									case "crc":
+										idx.Crc = int.Parse(value);
+										continue;
+									case "named":
+										idx.Named = bool.Parse(value);
+										continue;
+								}
+							}
+							else
+							{
+								switch (key)
+								{
+									case "namehash":
+										archive.NameHash = int.Parse(value);
+										continue;
+									case "revision":
+										archive.Revision = int.Parse(value);
+										continue;
+									case "crc":
+										archive.Crc = int.Parse(value);
+										continue;
+									case "hash":
+										archive.Hash = Base64.getDecoder().decode(value);
+										continue;
+									case "compression":
+										archive.Compression = int.Parse(value);
+										continue;
+									case "contents":
+										data[(long) idx.Id << 32 | archive.ArchiveId] = Base64.getDecoder().decode(value);
+										continue;
+								}
+							}
+							throw new IOException("unknown key: \"" + key + "\"");
+						}
+						catch (Exception e)
+						{
+							throw new IOException("error reading flatcache at " + file + ":" + lineNo, e);
+						}
 					}
 
-					byte[] contents = store.getStorage().loadArchive(archive);
-					if (contents != null)
+					if (fileData != null)
 					{
-						br.append("contents=");
-						br.write(Base64.getEncoder().encode(contents));
-						br.append("\n");
-					}
-
-					br.printf("compression=%d\n", archive.getCompression());
-					for (FileData fd : archive.getFileData())
-					{
-						br.printf("file=%d=%d\n", fd.getId(), fd.getNameHash());
+						archive.FileData = ((List<FileData>)fileData).ToArray();
+						fileData = null;
 					}
 				}
 			}
 		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void save(OSRSCache.fs.Store store) throws java.io.IOException
+		public virtual void save(Store store)
+		{
+//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
+			store.Indexes.Sort(Comparator.comparing(Index::getId));
+			foreach (Index idx in store.Indexes)
+			{
+				string file = idx.Id + EXTENSION;
+				using (PrintStream br = new PrintStream(openWriter(file), false, StandardCharsets.UTF_8.name()))
+				{
+					br.printf("protocol=%d\n", idx.Protocol);
+					br.printf("revision=%d\n", idx.Revision);
+					br.printf("compression=%d\n", idx.Compression);
+					br.printf("crc=%d\n", idx.Crc);
+					br.printf("named=%b\n", idx.Named);
+
+//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
+					idx.Archives.Sort(Comparator.comparing(Archive::getArchiveId));
+					foreach (Archive archive in idx.Archives)
+					{
+						br.printf("id=%d\n", archive.ArchiveId);
+						br.printf("namehash=%d\n", archive.NameHash);
+						br.printf("revision=%d\n", archive.Revision);
+						br.printf("crc=%d\n", archive.Crc);
+
+						if (archive.Hash != null)
+						{
+							br.append("hash=");
+							br.write(Base64.getEncoder().encode(archive.Hash));
+							br.append("\n");
+						}
+
+						byte[] contents = store.Storage.loadArchive(archive);
+						if (contents != null)
+						{
+							br.append("contents=");
+							br.write(Base64.getEncoder().encode(contents));
+							br.append("\n");
+						}
+
+						br.printf("compression=%d\n", archive.Compression);
+						foreach (FileData fd in archive.FileData)
+						{
+							br.printf("file=%d=%d\n", fd.Id, fd.NameHash);
+						}
+					}
+				}
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public byte[] loadArchive(OSRSCache.fs.Archive archive) throws java.io.IOException
+		public virtual byte[] loadArchive(Archive archive)
+		{
+			return data[(long) archive.Index.Id << 32 | archive.ArchiveId];
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void saveArchive(OSRSCache.fs.Archive archive, byte[] bytes) throws java.io.IOException
+		public virtual void saveArchive(Archive archive, byte[] bytes)
+		{
+			data[(long) archive.Index.Id << 32 | archive.ArchiveId] = bytes;
+		}
 	}
 
-	// @Override
-	public byte[] loadArchive(Archive archive) // throws IOException
-	{
-		return data.get((long) archive.getIndex().getId() << 32 | archive.getArchiveId());
-	}
-
-	// @Override
-	public void saveArchive(Archive archive, byte[] bytes) // throws IOException
-	{
-		data.put((long) archive.getIndex().getId() << 32 | archive.getArchiveId(), bytes);
-	}
 }

@@ -24,6 +24,9 @@
  */
 
 using System;
+using System.IO;
+using System.IO.MemoryMappedFiles;
+using IKVM;
 
 namespace OSRSCache.fs.jagex;
 
@@ -39,15 +42,16 @@ public class IndexFile // , Closeable
 	private const int INDEX_ENTRY_LEN = 6;
 
 	private readonly int indexFileId;
-	private readonly File file;
-	private readonly RandomAccessFile idx;
+	private readonly string file; // File
+	private readonly MemoryMappedFile idx;
 	private readonly byte[] buffer = new byte[INDEX_ENTRY_LEN];
 
-	public IndexFile(int indexFileId, File file) throws FileNotFoundException
+	public IndexFile(int indexFileId, string file) throws FileNotFoundException // File file
 	{
 		this.indexFileId = indexFileId;
 		this.file = file;
-		this.idx = new RandomAccessFile(file, "rw");
+		//this.idx = new RandomAccessFile(file, "rw");
+		this.idx = MemoryMappedFile.CreateFromFile(file, FileMode.OpenOrCreate); // "rw"
 	}
 
 	// @Override
