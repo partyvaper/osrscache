@@ -1,113 +1,97 @@
-/*
- * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-namespace OSRSCache.definitions.loaders;
+﻿using System.Collections;
+using System.Collections.Generic;
+using OSRSCache.script;
 
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.ScriptDefinition;
-using OSRSCache.io.InputStream;
-using OSRSCache.script.Opcodes.SCONST;
-using OSRSCache.script.Opcodes.POP_INT;
-using OSRSCache.script.Opcodes.POP_string;
-using OSRSCache.script.Opcodes.RETURN;
-
-public class ScriptLoader
+namespace OSRSCache.definitions.loaders
 {
-	public ScriptDefinition load(int id, byte[] b)
+	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
+	using InputStream = OSRSCache.io.InputStream;
+	
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static OSRSCache.script.Opcodes.SCONST;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static OSRSCache.script.Opcodes.POP_INT;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static OSRSCache.script.Opcodes.POP_STRING;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static OSRSCache.script.Opcodes.RETURN;
+
+	public class ScriptLoader
 	{
-		ScriptDefinition def = new ScriptDefinition();
-		def.setId(id);
-		InputStream in = new InputStream(b);
-
-		in.setOffset(in.getLength() - 2);
-		int switchLength = in.readUnsignedShort();
-
-		// 2 for switchLength + the switch data + 12 for the param/vars/stack data
-		int endIdx = in.getLength() - 2 - switchLength - 12;
-		in.setOffset(endIdx);
-		int numOpcodes = in.readInt();
-		int localIntCount = in.readUnsignedShort();
-		int localstringCount = in.readUnsignedShort();
-		int intStackCount = in.readUnsignedShort();
-		int stringStackCount = in.readUnsignedShort();
-
-		int numSwitches = in.readUnsignedByte();
-		if (numSwitches > 0)
+		public virtual ScriptDefinition load(int id, byte[] b)
 		{
-			Map<Integer, Integer>[] switches = new Map[numSwitches];
-			def.setSwitches(switches);
+			ScriptDefinition def = new ScriptDefinition(id);
+			InputStream @in = new InputStream(b);
 
-			for (int i = 0; i < numSwitches; ++i)
+			@in.Offset = @in.Length - 2;
+			int switchLength = @in.readUnsignedShort();
+
+			// 2 for switchLength + the switch data + 12 for the param/vars/stack data
+			int endIdx = @in.Length - 2 - switchLength - 12;
+			@in.Offset = endIdx;
+			int numOpcodes = @in.readInt();
+			int localIntCount = @in.readUnsignedShort();
+			int localStringCount = @in.readUnsignedShort();
+			int intStackCount = @in.readUnsignedShort();
+			int stringStackCount = @in.readUnsignedShort();
+
+			int numSwitches = @in.readUnsignedByte();
+			if (numSwitches > 0)
 			{
-				switches[i] = new HashMap<>();
+				IDictionary<int, int>[] switches = new Dictionary<int, int>[numSwitches];
+				def.switches = switches;
 
-				int count = in.readUnsignedShort();
-				while (count-- > 0)
+				for (int i = 0; i < numSwitches; ++i)
 				{
-					int key = in.readInt(); // int from stack is compared to this
-					int pcOffset = in.readInt(); // pc jumps by this
+					switches[i] = new Dictionary<int, int>();
 
-					switches[i].put(key, pcOffset);
+					int count = @in.readUnsignedShort();
+					while (count-- > 0)
+					{
+						int key = @in.readInt(); // int from stack is compared to this
+						int pcOffset = @in.readInt(); // pc jumps by this
+
+						switches[i][key] = pcOffset;
+					}
 				}
 			}
+
+			def.localIntCount = localIntCount;
+			def.localStringCount = localStringCount;
+			def.intStackCount = intStackCount;
+			def.stringStackCount = stringStackCount;
+
+			@in.Offset = 0;
+			@in.readStringOrNull();
+
+			int[] instructions = new int[numOpcodes];
+			int[] intOperands = new int[numOpcodes];
+			string[] stringOperands = new string[numOpcodes];
+
+			def.instructions = instructions;
+			def.intOperands = intOperands;
+			def.stringOperands = stringOperands;
+
+			int opcode;
+			for (int i = 0; @in.Offset < endIdx; instructions[i++] = opcode)
+			{
+				opcode = @in.readUnsignedShort();
+				if (opcode == (int) Opcodes.SCONST)
+				{
+					stringOperands[i] = @in.readString();
+				}
+				else if (opcode < 100 && opcode != (int) Opcodes.RETURN && opcode != (int) Opcodes.POP_INT && opcode != (int) Opcodes.POP_STRING)
+				{
+					intOperands[i] = @in.readInt();
+				}
+				else
+				{
+					intOperands[i] = @in.readUnsignedByte();
+				}
+			}
+
+			return def;
 		}
-
-		def.setLocalIntCount(localIntCount);
-		def.setLocalstringCount(localstringCount);
-		def.setIntStackCount(intStackCount);
-		def.setstringStackCount(stringStackCount);
-
-		in.setOffset(0);
-		in.readstringOrNull();
-
-		int[] instructions = new int[numOpcodes];
-		int[] intOperands = new int[numOpcodes];
-		string[] stringOperands = new string[numOpcodes];
-
-		def.setInstructions(instructions);
-		def.setIntOperands(intOperands);
-		def.setstringOperands(stringOperands);
-
-		int opcode;
-		for (int i = 0; in.getOffset() < endIdx; instructions[i++] = opcode)
-		{
-			opcode = in.readUnsignedShort();
-			if (opcode == SCONST)
-			{
-				stringOperands[i] = in.readstring();
-			}
-			else if (opcode < 100 && opcode != RETURN && opcode != POP_INT && opcode != POP_string)
-			{
-				intOperands[i] = in.readInt();
-			}
-			else
-			{
-				intOperands[i] = in.readUnsignedByte();
-			}
-		}
-
-		return def;
 	}
+
 }

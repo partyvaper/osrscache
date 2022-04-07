@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,90 +22,89 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.SpotAnimDefinition;
-using OSRSCache.io.InputStream;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
-
-public class SpotAnimLoader
+namespace OSRSCache.definitions.loaders
 {
-	private const Logger logger = LoggerFactory.getLogger(SpotAnimLoader.class);
+	using SpotAnimDefinition = OSRSCache.definitions.SpotAnimDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
-	public SpotAnimDefinition load(int id, byte[] b)
+
+	public class SpotAnimLoader
 	{
-		SpotAnimDefinition def = new SpotAnimDefinition();
-		InputStream is = new InputStream(b);
-		def.id = id;
-
-		while (true)
+		public virtual SpotAnimDefinition load(int id, byte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			SpotAnimDefinition def = new SpotAnimDefinition();
+			InputStream @is = new InputStream(b);
+			def.id = id;
+
+			while (true)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				this.decodeValues(opcode, def, @is);
 			}
 
-			this.decodeValues(opcode, def, is);
+			return def;
 		}
 
-		return def;
+		private void decodeValues(int opcode, SpotAnimDefinition def, InputStream stream)
+		{
+			if (opcode == 1)
+			{
+				def.modelId = stream.readUnsignedShort();
+			}
+			else if (opcode == 2)
+			{
+				def.animationId = stream.readUnsignedShort();
+			}
+			else if (opcode == 4)
+			{
+				def.resizeX = stream.readUnsignedShort();
+			}
+			else if (opcode == 5)
+			{
+				def.resizeY = stream.readUnsignedShort();
+			}
+			else if (opcode == 6)
+			{
+				def.rotaton = stream.readUnsignedShort();
+			}
+			else if (opcode == 7)
+			{
+				def.ambient = stream.readUnsignedByte();
+			}
+			else if (opcode == 8)
+			{
+				def.contrast = stream.readUnsignedByte();
+			}
+			else if (opcode == 40)
+			{
+				int var3 = stream.readUnsignedByte();
+				def.recolorToFind = new short[var3];
+				def.recolorToReplace = new short[var3];
+
+				for (int var4 = 0; var4 < var3; ++var4)
+				{
+					def.recolorToFind[var4] = (short) stream.readUnsignedShort();
+					def.recolorToReplace[var4] = (short) stream.readUnsignedShort();
+				}
+			}
+			else if (opcode == 41)
+			{
+				int var3 = stream.readUnsignedByte();
+				def.textureToFind = new short[var3];
+				def.textureToReplace = new short[var3];
+
+				for (int var4 = 0; var4 < var3; ++var4)
+				{
+					def.textureToFind[var4] = (short) stream.readUnsignedShort();
+					def.textureToReplace[var4] = (short) stream.readUnsignedShort();
+				}
+			}
+		}
 	}
 
-	private void decodeValues(int opcode, SpotAnimDefinition def, InputStream stream)
-	{
-		if (opcode == 1)
-		{
-			def.modelId = stream.readUnsignedShort();
-		}
-		else if (opcode == 2)
-		{
-			def.animationId = stream.readUnsignedShort();
-		}
-		else if (opcode == 4)
-		{
-			def.resizeX = stream.readUnsignedShort();
-		}
-		else if (opcode == 5)
-		{
-			def.resizeY = stream.readUnsignedShort();
-		}
-		else if (opcode == 6)
-		{
-			def.rotaton = stream.readUnsignedShort();
-		}
-		else if (opcode == 7)
-		{
-			def.ambient = stream.readUnsignedByte();
-		}
-		else if (opcode == 8)
-		{
-			def.contrast = stream.readUnsignedByte();
-		}
-		else if (opcode == 40)
-		{
-			int var3 = stream.readUnsignedByte();
-			def.recolorToFind = new short[var3];
-			def.recolorToReplace = new short[var3];
-
-			for (int var4 = 0; var4 < var3; ++var4)
-			{
-				def.recolorToFind[var4] = (short) stream.readUnsignedShort();
-				def.recolorToReplace[var4] = (short) stream.readUnsignedShort();
-			}
-		}
-		else if (opcode == 41)
-		{
-			int var3 = stream.readUnsignedByte();
-			def.textureToFind = new short[var3];
-			def.textureToReplace = new short[var3];
-
-			for (int var4 = 0; var4 < var3; ++var4)
-			{
-				def.textureToFind[var4] = (short) stream.readUnsignedShort();
-				def.textureToReplace[var4] = (short) stream.readUnsignedShort();
-			}
-		}
-	}
 }

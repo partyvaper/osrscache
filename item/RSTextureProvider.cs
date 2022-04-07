@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,80 +22,82 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.item;
-
-using OSRSCache.definitions.TextureDefinition;
-using OSRSCache.definitions.providers.SpriteProvider;
-using OSRSCache.definitions.providers.TextureProvider;
-
-public class RSTextureProvider
+namespace OSRSCache.item
 {
-	private final SpriteProvider spriteProvider;
-	TextureDefinition[] textures;
-	int maxSize;
-	int size;
-	double brightness;
-	int width;
+	using TextureDefinition = OSRSCache.definitions.TextureDefinition;
+	using SpriteProvider = OSRSCache.definitions.providers.SpriteProvider;
+	using TextureProvider = OSRSCache.definitions.providers.TextureProvider;
 
-	public RSTextureProvider(TextureProvider textureProvider, SpriteProvider spriteProvider)
+	public class RSTextureProvider
 	{
-		this.spriteProvider = spriteProvider;
-		this.size = 0;
-		this.brightness = 1.0D;
-		this.width = 128;
-		this.maxSize = 20;
-		this.size = this.maxSize;
-		this.brightness = 0.8D;
-		this.width = 128;
+		private readonly SpriteProvider spriteProvider;
+		internal TextureDefinition[] textures;
+		internal int maxSize;
+		internal int size;
+		internal double brightness;
+		internal int width;
 
-		int max = -1;
-		for (TextureDefinition textureDefinition : textureProvider.provide())
+		public RSTextureProvider(TextureProvider textureProvider, SpriteProvider spriteProvider)
 		{
-			if (textureDefinition.getId() > max)
+			this.spriteProvider = spriteProvider;
+			this.size = 0;
+			this.brightness = 1.0D;
+			this.width = 128;
+			this.maxSize = 20;
+			this.size = this.maxSize;
+			this.brightness = 0.8D;
+			this.width = 128;
+
+			int max = -1;
+			foreach (TextureDefinition textureDefinition in textureProvider.provide())
 			{
-				max = textureDefinition.getId();
+				if (textureDefinition.id > max)
+				{
+					max = textureDefinition.id;
+				}
+			}
+
+			textures = new TextureDefinition[max + 1];
+			foreach (TextureDefinition textureDefinition in textureProvider.provide())
+			{
+				textures[textureDefinition.id] = textureDefinition;
 			}
 		}
 
-		textures = new TextureDefinition[max + 1];
-		for (TextureDefinition textureDefinition : textureProvider.provide())
+		public virtual int[] load(int var1)
 		{
-			textures[textureDefinition.getId()] = textureDefinition;
-		}
-	}
-
-	public int[] load(int var1)
-	{
-		TextureDefinition var2 = this.textures[var1];
-		if (var2 != null)
-		{
-			if (var2.pixels != null)
+			TextureDefinition var2 = this.textures[var1];
+			if (var2 != null)
 			{
+				if (var2.pixels != null)
+				{
+					return var2.pixels;
+				}
+
+				bool var3 = var2.method2680(this.brightness, this.width, spriteProvider);
 				return var2.pixels;
 			}
 
-			boolean var3 = var2.method2680(this.brightness, this.width, spriteProvider);
-			return var2.pixels;
+			return null;
 		}
 
-		return null;
+
+		public virtual int getAverageTextureRGB(int var1)
+		{
+			return this.textures[var1] != null ? this.textures[var1].field1777 : 0;
+		}
+
+
+		public virtual bool vmethod3057(int var1)
+		{
+			return this.textures[var1].field1778;
+		}
+
+
+		public virtual bool vmethod3066(int var1)
+		{
+			return this.width == 64;
+		}
 	}
 
-
-	public int getAverageTextureRGB(int var1)
-	{
-		return this.textures[var1] != null ? this.textures[var1].field1777 : 0;
-	}
-
-
-	public boolean vmethod3057(int var1)
-	{
-		return this.textures[var1].field1778;
-	}
-
-
-	public boolean vmethod3066(int var1)
-	{
-		return this.width == 64;
-	}
 }

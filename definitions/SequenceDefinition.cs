@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,26 +22,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class SequenceDefinition
+namespace OSRSCache.definitions
 {
-	private final int id;
-	public int[] frameIDs; // top 16 bits are FrameDefinition ids
-	public int[] chatFrameIds;
-	public int[] frameLenghts;
-	public int[] frameSounds;
-	public int frameStep = -1;
-	public int[] interleaveLeave;
-	public boolean stretches = false;
-	public int forcedPriority = 5;
-	public int leftHandItem = -1;
-	public int rightHandItem = -1;
-	public int maxLoops = 99;
-	public int precedenceAnimating = -1;
-	public int priority = -1;
-	public int replyMode = 2;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class SequenceDefinition
+	public class SequenceDefinition
+	{
+		public readonly int id;
+		public int[] frameIDs; // top 16 bits are FrameDefinition ids
+		public int[] chatFrameIds;
+		public int[] frameLenghts;
+		public int[] frameSounds;
+		public int frameStep = -1;
+		public int[] interleaveLeave;
+		public bool stretches = false;
+		public int forcedPriority = 5;
+		public int leftHandItem = -1;
+		public int rightHandItem = -1;
+		public int maxLoops = 99;
+		public int precedenceAnimating = -1;
+		public int priority = -1;
+		public int replyMode = 2;
+
+		public SequenceDefinition(int id)
+		{
+			this.id = id;
+		}
+	}
+
 }

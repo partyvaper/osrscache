@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,30 +22,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class MapDefinition
+namespace OSRSCache.definitions
 {
-	public const int X = 64;
-	public const int Y = 64;
-	public const int Z = 4;
 
-	@Data
-	public static class Tile
+	public class MapDefinition
 	{
-		public Integer height;
-		public int attrOpcode;
-		public byte settings;
-		public byte overlayId;
-		public byte overlayPath;
-		public byte overlayRotation;
-		public byte underlayId;
+		public const int X = 64;
+		public const int Y = 64;
+		public const int Z = 4;
+
+		public class Tile
+		{
+			public int? height; // public int? height;
+			public int attrOpcode;
+			public byte settings;
+			public byte overlayId;
+			public byte overlayPath;
+			public byte overlayRotation;
+			public byte underlayId;
+		}
+
+		public int regionX; // was private, is now public
+		public int regionY; // was private, is now public
+		public Tile[][][] tiles = RectangularArrays.RectangularTileArray(Z, X, Y); // was private, is now public
 	}
 
-	private int regionX;
-	private int regionY;
-	private Tile[][][] tiles = new Tile[Z][X][Y];
 }

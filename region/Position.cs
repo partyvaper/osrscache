@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,80 +23,90 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.region;
-
-public class Position
+namespace OSRSCache.region
 {
-	private final int x;
-	private final int y;
-	private final int z;
-
-	public Position(int x, int y, int z)
+	public class Position
 	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+		private readonly int x;
+		private readonly int y;
+		private readonly int z;
 
-	@Override
-	public string tostring()
-	{
-		return "Position{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 7;
-		hash = 67 * hash + this.x;
-		hash = 67 * hash + this.y;
-		hash = 67 * hash + this.z;
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
+		public Position(int x, int y, int z)
 		{
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+
+		public override string ToString()
+		{
+			return "Position{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+		}
+
+		public override int GetHashCode()
+		{
+			int hash = 7;
+			hash = 67 * hash + this.x;
+			hash = 67 * hash + this.y;
+			hash = 67 * hash + this.z;
+			return hash;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			if (obj == null)
+			{
+				return false;
+			}
+			if (this.GetType() != obj.GetType())
+			{
+				return false;
+			}
+//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+//ORIGINAL LINE: final Position other = (Position) obj;
+			Position other = (Position) obj;
+			if (this.x != other.x)
+			{
+				return false;
+			}
+			if (this.y != other.y)
+			{
+				return false;
+			}
+			if (this.z != other.z)
+			{
+				return false;
+			}
 			return true;
 		}
-		if (obj == null)
+
+		public virtual int X
 		{
-			return false;
+			get
+			{
+				return x;
+			}
 		}
-		if (getClass() != obj.getClass())
+
+		public virtual int Y
 		{
-			return false;
+			get
+			{
+				return y;
+			}
 		}
-		final Position other = (Position) obj;
-		if (this.x != other.x)
+
+		public virtual int Z
 		{
-			return false;
+			get
+			{
+				return z;
+			}
 		}
-		if (this.y != other.y)
-		{
-			return false;
-		}
-		if (this.z != other.z)
-		{
-			return false;
-		}
-		return true;
 	}
 
-	public int getX()
-	{
-		return x;
-	}
-
-	public int getY()
-	{
-		return y;
-	}
-
-	public int getZ()
-	{
-		return z;
-	}
 }

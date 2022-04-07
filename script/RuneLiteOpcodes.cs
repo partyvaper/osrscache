@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2021, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,12 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.script;
-
-public interface RuneLiteOpcodes extends Opcodes
+namespace OSRSCache.script
 {
-	/**
-	 * RuneLite execution opcode used to inject scripts.
-	 */
-	int RUNELITE_EXECUTE = 6599;
+	// public interface RuneLiteOpcodes : Opcodes
+	// {
+	// 	/// <summary>
+	// 	/// RuneLite execution opcode used to inject scripts.
+	// 	/// </summary>
+	// 	public static int RUNELITE_EXECUTE = 6599;
+	// }
+
 }

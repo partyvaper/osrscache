@@ -1,176 +1,165 @@
-/*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-namespace OSRSCache;
+﻿using System;
+using System.Linq;
 
-// import java.io.File;
-// import java.io.IOException;
-// import java.io.PrintWriter;
-using OSRSCache.definitions.InterfaceDefinition;
-using OSRSCache.definitions.exporters.InterfaceExporter;
-using OSRSCache.definitions.loaders.InterfaceLoader;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.util.Namer;
-
-public class InterfaceManager
+namespace OSRSCache
 {
-	private final Store store;
-	private InterfaceDefinition[][] interfaces;
-	private final Namer namer = new Namer();
+	using InterfaceDefinition = OSRSCache.definitions.InterfaceDefinition;
+	using InterfaceExporter = OSRSCache.definitions.exporters.InterfaceExporter;
+	using InterfaceLoader = OSRSCache.definitions.loaders.InterfaceLoader;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	using Namer = OSRSCache.util.Namer;
 
-	public InterfaceManager(Store store)
+	public class InterfaceManager
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private InterfaceDefinition[][] interfaces;
+		private readonly Namer namer = new Namer();
 
-	public void load() // throws IOException
-	{
-		InterfaceLoader loader = new InterfaceLoader();
-
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.INTERFACES);
-
-		int max = index.getArchives().stream().mapToInt(a -> a.getArchiveId()).max().getAsInt();
-		interfaces = new InterfaceDefinition[max + 1][];
-
-		for (Archive archive : index.getArchives())
+		public InterfaceManager(Store store)
 		{
-			int archiveId = archive.getArchiveId();
-			byte[] archiveData = storage.loadArchive(archive);
-			ArchiveFiles files = archive.getFiles(archiveData);
-
-			InterfaceDefinition[] ifaces = interfaces[archiveId];
-			if (ifaces == null)
-			{
-				ifaces = interfaces[archiveId] = new InterfaceDefinition[archive.getFileData().length];
-			}
-
-			for (FSFile file : files.getFiles())
-			{
-				int fileId = file.getFileId();
-
-				int widgetId = (archiveId << 16) + fileId;
-
-				InterfaceDefinition iface = loader.load(widgetId, file.getContents());
-				ifaces[fileId] = iface;
-			}
+			this.store = store;
 		}
-	}
 
-	public int getNumInterfaceGroups()
-	{
-		return interfaces.length;
-	}
-
-	public int getNumChildren(int groupId)
-	{
-		return interfaces[groupId].length;
-	}
-
-	public InterfaceDefinition[] getIntefaceGroup(int groupId)
-	{
-		return interfaces[groupId];
-	}
-
-	public InterfaceDefinition getInterface(int groupId, int childId)
-	{
-		return interfaces[groupId][childId];
-	}
-
-	public InterfaceDefinition[][] getInterfaces()
-	{
-		return interfaces;
-	}
-
-	public void export(File out) // throws IOException
-	{
-		out.mkdirs();
-
-		for (InterfaceDefinition[] defs : interfaces)
+		public virtual void load()
 		{
-			if (defs == null)
-			{
-				continue;
-			}
+			InterfaceLoader loader = new InterfaceLoader();
 
-			for (InterfaceDefinition def : defs)
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.INTERFACES);
+
+			int max = index.Archives.Select(a => a.ArchiveId).Max();
+			interfaces = new InterfaceDefinition[max + 1][];
+
+			foreach (Archive archive in index.Archives)
 			{
-				if (def == null)
+				int archiveId = archive.ArchiveId;
+				byte[] archiveData = storage.loadArchive(archive);
+				ArchiveFiles files = archive.getFiles(archiveData);
+
+				InterfaceDefinition[] ifaces = interfaces[archiveId];
+				if (ifaces == null)
 				{
-					continue;
+					ifaces = interfaces[archiveId] = new InterfaceDefinition[archive.FileData.Length];
 				}
 
-				InterfaceExporter exporter = new InterfaceExporter(def);
+				foreach (FSFile file in files.Files)
+				{
+					int fileId = file.FileId;
 
-				File folder = new File(out, "" + (def.id >>> 16));
-				folder.mkdirs();
+					int widgetId = (archiveId << 16) + fileId;
 
-				File targ = new File(folder, (def.id & 0xffff) + ".json");
-				exporter.exportTo(targ);
+					InterfaceDefinition iface = loader.load(widgetId, file.Contents);
+					ifaces[fileId] = iface;
+				}
 			}
 		}
-	}
 
-	public void java(File java) // throws IOException
-	{
-		System.setProperty("line.separator", "\n");
-		java.mkdirs();
-		File targ = new File(java, "InterfaceID.java");
-		try (PrintWriter fw = new PrintWriter(targ))
+		public virtual int NumInterfaceGroups
 		{
-			fw.println("/* This file is automatically generated. Do not edit. */");
-			fw.println("package net.runelite.api;");
-			fw.println("");
-			fw.println("public sealed class InterfaceID {");
-			for (InterfaceDefinition[] defs : interfaces)
+			get
+			{
+				return interfaces.Length;
+			}
+		}
+
+		public virtual int getNumChildren(int groupId)
+		{
+			return interfaces[groupId].Length;
+		}
+
+		public virtual InterfaceDefinition[] getIntefaceGroup(int groupId)
+		{
+			return interfaces[groupId];
+		}
+
+		public virtual InterfaceDefinition getInterface(int groupId, int childId)
+		{
+			return interfaces[groupId][childId];
+		}
+
+		public virtual InterfaceDefinition[][] Interfaces
+		{
+			get
+			{
+				return interfaces;
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void export(java.io.File out) throws java.io.IOException
+		public virtual void export(string @out)
+		{
+			// @out.mkdirs(); // TODO: ???
+
+			foreach (InterfaceDefinition[] defs in interfaces)
 			{
 				if (defs == null)
 				{
 					continue;
 				}
-				for (InterfaceDefinition def : defs)
+
+				foreach (InterfaceDefinition def in defs)
 				{
-					if (def == null || def.name == null || def.name.equalsIgnoreCase("NULL"))
+					if (def == null)
 					{
 						continue;
 					}
 
-					string name = namer.name(def.name, def.id);
-					if (name == null)
-					{
-						continue;
-					}
+					InterfaceExporter exporter = new InterfaceExporter(def);
 
-					fw.println("	public const int " + name + " = " + def.id + ";");
+					string folder = $"{@out}/{(int)((uint)def.id >> 16)}";
+					// folder.mkdirs();
+
+					string targ = $"{folder}/{def.id & 0xffff}.json";
+					exporter.exportTo(targ);
 				}
 			}
-			fw.println("}");
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void java(java.io.File java) throws java.io.IOException
+		public virtual void java(string java)
+		{
+			Console.WriteLine($"InterfaceManager.java not implemented! {java}");
+			// System.setProperty("line.separator", "\n");
+			// java.mkdirs();
+			// File targ = new File(java, "InterfaceID.java");
+			// using (PrintWriter fw = new PrintWriter(targ))
+			// {
+			// 	fw.println("/* This file is automatically generated. Do not edit. */");
+			// 	fw.println("package net.runelite.api;");
+			// 	fw.println("");
+			// 	fw.println("public final class InterfaceID {");
+			// 	foreach (InterfaceDefinition[] defs in interfaces)
+			// 	{
+			// 		if (defs == null)
+			// 		{
+			// 			continue;
+			// 		}
+			// 		foreach (InterfaceDefinition def in defs)
+			// 		{
+			// 			if (def == null || string.ReferenceEquals(def.name, null) || def.name.Equals("NULL", StringComparison.OrdinalIgnoreCase))
+			// 			{
+			// 				continue;
+			// 			}
+			//
+			// 			string name = namer.name(def.name, def.id);
+			// 			if (string.ReferenceEquals(name, null))
+			// 			{
+			// 				continue;
+			// 			}
+			//
+			// 			fw.println("	public static final int " + name + " = " + def.id + ";");
+			// 		}
+			// 	}
+			// 	fw.println("}");
+			// }
 		}
 	}
+
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,117 +22,139 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.fs.jagex;
 
-// import java.io.Closeable;
-// import java.io.File;
-// import java.io.FileNotFoundException;
-// import java.io.IOException;
-// import java.io.RandomAccessFile;
-// import java.util.Objects;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
+using System;
 
-public class IndexFile, Closeable
+namespace OSRSCache.fs.jagex
 {
-	private const Logger logger = LoggerFactory.getLogger(IndexFile.class);
 
-	private const int INDEX_ENTRY_LEN = 6;
 
-	private final int indexFileId;
-	private final File file;
-	private final RandomAccessFile idx;
-	private final byte[] buffer = new byte[INDEX_ENTRY_LEN];
-
-	public IndexFile(int indexFileId, File file) throws FileNotFoundException
+	public class IndexFile : System.IDisposable
 	{
-		this.indexFileId = indexFileId;
-		this.file = file;
-		this.idx = new RandomAccessFile(file, "rw");
-	}
+		private const int INDEX_ENTRY_LEN = 6;
 
-	@Override
-	public void close() // throws IOException
-	{
-		idx.close();
-	}
+		private readonly int indexFileId;
+		private readonly string file;
+		private readonly RandomAccessFile idx;
+		private readonly byte[] buffer = new byte[INDEX_ENTRY_LEN];
 
-	public void clear() // throws IOException
-	{
-		idx.setLength(0L);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 3;
-		hash = 41 * hash + Objects.hashCode(this.file);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == null)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public IndexFile(int indexFileId, java.io.File file) throws java.io.FileNotFoundException
+		public IndexFile(int indexFileId, string file)
 		{
-			return false;
-		}
-		if (getClass() != obj.getClass())
-		{
-			return false;
-		}
-		final IndexFile other = (IndexFile) obj;
-		if (!Objects.equals(this.file, other.file))
-		{
-			return false;
-		}
-		return true;
-	}
-
-	public int getIndexFileId()
-	{
-		return indexFileId;
-	}
-
-	public synchronized void write(IndexEntry entry) // throws IOException
-	{
-		idx.seek(entry.getId() * INDEX_ENTRY_LEN);
-
-		buffer[0] = (byte) (entry.getLength() >> 16);
-		buffer[1] = (byte) (entry.getLength() >> 8);
-		buffer[2] = (byte) entry.getLength();
-
-		buffer[3] = (byte) (entry.getSector() >> 16);
-		buffer[4] = (byte) (entry.getSector() >> 8);
-		buffer[5] = (byte) entry.getSector();
-
-		idx.write(buffer);
-	}
-
-	public synchronized IndexEntry read(int id) // throws IOException
-	{
-		idx.seek(id * INDEX_ENTRY_LEN);
-		int i = idx.read(buffer);
-		if (i != INDEX_ENTRY_LEN)
-		{
-			logger.debug("short read for id {} on index {}: {}", id, indexFileId, i);
-			return null;
+			this.indexFileId = indexFileId;
+			this.file = file;
+			this.idx = new RandomAccessFile(file, "rw");
 		}
 
-		int length = ((buffer[0] & 0xFF) << 16) | ((buffer[1] & 0xFF) << 8) | (buffer[2] & 0xFF);
-		int sector = ((buffer[3] & 0xFF) << 16) | ((buffer[4] & 0xFF) << 8) | (buffer[5] & 0xFF);
-
-		if (length <= 0 || sector <= 0)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void close() throws java.io.IOException
+		public virtual void Dispose()
 		{
-			logger.debug("invalid length or sector {}/{}", length, sector);
-			return null;
+			idx.close();
 		}
 
-		return new IndexEntry(this, id, sector, length);
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void clear() throws java.io.IOException
+		public virtual void clear()
+		{
+			idx.setLength(0L);
+		}
+
+		public override int GetHashCode()
+		{
+			int hash = 3;
+			hash = 41 * hash + this.file.GetHashCode();
+			return hash;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+			{
+				return false;
+			}
+			if (this.GetType() != obj.GetType())
+			{
+				return false;
+			}
+//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+//ORIGINAL LINE: final IndexFile other = (IndexFile) obj;
+			IndexFile other = (IndexFile) obj;
+			if (!Object.Equals(this.file, other.file))
+			{
+				return false;
+			}
+			return true;
+		}
+
+		public virtual int IndexFileId
+		{
+			get
+			{
+				return indexFileId;
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public synchronized void write(IndexEntry entry) throws java.io.IOException
+		public virtual void write(IndexEntry entry)
+		{
+			lock (this)
+			{
+				idx.seek(entry.Id * INDEX_ENTRY_LEN);
+        
+				buffer[0] = (byte)(entry.Length >> 16);
+				buffer[1] = (byte)(entry.Length >> 8);
+				buffer[2] = (byte) entry.Length;
+        
+				buffer[3] = (byte)(entry.Sector >> 16);
+				buffer[4] = (byte)(entry.Sector >> 8);
+				buffer[5] = (byte) entry.Sector;
+        
+				idx.write(buffer);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public synchronized IndexEntry read(int id) throws java.io.IOException
+		public virtual IndexEntry read(int id)
+		{
+			lock (this)
+			{
+				idx.seek(id * INDEX_ENTRY_LEN);
+				int i = idx.read(buffer);
+				if (i != INDEX_ENTRY_LEN)
+				{
+					Console.WriteLine("short read for id {0} on index {1}: {2}", id, indexFileId, i);
+					return null;
+				}
+        
+				int length = ((buffer[0] & 0xFF) << 16) | ((buffer[1] & 0xFF) << 8) | (buffer[2] & 0xFF);
+				int sector = ((buffer[3] & 0xFF) << 16) | ((buffer[4] & 0xFF) << 8) | (buffer[5] & 0xFF);
+        
+				if (length <= 0 || sector <= 0)
+				{
+					Console.WriteLine("invalid length or sector {0}/{1}", length, sector);
+					return null;
+				}
+        
+				return new IndexEntry(this, id, sector, length);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public synchronized int getIndexCount() throws java.io.IOException
+		public virtual int IndexCount
+		{
+			get
+			{
+				lock (this)
+				{
+					return (int)(idx.length() / INDEX_ENTRY_LEN);
+				}
+			}
+		}
 	}
 
-	public synchronized int getIndexCount() // throws IOException
-	{
-		return (int) (idx.length() / INDEX_ENTRY_LEN);
-	}
 }

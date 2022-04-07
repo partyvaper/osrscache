@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,21 +23,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-using OSRSCache.util.ScriptVarType;
-
-@Data
-public class EnumDefinition
+namespace OSRSCache.definitions
 {
-	private int id;
-	private int[] intVals;
-	private ScriptVarType keyType;
-	private ScriptVarType valType;
-	private string defaultstring = "null";
-	private int defaultInt;
-	private int size;
-	private int[] keys;
-	private string[] stringVals;
+	using ScriptVarType = OSRSCache.util.ScriptVarType;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class EnumDefinition
+	public class EnumDefinition
+	{
+		public int id; // Used to be private with setters and getters?
+		public int[] intVals; // Used to be private with setters and getters?
+		public ScriptVarType keyType; // Used to be private with setters and getters?
+		public ScriptVarType valType; // Used to be private with setters and getters?
+		public string defaultString = "null"; // Used to be private with setters and getters?
+		public int defaultInt; // Used to be private with setters and getters?
+		public int size; // Used to be private with setters and getters?
+		public int[] keys; // Used to be private with setters and getters?
+		public string[] stringVals; // Used to be private with setters and getters?
+	}
+
 }

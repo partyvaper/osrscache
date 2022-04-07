@@ -1,3 +1,6 @@
+﻿using System;
+using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,188 +25,205 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.fs;
-
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.Objects;
-using OSRSCache.index.ArchiveData;
-using OSRSCache.index.FileData;
-using OSRSCache.index.IndexData;
-using OSRSCache.util.Djb2;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
-
-public class Index
+namespace OSRSCache.fs
 {
-	private const Logger logger = LoggerFactory.getLogger(Index.class);
+	using ArchiveData = OSRSCache.index.ArchiveData;
+	using FileData = OSRSCache.index.FileData;
+	using IndexData = OSRSCache.index.IndexData;
+	using Djb2 = OSRSCache.util.Djb2;
 
-	private final int id;
 
-	private int protocol = 6;
-	private boolean named = true;
-	private int revision;
-	private int crc;
-	private int compression; // compression method of this index's data in 255
-
-	private final List<Archive> archives = new ArrayList<>();
-
-	public Index(int id)
+	public class Index
 	{
-		this.id = id;
-	}
+		private readonly int id;
 
-	@Override
-	public int hashCode()
-	{
-		int hash = 3;
-		hash = 97 * hash + this.id;
-		hash = 97 * hash + this.revision;
-		hash = 97 * hash + Objects.hashCode(this.archives);
-		return hash;
-	}
+		private int protocol = 6;
+		private bool named = true;
+		private int revision;
+		private int crc;
+		private int compression; // compression method of this index's data in 255
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == null)
+		private readonly IList<Archive> archives = new List<Archive>();
+
+		public Index(int id)
 		{
-			return false;
+			this.id = id;
 		}
-		if (getClass() != obj.getClass())
+
+		public override int GetHashCode()
 		{
-			return false;
+			int hash = 3;
+			hash = 97 * hash + this.id;
+			hash = 97 * hash + this.revision;
+			hash = 97 * hash + this.archives.GetHashCode();
+			return hash;
 		}
-		final Index other = (Index) obj;
-		if (this.id != other.id)
+
+		public override bool Equals(object obj)
 		{
-			return false;
-		}
-		if (this.revision != other.revision)
-		{
-			return false;
-		}
-		if (!Objects.equals(this.archives, other.archives))
-		{
-			return false;
-		}
-		return true;
-	}
-
-	public int getId()
-	{
-		return id;
-	}
-
-	public int getProtocol()
-	{
-		return protocol;
-	}
-
-	public void setProtocol(int protocol)
-	{
-		this.protocol = protocol;
-	}
-
-	public boolean isNamed()
-	{
-		return named;
-	}
-
-	public void setNamed(boolean named)
-	{
-		this.named = named;
-	}
-
-	public int getRevision()
-	{
-		return revision;
-	}
-
-	public void setRevision(int revision)
-	{
-		this.revision = revision;
-	}
-
-	public int getCrc()
-	{
-		return crc;
-	}
-
-	public void setCrc(int crc)
-	{
-		this.crc = crc;
-	}
-
-	public int getCompression()
-	{
-		return compression;
-	}
-
-	public void setCompression(int compression)
-	{
-		this.compression = compression;
-	}
-
-	public List<Archive> getArchives()
-	{
-		return archives;
-	}
-
-	public Archive addArchive(int id)
-	{
-		Archive archive = new Archive(this, id);
-		this.archives.add(archive);
-		return archive;
-	}
-
-	public Archive getArchive(int id)
-	{
-		for (Archive a : archives)
-		{
-			if (a.getArchiveId() == id)
+			if (obj == null)
 			{
-				return a;
+				return false;
+			}
+			if (this.GetType() != obj.GetType())
+			{
+				return false;
+			}
+//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+//ORIGINAL LINE: final Index other = (Index) obj;
+			Index other = (Index) obj;
+			if (this.id != other.id)
+			{
+				return false;
+			}
+			if (this.revision != other.revision)
+			{
+				return false;
+			}
+			if (!Object.Equals(this.archives, other.archives))
+			{
+				return false;
+			}
+			return true;
+		}
+
+		public virtual int Id
+		{
+			get
+			{
+				return id;
 			}
 		}
-		return null;
-	}
 
-	public Archive findArchiveByName(string name)
-	{
-		int hash = Djb2.hash(name);
-		for (Archive a : archives)
+		public virtual int Protocol
 		{
-			if (a.getNameHash() == hash)
+			get
 			{
-				return a;
+				return protocol;
+			}
+			set
+			{
+				this.protocol = value;
 			}
 		}
-		return null;
-	}
 
-	public IndexData toIndexData()
-	{
-		IndexData data = new IndexData();
-		data.setProtocol(protocol);
-		data.setRevision(revision);
-		data.setNamed(named);
 
-		ArchiveData[] archiveDatas = new ArchiveData[archives.size()];
-		data.setArchives(archiveDatas);
-
-		int idx = 0;
-		for (Archive archive : archives)
+		public virtual bool Named
 		{
-			ArchiveData ad = archiveDatas[idx++] = new ArchiveData();
-			ad.setId(archive.getArchiveId());
-			ad.setNameHash(archive.getNameHash());
-			ad.setCrc(archive.getCrc());
-			ad.setRevision(archive.getRevision());
-
-			FileData[] files = archive.getFileData();
-			ad.setFiles(files);
+			get
+			{
+				return named;
+			}
+			set
+			{
+				this.named = value;
+			}
 		}
-		return data;
+
+
+		public virtual int Revision
+		{
+			get
+			{
+				return revision;
+			}
+			set
+			{
+				this.revision = value;
+			}
+		}
+
+
+		public virtual int Crc
+		{
+			get
+			{
+				return crc;
+			}
+			set
+			{
+				this.crc = value;
+			}
+		}
+
+
+		public virtual int Compression
+		{
+			get
+			{
+				return compression;
+			}
+			set
+			{
+				this.compression = value;
+			}
+		}
+
+
+		public virtual IList<Archive> Archives
+		{
+			get
+			{
+				return archives;
+			}
+		}
+
+		public virtual Archive addArchive(int id)
+		{
+			Archive archive = new Archive(this, id);
+			this.archives.Add(archive);
+			return archive;
+		}
+
+		public virtual Archive getArchive(int id)
+		{
+			foreach (Archive a in archives)
+			{
+				if (a.ArchiveId == id)
+				{
+					return a;
+				}
+			}
+			return null;
+		}
+
+		public virtual Archive findArchiveByName(string name)
+		{
+			int hash = Djb2.hash(name);
+			foreach (Archive a in archives)
+			{
+				if (a.NameHash == hash)
+				{
+					return a;
+				}
+			}
+			return null;
+		}
+
+		public virtual IndexData toIndexData()
+		{
+			IndexData data = new IndexData();
+			data.Protocol = protocol;
+			data.Revision = revision;
+			data.Named = named;
+
+			ArchiveData[] archiveDatas = new ArchiveData[archives.Count];
+			data.Archives = archiveDatas;
+
+			int idx = 0;
+			foreach (Archive archive in archives)
+			{
+				ArchiveData ad = archiveDatas[idx++] = new ArchiveData();
+				ad.Id = archive.ArchiveId;
+				ad.NameHash = archive.NameHash;
+				ad.Crc = archive.Crc;
+				ad.Revision = archive.Revision;
+
+				FileData[] files = archive.FileData;
+				ad.Files = files;
+			}
+			return data;
+		}
 	}
+
 }

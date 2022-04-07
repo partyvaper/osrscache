@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,110 +22,112 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class InterfaceDefinition
+namespace OSRSCache.definitions
 {
-	public int id = -1;
-	public boolean isIf3 = false;
-	public int type;
-	public int contentType;
-	public int originalX;
-	public int originalY;
-	public int originalWidth;
-	public int originalHeight;
-	public int widthMode;
-	public int heightMode;
-	public int xPositionMode;
-	public int yPositionMode;
-	public int parentId = -1;
-	public boolean isHidden;
-	public int scrollWidth;
-	public int scrollHeight;
-	public boolean noClickThrough;
-	public int spriteId = -1;
-	public int textureId;
-	public boolean spriteTiling;
-	public int opacity;
-	public int borderType;
-	public int shadowColor;
-	public boolean flippedVertically;
-	public boolean flippedHorizontally;
-	public int modelType = 1;
-	public int modelId = -1;
-	public int offsetX2d;
-	public int offsetY2d;
-	public int rotationX;
-	public int rotationY;
-	public int rotationZ;
-	public int modelZoom = 100;
-	public int animation = -1;
-	public boolean orthogonal;
-	public int modelHeightOverride;
-	public int fontId = -1;
-	public string text = "";
-	public int lineHeight;
-	public int xTextAlignment;
-	public int yTextAlignment;
-	public boolean textShadowed;
-	public int textColor;
-	public boolean filled;
-	public int lineWidth = 1;
-	public boolean lineDirection;
-	public int clickMask;
-	public string name = "";
-	public string[] actions;
-	public int dragDeadZone;
-	public int dragDeadTime;
-	public boolean dragRenderBehavior;
-	public string targetVerb = "";
-	public Object[] onLoadListener;
-	public Object[] onMouseOverListener;
-	public Object[] onMouseLeaveListener;
-	public Object[] onTargetLeaveListener;
-	public Object[] onTargetEnterListener;
-	public Object[] onVarTransmitListener;
-	public Object[] onInvTransmitListener;
-	public Object[] onStatTransmitListener;
-	public Object[] onTimerListener;
-	public Object[] onOpListener;
-	public Object[] onMouseRepeatListener;
-	public Object[] onClickListener;
-	public Object[] onClickRepeatListener;
-	public Object[] onReleaseListener;
-	public Object[] onHoldListener;
-	public Object[] onDragListener;
-	public Object[] onDragCompleteListener;
-	public Object[] onScrollWheelListener;
-	public int[] varTransmitTriggers;
-	public int[] invTransmitTriggers;
-	public int[] statTransmitTriggers;
-	public boolean hasListener;
-	
-	public int menuType;
-	// This is set to a siblings' child id when that widget should get a hover effect when this one is hovered
-	public int hoveredSiblingId;
-	public int[] alternateOperators;
-	public int[] alternateRhs;
-	public ClientScript1Instruction[][] clientScripts;
-	public int[] itemIds;
-	public int[] itemQuantities;
-	public int xPitch;
-	public int yPitch;
-	public int[] xOffsets;
-	public int[] yOffsets;
-	public int[] sprites;
-	public string[] configActions;
-	public string alternateText = "";
-	public int alternateTextColor;
-	public int hoveredTextColor;
-	public int alternateHoveredTextColor;
-	public int alternateSpriteId = -1;
-	public int alternateModelId = -1;
-	public int alternateAnimation = -1;
-	public string spellName = "";
-	public string tooltip = "Ok";
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class InterfaceDefinition
+	public class InterfaceDefinition
+	{
+		public int id = -1;
+		public bool isIf3 = false;
+		public int type;
+		public int contentType;
+		public int originalX;
+		public int originalY;
+		public int originalWidth;
+		public int originalHeight;
+		public int widthMode;
+		public int heightMode;
+		public int xPositionMode;
+		public int yPositionMode;
+		public int parentId = -1;
+		public bool isHidden;
+		public int scrollWidth;
+		public int scrollHeight;
+		public bool noClickThrough;
+		public int spriteId = -1;
+		public int textureId;
+		public bool spriteTiling;
+		public int opacity;
+		public int borderType;
+		public int shadowColor;
+		public bool flippedVertically;
+		public bool flippedHorizontally;
+		public int modelType = 1;
+		public int modelId = -1;
+		public int offsetX2d;
+		public int offsetY2d;
+		public int rotationX;
+		public int rotationY;
+		public int rotationZ;
+		public int modelZoom = 100;
+		public int animation = -1;
+		public bool orthogonal;
+		public int modelHeightOverride;
+		public int fontId = -1;
+		public string text = "";
+		public int lineHeight;
+		public int xTextAlignment;
+		public int yTextAlignment;
+		public bool textShadowed;
+		public int textColor;
+		public bool filled;
+		public int lineWidth = 1;
+		public bool lineDirection;
+		public int clickMask;
+		public string name = "";
+		public string[] actions;
+		public int dragDeadZone;
+		public int dragDeadTime;
+		public bool dragRenderBehavior;
+		public string targetVerb = "";
+		public object[] onLoadListener;
+		public object[] onMouseOverListener;
+		public object[] onMouseLeaveListener;
+		public object[] onTargetLeaveListener;
+		public object[] onTargetEnterListener;
+		public object[] onVarTransmitListener;
+		public object[] onInvTransmitListener;
+		public object[] onStatTransmitListener;
+		public object[] onTimerListener;
+		public object[] onOpListener;
+		public object[] onMouseRepeatListener;
+		public object[] onClickListener;
+		public object[] onClickRepeatListener;
+		public object[] onReleaseListener;
+		public object[] onHoldListener;
+		public object[] onDragListener;
+		public object[] onDragCompleteListener;
+		public object[] onScrollWheelListener;
+		public int[] varTransmitTriggers;
+		public int[] invTransmitTriggers;
+		public int[] statTransmitTriggers;
+		public bool hasListener;
+
+		public int menuType;
+		// This is set to a siblings' child id when that widget should get a hover effect when this one is hovered
+		public int hoveredSiblingId;
+		public int[] alternateOperators;
+		public int[] alternateRhs;
+		public ClientScript1Instruction[][] clientScripts;
+		public int[] itemIds;
+		public int[] itemQuantities;
+		public int xPitch;
+		public int yPitch;
+		public int[] xOffsets;
+		public int[] yOffsets;
+		public int[] sprites;
+		public string[] configActions;
+		public string alternateText = "";
+		public int alternateTextColor;
+		public int hoveredTextColor;
+		public int alternateHoveredTextColor;
+		public int alternateSpriteId = -1;
+		public int alternateModelId = -1;
+		public int alternateAnimation = -1;
+		public string spellName = "";
+		public string tooltip = "Ok";
+	}
+
 }

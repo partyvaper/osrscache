@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,12 +22,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.providers;
-
-// import java.io.IOException;
-using OSRSCache.definitions.ModelDefinition;
-
-public interface ModelProvider
+namespace OSRSCache.definitions.providers
 {
-	ModelDefinition provide(int modelId) // throws IOException;
+	using ModelDefinition = OSRSCache.definitions.ModelDefinition;
+
+	public interface ModelProvider
+	{
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: OSRSCache.definitions.ModelDefinition provide(int modelId) throws java.io.IOException;
+		ModelDefinition provide(int modelId);
+	}
+
 }

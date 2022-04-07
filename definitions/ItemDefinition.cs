@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,105 +24,105 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import java.util.Map;
-// import lombok.Data;
-
-@Data
-public class ItemDefinition
+namespace OSRSCache.definitions
 {
-	public readonly int id;
 
-	public string name = "null";
-	public string unknown1;
-
-	public int resizeX = 128;
-	public int resizeY = 128;
-	public int resizeZ = 128;
-
-	public int xan2d = 0;
-	public int yan2d = 0;
-	public int zan2d = 0;
-
-	public int cost = 1;
-	public boolean isTradeable;
-	public int stackable = 0;
-	public int inventoryModel;
-	public boolean members = false;
-
-	public short[] colorFind;
-	public short[] colorReplace;
-	public short[] textureFind;
-	public short[] textureReplace;
-
-	public int zoom2d = 2000;
-	public int xOffset2d = 0;
-	public int yOffset2d = 0;
-
-	public int ambient;
-	public int contrast;
-	
-	public int[] countCo;
-	public int[] countObj;
-
-	public string[] options = new string[]
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class ItemDefinition
+	public class ItemDefinition
 	{
-		null, null, "Take", null, null
-	};
-	
-	public string[] interfaceOptions = new string[]
-	{
-		null, null, null, null, "Drop"
-	};
+		public readonly int id;
 
-	public int maleModel0 = -1;
-	public int maleModel1 = -1;
-	public int maleModel2 = -1;
-	public int maleOffset;
-	public int maleHeadModel = -1;
-	public int maleHeadModel2 = -1;
+		public string name = "null";
+		public string unknown1;
 
-	public int femaleModel0 = -1;
-	public int femaleModel1 = -1;
-	public int femaleModel2 = -1;
-	public int femaleOffset;
-	public int femaleHeadModel = -1;
-	public int femaleHeadModel2 = -1;
-	
-	public int category;
+		public int resizeX = 128;
+		public int resizeY = 128;
+		public int resizeZ = 128;
 
-	public int notedID = -1;
-	public int notedTemplate = -1;
+		public int xan2d = 0;
+		public int yan2d = 0;
+		public int zan2d = 0;
 
-	public int team;
+		public int cost = 1;
+		public bool isTradeable;
+		public int stackable = 0;
+		public int inventoryModel;
+		public bool members = false;
 
-	public int shiftClickDropIndex = -2;
+		public short[] colorFind;
+		public short[] colorReplace;
+		public short[] textureFind;
+		public short[] textureReplace;
 
-	public int boughtId = -1;
-	public int boughtTemplateId = -1;
-	
-	public int placeholderId = -1;
-	public int placeholderTemplateId = -1;
+		public int zoom2d = 2000;
+		public int xOffset2d = 0;
+		public int yOffset2d = 0;
 
-	public Map<Integer, Object> params = null;
+		public int ambient;
+		public int contrast;
 
-	public void updateNote(ItemDefinition notedItem, ItemDefinition unnotedItem)
-	{
-		this.inventoryModel = notedItem.inventoryModel;
-		this.zoom2d = notedItem.zoom2d;
-		this.xan2d = notedItem.xan2d;
-		this.yan2d = notedItem.yan2d;
-		this.zan2d = notedItem.zan2d;
-		this.xOffset2d = notedItem.xOffset2d;
-		this.yOffset2d = notedItem.yOffset2d;
-		this.colorFind = notedItem.colorFind;
-		this.colorReplace = notedItem.colorReplace;
-		this.textureFind = notedItem.textureFind;
-		this.textureReplace = notedItem.textureReplace;
-		this.name = unnotedItem.name;
-		this.members = unnotedItem.members;
-		this.cost = unnotedItem.cost;
-		this.stackable = 1;
+		public int[] countCo;
+		public int[] countObj;
+
+		public string[] options = new string[] {null, null, "Take", null, null};
+
+		public string[] interfaceOptions = new string[] {null, null, null, null, "Drop"};
+
+		public int maleModel0 = -1;
+		public int maleModel1 = -1;
+		public int maleModel2 = -1;
+		public int maleOffset;
+		public int maleHeadModel = -1;
+		public int maleHeadModel2 = -1;
+
+		public int femaleModel0 = -1;
+		public int femaleModel1 = -1;
+		public int femaleModel2 = -1;
+		public int femaleOffset;
+		public int femaleHeadModel = -1;
+		public int femaleHeadModel2 = -1;
+
+		public int category;
+
+		public int notedID = -1;
+		public int notedTemplate = -1;
+
+		public int team;
+
+		public int shiftClickDropIndex = -2;
+
+		public int boughtId = -1;
+		public int boughtTemplateId = -1;
+
+		public int placeholderId = -1;
+		public int placeholderTemplateId = -1;
+
+		public IDictionary<int, object> @params = null;
+
+		public ItemDefinition(int id)
+		{
+			this.id = id;
+		}
+
+		public virtual void updateNote(ItemDefinition notedItem, ItemDefinition unnotedItem)
+		{
+			this.inventoryModel = notedItem.inventoryModel;
+			this.zoom2d = notedItem.zoom2d;
+			this.xan2d = notedItem.xan2d;
+			this.yan2d = notedItem.yan2d;
+			this.zan2d = notedItem.zan2d;
+			this.xOffset2d = notedItem.xOffset2d;
+			this.yOffset2d = notedItem.yOffset2d;
+			this.colorFind = notedItem.colorFind;
+			this.colorReplace = notedItem.colorReplace;
+			this.textureFind = notedItem.textureFind;
+			this.textureReplace = notedItem.textureReplace;
+			this.name = unnotedItem.name;
+			this.members = unnotedItem.members;
+			this.cost = unnotedItem.cost;
+			this.stackable = 1;
+		}
 	}
+
 }

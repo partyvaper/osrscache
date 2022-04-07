@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,97 +24,100 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache;
-
-// import com.google.common.collect.LinkedListMultimap;
-// import com.google.common.collect.Multimap;
-// import java.awt.image.BufferedImage;
-// import java.io.File;
-// import java.io.IOException;
-// import java.util.Collection;
-// import java.util.Collections;
-using OSRSCache.definitions.SpriteDefinition;
-using OSRSCache.definitions.exporters.SpriteExporter;
-using OSRSCache.definitions.loaders.SpriteLoader;
-using OSRSCache.definitions.providers.SpriteProvider;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-
-public class SpriteManager, SpriteProvider
+namespace OSRSCache
 {
-	private final Store store;
-	private final Multimap<Integer, SpriteDefinition> sprites = LinkedListMultimap.create();
+	// using LinkedListMultimap = com.google.common.collect.LinkedListMultimap;
+	// using Multimap = com.google.common.collect.Multimap;
+	using SpriteDefinition = OSRSCache.definitions.SpriteDefinition;
+	using SpriteExporter = OSRSCache.definitions.exporters.SpriteExporter;
+	using SpriteLoader = OSRSCache.definitions.loaders.SpriteLoader;
+	using SpriteProvider = OSRSCache.definitions.providers.SpriteProvider;
+	using Archive = OSRSCache.fs.Archive;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
 
-	public SpriteManager(Store store)
+	public class SpriteManager : SpriteProvider
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly Dictionary<int, SpriteDefinition> sprites;
 
-	public void load() // throws IOException
-	{
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.SPRITES);
-
-		for (Archive a : index.getArchives())
+		public SpriteManager(Store store)
 		{
-			byte[] contents = a.decompress(storage.loadArchive(a));
+			this.store = store;
+		}
 
-			SpriteLoader loader = new SpriteLoader();
-			SpriteDefinition[] defs = loader.load(a.getArchiveId(), contents);
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
+		{
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.SPRITES);
 
-			for (SpriteDefinition sprite : defs)
+			foreach (Archive a in index.Archives)
 			{
-				sprites.put(sprite.getId(), sprite);
+				byte[] contents = a.decompress(storage.loadArchive(a));
+
+				SpriteLoader loader = new SpriteLoader();
+				SpriteDefinition[] defs = loader.load(a.ArchiveId, contents);
+
+				foreach (SpriteDefinition sprite in defs)
+				{
+					sprites.Add(sprite.id, sprite);
+				}
 			}
+		}
+
+		public virtual ICollection<SpriteDefinition> Sprites
+		{
+			get
+			{
+				return new List<SpriteDefinition>(sprites.Values);
+			}
+		}
+
+		public virtual SpriteDefinition findSprite(int spriteId, int frameId)
+		{
+			foreach (SpriteDefinition sprite in sprites.Values)
+			{
+				if (sprite.id == spriteId && sprite.frame == frameId)
+				{
+					return sprite;
+				}
+			}
+			return null;
+		}
+
+		// public virtual BufferedImage getSpriteImage(SpriteDefinition sprite)
+		// {
+		// 	BufferedImage image = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
+		// 	image.setRGB(0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
+		// 	return image;
+		// }
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void export(java.io.File outDir) throws java.io.IOException
+		public virtual void export(string outDir)
+		{
+			foreach (SpriteDefinition sprite in sprites.Values)
+			{
+				// I don't know why this happens
+				if (sprite.height <= 0 || sprite.width <= 0)
+				{
+					continue;
+				}
+
+				SpriteExporter exporter = new SpriteExporter(sprite);
+				string png = $"{outDir}/{sprite.id}-{sprite.frame}.png";
+
+				exporter.exportTo(png);
+			}
+		}
+
+		public virtual SpriteDefinition provide(int spriteId, int frameId)
+		{
+			return findSprite(spriteId, frameId);
 		}
 	}
 
-	public Collection<SpriteDefinition> getSprites()
-	{
-		return Collections.unmodifiableCollection(sprites.values());
-	}
-
-	public SpriteDefinition findSprite(int spriteId, int frameId)
-	{
-		for (SpriteDefinition sprite : sprites.get(spriteId))
-		{
-			if (sprite.getFrame() == frameId)
-			{
-				return sprite;
-			}
-		}
-		return null;
-	}
-
-	public BufferedImage getSpriteImage(SpriteDefinition sprite)
-	{
-		BufferedImage image = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		image.setRGB(0, 0, sprite.getWidth(), sprite.getHeight(), sprite.getPixels(), 0, sprite.getWidth());
-		return image;
-	}
-
-	public void export(File outDir) // throws IOException
-	{
-		for (SpriteDefinition sprite : sprites.values())
-		{
-			// I don't know why this happens
-			if (sprite.getHeight() <= 0 || sprite.getWidth() <= 0)
-			{
-				continue;
-			}
-
-			SpriteExporter exporter = new SpriteExporter(sprite);
-			File png = new File(outDir, sprite.getId() + "-" + sprite.getFrame() + ".png");
-
-			exporter.exportTo(png);
-		}
-	}
-
-	@Override
-	public SpriteDefinition provide(int spriteId, int frameId)
-	{
-		return findSprite(spriteId, frameId);
-	}
 }

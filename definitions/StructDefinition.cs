@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2018, Joshua Filby <joshua@filby.me>
  * All rights reserved.
@@ -22,14 +24,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import java.util.Map;
-// import lombok.Data;
-
-@Data
-public class StructDefinition
+namespace OSRSCache.definitions
 {
-	public readonly int id;
-	public Map<Integer, Object> params = null;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class StructDefinition
+	public class StructDefinition
+	{
+		public readonly int id;
+		public IDictionary<int, object> @params = null;
+
+		public StructDefinition(int id)
+		{
+			this.id = id;
+		}
+	}
+
 }

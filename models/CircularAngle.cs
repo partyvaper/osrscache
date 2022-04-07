@@ -1,3 +1,5 @@
+﻿using System;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,21 +24,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.models;
-
-public class CircularAngle
+namespace OSRSCache.models
 {
-	private const double UNIT = Math.PI / 1024d; // How much of the circle each unit of SINE/COSINE is
-
-	public const int[] SINE = new int[2048]; // sine angles for each of the 2048 units, * 65536 and stored as an int
-	public const int[] COSINE = new int[2048]; // cosine
-
-	static
+	public class CircularAngle
 	{
-		for (int i = 0; i < 2048; ++i)
+		private static readonly double UNIT = Math.PI / 1024d; // How much of the circle each unit of SINE/COSINE is
+
+		public static readonly int[] SINE = new int[2048]; // sine angles for each of the 2048 units, * 65536 and stored as an int
+		public static readonly int[] COSINE = new int[2048]; // cosine
+
+		static CircularAngle()
 		{
-			SINE[i] = (int) (65536.0D * Math.sin((double) i * UNIT));
-			COSINE[i] = (int) (65536.0D * Math.cos((double) i * UNIT));
+			for (int i = 0; i < 2048; ++i)
+			{
+				SINE[i] = (int)(65536.0D * Math.Sin((double) i * UNIT));
+				COSINE[i] = (int)(65536.0D * Math.Cos((double) i * UNIT));
+			}
 		}
 	}
+
 }

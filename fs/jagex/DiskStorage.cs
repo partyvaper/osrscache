@@ -1,3 +1,7 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,218 +26,222 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.fs.jagex;
-
-// import com.google.common.primitives.Ints;
-// import java.io.File;
-// import java.io.FileNotFoundException;
-// import java.io.IOException;
-// import java.util.ArrayList;
-// import java.util.List;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.Container;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.index.ArchiveData;
-using OSRSCache.index.IndexData;
-using OSRSCache.util.Crc32;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
-
-public class DiskStorage, Storage
+namespace OSRSCache.fs.jagex
 {
-	private const Logger logger = LoggerFactory.getLogger(DiskStorage.class);
+	// using Ints = com.google.common.primitives.Ints;
+	using Archive = OSRSCache.fs.Archive;
+	using Container = OSRSCache.fs.Container;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	using ArchiveData = OSRSCache.index.ArchiveData;
+	using IndexData = OSRSCache.index.IndexData;
+	using Crc32 = OSRSCache.util.Crc32;
 
-	private const string MAIN_FILE_CACHE_DAT = "main_file_cache.dat2";
-	private const string MAIN_FILE_CACHE_IDX = "main_file_cache.idx";
 
-	private final File folder;
-
-	private final DataFile data;
-	private final IndexFile index255;
-	private final List<IndexFile> indexFiles = new ArrayList<>();
-
-	public DiskStorage(File folder) // throws IOException
+	public class DiskStorage : Storage
 	{
-		this.folder = folder;
+		private const string MAIN_FILE_CACHE_DAT = "main_file_cache.dat2";
+		private const string MAIN_FILE_CACHE_IDX = "main_file_cache.idx";
 
-		this.data = new DataFile(new File(folder, MAIN_FILE_CACHE_DAT));
-		this.index255 = new IndexFile(255, new File(folder, MAIN_FILE_CACHE_IDX + "255"));
-	}
+		private readonly string folder;
 
-	@Override
-	public void init(Store store) // throws IOException
-	{
-		for (int i = 0; i < index255.getIndexCount(); ++i)
+		private readonly DataFile data;
+		private readonly IndexFile index255;
+		private readonly IList<IndexFile> indexFiles = new List<IndexFile>();
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public DiskStorage(java.io.File folder) throws java.io.IOException
+		public DiskStorage(string folder)
 		{
-			store.addIndex(i);
-			getIndex(i);
+			this.folder = folder;
+
+			this.data = new DataFile($"{folder}/{MAIN_FILE_CACHE_DAT}");
+			this.index255 = new IndexFile(255, $"{folder}/{MAIN_FILE_CACHE_IDX}255");
 		}
 
-		assert store.getIndexes().size() == indexFiles.size();
-	}
-
-	@Override
-	public void close() // throws IOException
-	{
-		data.close();
-		index255.close();
-		for (IndexFile indexFile : indexFiles)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void init(OSRSCache.fs.Store store) throws java.io.IOException
+		public virtual void init(Store store)
 		{
-			indexFile.close();
-		}
-	}
-
-	private IndexFile getIndex(int i) throws FileNotFoundException
-	{
-		for (IndexFile indexFile : indexFiles)
-		{
-			if (indexFile.getIndexFileId() == i)
+			for (int i = 0; i < index255.IndexCount; ++i)
 			{
-				return indexFile;
+				store.addIndex(i);
+				getIndex(i);
+			}
+
+			Debug.Assert(store.Indexes.Count == indexFiles.Count);
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void close() throws java.io.IOException
+		public virtual void close()
+		{
+			data.Dispose();
+			index255.Dispose();
+			foreach (IndexFile indexFile in indexFiles)
+			{
+				indexFile.Dispose();
 			}
 		}
 
-		IndexFile indexFile = new IndexFile(i, new File(folder, MAIN_FILE_CACHE_IDX + i));
-		indexFiles.add(indexFile);
-		return indexFile;
-	}
-
-	@Override
-	public void load(Store store) // throws IOException
-	{
-		for (Index index : store.getIndexes())
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: private IndexFile getIndex(int i) throws java.io.FileNotFoundException
+		private IndexFile getIndex(int i)
 		{
-			loadIndex(index);
+			foreach (IndexFile indexFile in indexFiles)
+			{
+				if (indexFile.IndexFileId == i)
+				{
+					return indexFile;
+				}
+			}
+
+			IndexFile _indexFile = new IndexFile(i, $"{folder}/{MAIN_FILE_CACHE_IDX}{i}"); 
+			indexFiles.Add(_indexFile);
+			return _indexFile;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void load(OSRSCache.fs.Store store) throws java.io.IOException
+		public virtual void load(Store store)
+		{
+			foreach (Index index in store.Indexes)
+			{
+				loadIndex(index);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public byte[] readIndex(int indexId) throws java.io.IOException
+		public virtual byte[] readIndex(int indexId)
+		{
+			IndexEntry entry = index255.read(indexId);
+			if (entry == null)
+			{
+				return null;
+			}
+
+			byte[] indexData = data.read(index255.IndexFileId, entry.Id, entry.Sector, entry.Length);
+			return indexData;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: private void loadIndex(OSRSCache.fs.Index index) throws java.io.IOException
+		private void loadIndex(Index index)
+		{
+			Console.WriteLine("Loading index {0}", index.Id);
+
+			byte[] indexData = readIndex(index.Id);
+			if (indexData == null)
+			{
+				return;
+			}
+
+			Container res = Container.decompress(indexData, null);
+			byte[] data = res.data;
+
+			IndexData id = new IndexData();
+			id.load(data);
+
+			index.Protocol = id.Protocol;
+			index.Revision = id.Revision;
+			index.Named = id.Named;
+
+			foreach (ArchiveData ad in id.Archives)
+			{
+				Archive archive = index.addArchive(ad.Id);
+				archive.NameHash = ad.NameHash;
+				archive.Crc = ad.Crc;
+				archive.Revision = ad.Revision;
+				archive.FileData = ad.Files;
+
+				Debug.Assert(ad.Files.Length > 0);
+			}
+
+			index.Crc = res.crc;
+			index.Compression = res.compression;
+			Debug.Assert(res.revision == -1);
+		}
+
+		public virtual byte[] loadArchive(Archive archive)
+		{
+			Index index = archive.Index;
+			IndexFile indexFile = getIndex(index.Id);
+
+			Debug.Assert(indexFile.IndexFileId == index.Id);
+
+			IndexEntry entry = indexFile.read(archive.ArchiveId);
+			if (entry == null)
+			{
+				Console.WriteLine("can't read archive " + archive.ArchiveId + " from index " + index.Id);
+				return null;
+			}
+
+			Debug.Assert(entry.Id == archive.ArchiveId);
+
+			Console.WriteLine("Loading archive {0} for index {1} from sector {2} length {3}", archive.ArchiveId, index.Id, entry.Sector, entry.Length);
+
+			byte[] archiveData = data.read(index.Id, entry.Id, entry.Sector, entry.Length);
+			return archiveData;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void save(OSRSCache.fs.Store store) throws java.io.IOException
+		public virtual void save(Store store)
+		{
+			Console.WriteLine("Saving store");
+
+			foreach (Index i in store.Indexes)
+			{
+				saveIndex(i);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: private void saveIndex(OSRSCache.fs.Index index) throws java.io.IOException
+		private void saveIndex(Index index)
+		{
+			IndexData indexData = index.toIndexData();
+			byte[] data = indexData.writeIndexData();
+
+			Container container = new Container(index.Compression, -1); // index data revision is always -1
+			container.compress(data, null);
+			byte[] compressedData = container.data;
+			DataFileWriteResult res = this.data.write(index255.IndexFileId, index.Id, compressedData);
+
+			index255.write(new IndexEntry(index255, index.Id, res.sector, res.compressedLength));
+
+			Crc32 crc = new Crc32();
+			crc.update(compressedData, 0, compressedData.Length);
+			index.Crc = crc.Hash;
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: @Override public void saveArchive(OSRSCache.fs.Archive a, byte[] archiveData) throws java.io.IOException
+		public virtual void saveArchive(Archive a, byte[] archiveData)
+		{
+			Index index = a.Index;
+			IndexFile indexFile = getIndex(index.Id);
+			Debug.Assert(indexFile.IndexFileId == index.Id);
+
+			DataFileWriteResult res = data.write(index.Id, a.ArchiveId, archiveData);
+			indexFile.write(new IndexEntry(indexFile, a.ArchiveId, res.sector, res.compressedLength));
+
+			byte compression = archiveData[0];
+			// int compressedSize = Ints.fromBytes(archiveData[1], archiveData[2], archiveData[3], archiveData[4]);
+			byte[] _archiveData = (byte[]) (Array)archiveData;
+			int compressedSize = BitConverter.ToInt32(new byte[] {_archiveData[1], _archiveData[2], _archiveData[3], _archiveData[4]}, 0);
+
+			// don't crc the appended revision, if it is there
+			int length = 1 + 4 + compressedSize + (compression != CompressionType.NONE ? 4 : 0);
+
+			Crc32 crc = new Crc32();
+			crc.update(archiveData, 0, length);
+			a.Crc = crc.Hash;
+
+			Console.WriteLine("Saved archive {0}/{1} at sector {2}, compressed length {3}", index.Id, a.ArchiveId, res.sector, res.compressedLength);
 		}
 	}
 
-	public byte[] readIndex(int indexId) // throws IOException
-	{
-		IndexEntry entry = index255.read(indexId);
-		if (entry == null)
-		{
-			return null;
-		}
-
-		byte[] indexData = data.read(index255.getIndexFileId(), entry.getId(), entry.getSector(), entry.getLength());
-		return indexData;
-	}
-
-	private void loadIndex(Index index) // throws IOException
-	{
-		logger.trace("Loading index {}", index.getId());
-
-		byte[] indexData = readIndex(index.getId());
-		if (indexData == null)
-		{
-			return;
-		}
-
-		Container res = Container.decompress(indexData, null);
-		byte[] data = res.data;
-
-		IndexData id = new IndexData();
-		id.load(data);
-
-		index.setProtocol(id.getProtocol());
-		index.setRevision(id.getRevision());
-		index.setNamed(id.isNamed());
-
-		for (ArchiveData ad : id.getArchives())
-		{
-			Archive archive = index.addArchive(ad.getId());
-			archive.setNameHash(ad.getNameHash());
-			archive.setCrc(ad.getCrc());
-			archive.setRevision(ad.getRevision());
-			archive.setFileData(ad.getFiles());
-
-			assert ad.getFiles().length > 0;
-		}
-
-		index.setCrc(res.crc);
-		index.setCompression(res.compression);
-		assert res.revision == -1;
-	}
-
-	@Override
-	public byte[] loadArchive(Archive archive) // throws IOException
-	{
-		Index index = archive.getIndex();
-		IndexFile indexFile = getIndex(index.getId());
-
-		assert indexFile.getIndexFileId() == index.getId();
-
-		IndexEntry entry = indexFile.read(archive.getArchiveId());
-		if (entry == null)
-		{
-			logger.debug("can't read archive " + archive.getArchiveId() + " from index " + index.getId());
-			return null;
-		}
-
-		assert entry.getId() == archive.getArchiveId();
-
-		logger.trace("Loading archive {} for index {} from sector {} length {}",
-			archive.getArchiveId(), index.getId(), entry.getSector(), entry.getLength());
-
-		byte[] archiveData = data.read(index.getId(), entry.getId(), entry.getSector(), entry.getLength());
-		return archiveData;
-	}
-
-	@Override
-	public void save(Store store) // throws IOException
-	{
-		logger.debug("Saving store");
-
-		for (Index i : store.getIndexes())
-		{
-			saveIndex(i);
-		}
-	}
-
-	private void saveIndex(Index index) // throws IOException
-	{
-		IndexData indexData = index.toIndexData();
-		byte[] data = indexData.writeIndexData();
-
-		Container container = new Container(index.getCompression(), -1); // index data revision is always -1
-		container.compress(data, null);
-		byte[] compressedData = container.data;
-		DataFileWriteResult res = this.data.write(index255.getIndexFileId(), index.getId(), compressedData);
-
-		index255.write(new IndexEntry(index255, index.getId(), res.sector, res.compressedLength));
-
-		Crc32 crc = new Crc32();
-		crc.update(compressedData, 0, compressedData.length);
-		index.setCrc(crc.getHash());
-	}
-
-	@Override
-	public void saveArchive(Archive a, byte[] archiveData) // throws IOException
-	{
-		Index index = a.getIndex();
-		IndexFile indexFile = getIndex(index.getId());
-		assert indexFile.getIndexFileId() == index.getId();
-
-		DataFileWriteResult res = data.write(index.getId(), a.getArchiveId(), archiveData);
-		indexFile.write(new IndexEntry(indexFile, a.getArchiveId(), res.sector, res.compressedLength));
-
-		byte compression = archiveData[0];
-		int compressedSize = Ints.fromBytes(archiveData[1], archiveData[2],
-			archiveData[3], archiveData[4]);
-
-		// don't crc the appended revision, if it is there
-		int length = 1 // compression type
-			+ 4 // compressed size
-			+ compressedSize
-			+ (compression != CompressionType.NONE ? 4 : 0);
-
-		Crc32 crc = new Crc32();
-		crc.update(archiveData, 0, length);
-		a.setCrc(crc.getHash());
-
-		logger.trace("Saved archive {}/{} at sector {}, compressed length {}",
-			index.getId(), a.getArchiveId(), res.sector, res.compressedLength);
-	}
 }

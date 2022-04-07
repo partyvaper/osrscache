@@ -1,3 +1,6 @@
+﻿using System;
+using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,93 +25,99 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache;
-
-// import java.io.File;
-// import java.io.IOException;
-// import java.util.Collection;
-// import java.util.Collections;
-// import java.util.HashMap;
-// import java.util.Map;
-using OSRSCache.definitions.ObjectDefinition;
-using OSRSCache.definitions.exporters.ObjectExporter;
-using OSRSCache.definitions.loaders.ObjectLoader;
-using OSRSCache.fs.Archive;
-using OSRSCache.fs.ArchiveFiles;
-using OSRSCache.fs.FSFile;
-using OSRSCache.fs.Index;
-using OSRSCache.fs.Storage;
-using OSRSCache.fs.Store;
-using OSRSCache.util.IDClass;
-
-public class ObjectManager
+namespace OSRSCache
 {
-	private final Store store;
-	private final Map<Integer, ObjectDefinition> objects = new HashMap<>();
+	using ObjectDefinition = OSRSCache.definitions.ObjectDefinition;
+	using ObjectExporter = OSRSCache.definitions.exporters.ObjectExporter;
+	using ObjectLoader = OSRSCache.definitions.loaders.ObjectLoader;
+	using Archive = OSRSCache.fs.Archive;
+	using ArchiveFiles = OSRSCache.fs.ArchiveFiles;
+	using FSFile = OSRSCache.fs.FSFile;
+	using Index = OSRSCache.fs.Index;
+	using Storage = OSRSCache.fs.Storage;
+	using Store = OSRSCache.fs.Store;
+	// using IDClass = OSRSCache.util.IDClass;
 
-	public ObjectManager(Store store)
+	public class ObjectManager
 	{
-		this.store = store;
-	}
+		private readonly Store store;
+		private readonly IDictionary<int, ObjectDefinition> objects = new Dictionary<int, ObjectDefinition>();
 
-	public void load() // throws IOException
-	{
-		ObjectLoader loader = new ObjectLoader();
-
-		Storage storage = store.getStorage();
-		Index index = store.getIndex(IndexType.CONFIGS);
-		Archive archive = index.getArchive(ConfigType.OBJECT.getId());
-
-		byte[] archiveData = storage.loadArchive(archive);
-		ArchiveFiles files = archive.getFiles(archiveData);
-
-		for (FSFile f : files.getFiles())
+		public ObjectManager(Store store)
 		{
-			ObjectDefinition def = loader.load(f.getFileId(), f.getContents());
-			objects.put(f.getFileId(), def);
+			this.store = store;
 		}
-	}
 
-	public Collection<ObjectDefinition> getObjects()
-	{
-		return Collections.unmodifiableCollection(objects.values());
-	}
-
-	public ObjectDefinition getObject(int id)
-	{
-		return objects.get(id);
-	}
-
-	public void dump(File out) // throws IOException
-	{
-		out.mkdirs();
-
-		for (ObjectDefinition def : objects.values())
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void load() throws java.io.IOException
+		public virtual void load()
 		{
-			ObjectExporter exporter = new ObjectExporter(def);
+			ObjectLoader loader = new ObjectLoader();
 
-			File targ = new File(out, def.getId() + ".json");
-			exporter.exportTo(targ);
-		}
-	}
+			Storage storage = store.Storage;
+			Index index = store.getIndex(IndexType.CONFIGS);
+			Archive archive = index.getArchive(ConfigType.OBJECT.Id);
 
-	public void java(File java) // throws IOException
-	{
-		java.mkdirs();
-		try (IDClass ids = IDClass.create(java, "ObjectID");
-			IDClass nulls = IDClass.create(java, "NullObjectID"))
-		{
-			for (ObjectDefinition def : objects.values())
+			byte[] archiveData = storage.loadArchive(archive);
+			ArchiveFiles files = archive.getFiles(archiveData);
+
+			foreach (FSFile f in files.Files)
 			{
-				if ("null".equals(def.getName()))
-				{
-					nulls.add(def.getName(), def.getId());
-				}
-				else
-				{
-					ids.add(def.getName(), def.getId());
-				}
+				ObjectDefinition def = loader.load(f.FileId, f.Contents);
+				objects[f.FileId] = def;
 			}
 		}
+
+		public virtual ICollection<ObjectDefinition> Objects
+		{
+			get
+			{
+				// return Collections.unmodifiableCollection(Object.Values);
+				return new List<ObjectDefinition>(objects.Values);
+			}
+		}
+
+		public virtual ObjectDefinition getObject(int id)
+		{
+			return objects[id];
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void dump(java.io.File out) throws java.io.IOException
+		public virtual void dump(string @out)
+		{
+			// @out.mkdirs(); // TODO: ???
+
+			foreach (ObjectDefinition def in objects.Values)
+			{
+				ObjectExporter exporter = new ObjectExporter(def);
+
+				string targ = $"{@out}/{def.id}.json";
+				exporter.exportTo(targ);
+			}
+		}
+
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public void java(java.io.File java) throws java.io.IOException
+		public virtual void java(string java)
+		{
+			Console.WriteLine($"ObjectManager.java not implemented! {java}");
+			// java.mkdirs();
+			// using (IDClass ids = IDClass.create(java, "ObjectID"), IDClass nulls = IDClass.create(java, "NullObjectID"))
+			// {
+			// 	foreach (ObjectDefinition def in Object.Values)
+			// 	{
+			// 		if ("null".Equals(def.getName()))
+			// 		{
+			// 			nulls.add(def.getName(), def.getId());
+			// 		}
+			// 		else
+			// 		{
+			// 			ids.add(def.getName(), def.getId());
+			// 		}
+			// 	}
+			// }
+		}
 	}
+
 }

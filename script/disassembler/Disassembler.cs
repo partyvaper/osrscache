@@ -1,3 +1,8 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,218 +27,214 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.script.disassembler;
-
-// import com.google.common.escape.Escaper;
-// import com.google.common.escape.Escapers;
-// import java.io.IOException;
-// import java.util.Map;
-// import java.util.Map.Entry;
-using OSRSCache.definitions.ScriptDefinition;
-using OSRSCache.script.Instruction;
-using OSRSCache.script.Instructions;
-using OSRSCache.script.Opcodes;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
-
-public class Disassembler
+namespace OSRSCache.script.disassembler
 {
-	private const Logger logger = LoggerFactory.getLogger(Disassembler.class);
-	private const Escaper ESCAPER = Escapers.builder()
-		.addEscape('"', "\\\"")
-		.addEscape('\\', "\\\\")
-		.build();
+	// using Escaper = com.google.common.escape.Escaper;
+	// using Escapers = com.google.common.escape.Escapers;
+	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
+	using Instruction = OSRSCache.script.Instruction;
+	using Instructions = OSRSCache.script.Instructions;
+	using Opcodes = OSRSCache.script.Opcodes;
 
-	private final Instructions instructions = new Instructions();
 
-	public Disassembler()
+	public class Disassembler
 	{
-		instructions.init();
-	}
+		private static readonly Escaper ESCAPER = Escapers.builder().addEscape('"', "\\\"").addEscape('\\', "\\\\").build();
 
-	private boolean isJump(int opcode)
-	{
-		switch (opcode)
+		private readonly Instructions instructions = new Instructions();
+
+		public Disassembler()
 		{
-			case Opcodes.JUMP:
-			case Opcodes.IF_ICMPEQ:
-			case Opcodes.IF_ICMPGE:
-			case Opcodes.IF_ICMPGT:
-			case Opcodes.IF_ICMPLE:
-			case Opcodes.IF_ICMPLT:
-			case Opcodes.IF_ICMPNE:
-				return true;
-			default:
-				return false;
+			instructions.init();
 		}
-	}
 
-	private boolean[] needLabel(ScriptDefinition script)
-	{
-		int[] instructions = script.getInstructions();
-		int[] iops = script.getIntOperands();
-		Map<Integer, Integer>[] switches = script.getSwitches();
-
-		boolean[] jumped = new boolean[instructions.length];
-
-		for (int i = 0; i < instructions.length; ++i)
+		private bool isJump(int opcode)
 		{
-			int opcode = instructions[i];
-			int iop = iops[i];
-
-			if (opcode == Opcodes.SWITCH)
+			switch (opcode)
 			{
-				Map<Integer, Integer> switchMap = switches[iop];
+				case (int) Opcodes.JUMP:
+				case (int) Opcodes.IF_ICMPEQ:
+				case (int) Opcodes.IF_ICMPGE:
+				case (int) Opcodes.IF_ICMPGT:
+				case (int) Opcodes.IF_ICMPLE:
+				case (int) Opcodes.IF_ICMPLT:
+				case (int) Opcodes.IF_ICMPNE:
+					return true;
+				default:
+					return false;
+			}
+		}
 
-				for (Entry<Integer, Integer> entry : switchMap.entrySet())
+		private bool[] needLabel(ScriptDefinition script)
+		{
+			int[] instructions = script.instructions;
+			int[] iops = script.intOperands;
+			IDictionary<int, int>[] switches = script.switches;
+
+			bool[] jumped = new bool[instructions.Length];
+
+			for (int i = 0; i < instructions.Length; ++i)
+			{
+				int opcode = instructions[i];
+				int iop = iops[i];
+
+				if (opcode == (int) Opcodes.SWITCH)
 				{
-					int offset = entry.getValue();
+					IDictionary<int, int> switchMap = switches[iop];
 
-					int to = i + offset + 1;
-					assert to >= 0 && to < instructions.length;
-					jumped[to] = true;
+					foreach (KeyValuePair<int, int> entry in switchMap.SetOfKeyValuePairs())
+					{
+						int offset = entry.Value;
+
+						int _to = i + offset + 1;
+						Debug.Assert(_to >= 0 && _to < instructions.Length);
+						jumped[_to] = true;
+					}
 				}
+
+				if (!isJump(opcode))
+				{
+					continue;
+				}
+
+				// + 1 because the jumps go to the instructions prior to the
+				// one you really want, because the pc is incremented on the
+				// next loop
+				int to = i + iop + 1;
+				Debug.Assert(to >= 0 && to < instructions.Length);
+
+				jumped[to] = true;
 			}
 
-			if (!isJump(opcode))
-			{
-				continue;
-			}
-
-			// + 1 because the jumps go to the instructions prior to the
-			// one you really want, because the pc is incremented on the
-			// next loop
-			int to = i + iop + 1;
-			assert to >= 0 && to < instructions.length;
-
-			jumped[to] = true;
+			return jumped;
 		}
 
-		return jumped;
-	}
-
-	public string disassemble(ScriptDefinition script) // throws IOException
-	{
-		int[] instructions = script.getInstructions();
-		int[] iops = script.getIntOperands();
-		string[] sops = script.getstringOperands();
-		Map<Integer, Integer>[] switches = script.getSwitches();
-
-		assert iops.length == instructions.length;
-		assert sops.length == instructions.length;
-
-		boolean[] jumps = needLabel(script);
-
-		stringBuilder writer = new stringBuilder();
-		writerHeader(writer, script);
-
-		for (int i = 0; i < instructions.length; ++i)
+//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
+//ORIGINAL LINE: public String disassemble(OSRSCache.definitions.ScriptDefinition script) throws java.io.IOException
+		public virtual string disassemble(ScriptDefinition script)
 		{
-			int opcode = instructions[i];
-			int iop = iops[i];
-			string sop = sops[i];
+			int[] instructions = script.instructions;
+			int[] iops = script.intOperands;
+			string[] sops = script.stringOperands;
+			IDictionary<int, int>[] switches = script.switches;
 
-			Instruction ins = this.instructions.find(opcode);
-			if (ins == null)
-			{
-				logger.warn("Unknown instruction {} in script {}", opcode, script.getId());
-			}
+			Debug.Assert(iops.Length == instructions.Length);
+			Debug.Assert(sops.Length == instructions.Length);
 
-			if (jumps[i])
-			{
-				// something jumps here
-				writer.append("LABEL").append(i).append(":\n");
-			}
+			bool[] jumps = needLabel(script);
 
-			string name;
-			if (ins != null && ins.getName() != null)
-			{
-				name = ins.getName();
-			}
-			else
-			{
-				name = string.format("%03d", opcode);
-			}
+			StringBuilder writer = new StringBuilder();
+			writerHeader(writer, script);
 
-			writer.append(string.format("   %-22s", name));
-
-			if (shouldWriteIntOperand(opcode, iop))
+			for (int i = 0; i < instructions.Length; ++i)
 			{
-				if (isJump(opcode))
+				int opcode = instructions[i];
+				int iop = iops[i];
+				string sop = sops[i];
+
+				Instruction ins = this.instructions.find(opcode);
+				if (ins == null)
 				{
-					writer.append(" LABEL").append(i + iop + 1);
+					Console.WriteLine("Unknown instruction {0} in script {1}", opcode, script.id);
+				}
+
+				if (jumps[i])
+				{
+					// something jumps here
+					writer.Append("LABEL").Append(i).Append(":\n");
+				}
+
+				string name;
+				if (ins != null && !string.ReferenceEquals(ins.Name, null))
+				{
+					name = ins.Name;
 				}
 				else
 				{
-					writer.append(" ").append(iop);
+					name = string.Format("{0:D3}", opcode);
 				}
-			}
 
-			if (sop != null)
-			{
-				writer.append(" \"").append(ESCAPER.escape(sop)).append("\"");
-			}
+				writer.Append(string.Format("   {0,-22}", name));
 
-			if (opcode == Opcodes.SWITCH)
-			{
-				Map<Integer, Integer> switchMap = switches[iop];
-
-				for (Entry<Integer, Integer> entry : switchMap.entrySet())
+				if (shouldWriteIntOperand(opcode, iop))
 				{
-					int value = entry.getKey();
-					int jump = entry.getValue();
-
-					writer.append("\n");
-					writer.append("      ").append(value).append(": LABEL").append(i + jump + 1);
+					if (isJump(opcode))
+					{
+						writer.Append(" LABEL").Append(i + iop + 1);
+					}
+					else
+					{
+						writer.Append(" ").Append(iop);
+					}
 				}
+
+				if (!string.ReferenceEquals(sop, null))
+				{
+					writer.Append(" \"").Append(ESCAPER.escape(sop)).Append("\"");
+				}
+
+				if (opcode == (int) Opcodes.SWITCH)
+				{
+					IDictionary<int, int> switchMap = switches[iop];
+
+					foreach (KeyValuePair<int, int> entry in switchMap.SetOfKeyValuePairs())
+					{
+						int value = entry.Key;
+						int jump = entry.Value;
+
+						writer.Append("\n");
+						writer.Append("      ").Append(value).Append(": LABEL").Append(i + jump + 1);
+					}
+				}
+
+				writer.Append("\n");
 			}
 
-			writer.append("\n");
+			return writer.ToString();
 		}
 
-		return writer.tostring();
-	}
-
-	private boolean shouldWriteIntOperand(int opcode, int operand)
-	{
-		if (opcode == Opcodes.SWITCH)
+		private bool shouldWriteIntOperand(int opcode, int operand)
 		{
-			// table follows instruction
+			if (opcode == (int) Opcodes.SWITCH)
+			{
+				// table follows instruction
+				return false;
+			}
+
+			if (operand != 0)
+			{
+				// always write non-zero operand
+				return true;
+			}
+
+			switch (opcode)
+			{
+				case (int) Opcodes.ICONST:
+				case (int) Opcodes.ILOAD:
+				case (int) Opcodes.SLOAD:
+				case (int) Opcodes.ISTORE:
+				case (int) Opcodes.SSTORE:
+					return true;
+			}
+
+			// int operand is not used, don't write it
 			return false;
 		}
 
-		if (operand != 0)
+		private void writerHeader(StringBuilder writer, ScriptDefinition script)
 		{
-			// always write non-zero operand
-			return true;
-		}
+			int id = script.id;
+			int intStackCount = script.intStackCount;
+			int stringStackCount = script.stringStackCount;
+			int localIntCount = script.localIntCount;
+			int localStringCount = script.localStringCount;
 
-		switch (opcode)
-		{
-			case Opcodes.ICONST:
-			case Opcodes.ILOAD:
-			case Opcodes.SLOAD:
-			case Opcodes.ISTORE:
-			case Opcodes.SSTORE:
-				return true;
+			writer.Append(".id                 ").Append(id).Append('\n');
+			writer.Append(".int_stack_count    ").Append(intStackCount).Append('\n');
+			writer.Append(".string_stack_count ").Append(stringStackCount).Append('\n');
+			writer.Append(".int_var_count      ").Append(localIntCount).Append('\n');
+			writer.Append(".string_var_count   ").Append(localStringCount).Append('\n');
 		}
-
-		// int operand is not used, don't write it
-		return false;
 	}
 
-	private void writerHeader(stringBuilder writer, ScriptDefinition script)
-	{
-		int id = script.getId();
-		int intStackCount = script.getIntStackCount();
-		int stringStackCount = script.getstringStackCount();
-		int localIntCount = script.getLocalIntCount();
-		int localstringCount = script.getLocalstringCount();
-
-		writer.append(".id                 ").append(id).append('\n');
-		writer.append(".int_stack_count    ").append(intStackCount).append('\n');
-		writer.append(".string_stack_count ").append(stringStackCount).append('\n');
-		writer.append(".int_var_count      ").append(localIntCount).append('\n');
-		writer.append(".string_var_count   ").append(localstringCount).append('\n');
-	}
 }

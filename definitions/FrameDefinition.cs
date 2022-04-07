@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,19 +22,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class FrameDefinition
+namespace OSRSCache.definitions
 {
-	public int id; // file id
-	public FramemapDefinition framemap;
-	public int[] translator_x;
-	public int[] translator_y;
-	public int[] translator_z;
-	public int translatorCount = -1;
-	public int[] indexFrameIds;
-	public boolean showing;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class FrameDefinition
+	public class FrameDefinition
+	{
+		public int id; // file id
+		public FramemapDefinition framemap;
+		public int[] translator_x;
+		public int[] translator_y;
+		public int[] translator_z;
+		public int translatorCount = -1;
+		public int[] indexFrameIds;
+		public bool showing;
+	}
+
 }

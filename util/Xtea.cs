@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,67 +22,69 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.util;
-
-// import io.netty.buffer.ByteBuf;
-// import io.netty.buffer.Unpooled;
-
-public class Xtea
+namespace OSRSCache.util
 {
-	private const int GOLDEN_RATIO = 0x9E3779B9;
+	// using ByteBuf = io.netty.buffer.ByteBuf;
+	// using Unpooled = io.netty.buffer.Unpooled;
 
-	private const int ROUNDS = 32;
-
-	private final int[] key;
-
-	public Xtea(int[] key)
+	public class Xtea
 	{
-		this.key = key;
-	}
+		private const int GOLDEN_RATIO = unchecked((int)0x9E3779B9); // uint 0x9E3779B9 ???
 
-	public byte[] encrypt(byte[] data, int len)
-	{
-		ByteBuf buf = Unpooled.wrappedBuffer(data, 0, len);
-		ByteBuf out = Unpooled.buffer(len);
-		int numBlocks = len / 8;
-		for (int block = 0; block < numBlocks; ++block)
+		private const int ROUNDS = 32;
+
+		private readonly int[] key;
+
+		public Xtea(int[] key)
 		{
-			int v0 = buf.readInt();
-			int v1 = buf.readInt();
-			int sum = 0;
-			for (int i = 0; i < ROUNDS; ++i)
-			{
-				v0 += (((v1 << 4) ^ (v1 >>> 5)) + v1) ^ (sum + key[sum & 3]);
-				sum += GOLDEN_RATIO;
-				v1 += (((v0 << 4) ^ (v0 >>> 5)) + v0) ^ (sum + key[(sum >>> 11) & 3]);
-			}
-			out.writeInt(v0);
-			out.writeInt(v1);
+			this.key = key;
 		}
-		out.writeBytes(buf);
-		return out.array();
+
+		public virtual byte[] encrypt(byte[] data, int len)
+		{
+			ByteBuf buf = Unpooled.wrappedBuffer(data, 0, len);
+			ByteBuf @out = Unpooled.buffer(len);
+			int numBlocks = len / 8;
+			for (int block = 0; block < numBlocks; ++block)
+			{
+				int v0 = buf.readInt();
+				int v1 = buf.readInt();
+				int sum = 0;
+				for (int i = 0; i < ROUNDS; ++i)
+				{
+					v0 += (((v1 << 4) ^ ((int)((uint)v1 >> 5))) + v1) ^ (sum + key[sum & 3]);
+					sum += GOLDEN_RATIO;
+					v1 += (((v0 << 4) ^ ((int)((uint)v0 >> 5))) + v0) ^ (sum + key[((int)((uint)sum >> 11)) & 3]);
+				}
+				@out.writeInt(v0);
+				@out.writeInt(v1);
+			}
+			@out.writeBytes(buf);
+			return @out.array();
+		}
+
+		public virtual byte[] decrypt(byte[] data, int len)
+		{
+			ByteBuf buf = Unpooled.wrappedBuffer(data, 0, len);
+			ByteBuf @out = Unpooled.buffer(len);
+			int numBlocks = len / 8;
+			for (int block = 0; block < numBlocks; ++block)
+			{
+				int v0 = buf.readInt();
+				int v1 = buf.readInt();
+				int sum = GOLDEN_RATIO * ROUNDS;
+				for (int i = 0; i < ROUNDS; ++i)
+				{
+					v1 -= (((v0 << 4) ^ ((int)((uint)v0 >> 5))) + v0) ^ (sum + key[((int)((uint)sum >> 11)) & 3]);
+					sum -= GOLDEN_RATIO;
+					v0 -= (((v1 << 4) ^ ((int)((uint)v1 >> 5))) + v1) ^ (sum + key[sum & 3]);
+				}
+				@out.writeInt(v0);
+				@out.writeInt(v1);
+			}
+			@out.writeBytes(buf);
+			return @out.array();
+		}
 	}
 
-	public byte[] decrypt(byte[] data, int len)
-	{
-		ByteBuf buf = Unpooled.wrappedBuffer(data, 0, len);
-		ByteBuf out = Unpooled.buffer(len);
-		int numBlocks = len / 8;
-		for (int block = 0; block < numBlocks; ++block)
-		{
-			int v0 = buf.readInt();
-			int v1 = buf.readInt();
-			int sum = GOLDEN_RATIO * ROUNDS;
-			for (int i = 0; i < ROUNDS; ++i)
-			{
-				v1 -= (((v0 << 4) ^ (v0 >>> 5)) + v0) ^ (sum + key[(sum >>> 11) & 3]);
-				sum -= GOLDEN_RATIO;
-				v0 -= (((v1 << 4) ^ (v1 >>> 5)) + v1) ^ (sum + key[sum & 3]);
-			}
-			out.writeInt(v0);
-			out.writeInt(v1);
-		}
-		out.writeBytes(buf);
-		return out.array();
-	}
 }

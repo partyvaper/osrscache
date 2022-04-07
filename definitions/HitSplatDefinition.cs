@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2020, Hexagon <hexagon@fking.work>
  * All rights reserved.
  *
@@ -22,27 +22,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions;
-
-// import lombok.Data;
-
-@Data
-public class HitSplatDefinition
+namespace OSRSCache.definitions
 {
-	private string stringFormat = "";
-	private int varbitID = -1;
-	private int leftSprite = -1;
-	private int leftSprite2 = -1;
-	private int rightSpriteId = -1;
-	private int fontType = -1;
-	private int backgroundSprite = -1;
-	private int varpID = -1;
-	private int useDamage = -1;
-	private int textColor = 0xFFFFFF;
-	private int displayCycles = 70;
-	private int[] multihitsplats;
-	private int scrollToOffsetX = 0;
-	private int fadeStartCycle = -1;
-	private int scrollToOffsetY = 0;
-	private int textOffsetY = 0;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class HitSplatDefinition
+	public class HitSplatDefinition
+	{
+		public string stringFormat = ""; // Was private using getters, setters
+		public int varbitID = -1; // Was private using getters, setters
+		public int leftSprite = -1; // Was private using getters, setters
+		public int leftSprite2 = -1; // Was private using getters, setters
+		public int rightSpriteId = -1; // Was private using getters, setters
+		public int fontType = -1; // Was private using getters, setters
+		public int backgroundSprite = -1; // Was private using getters, setters
+		public int varpID = -1; // Was private using getters, setters
+		public int useDamage = -1; // Was private using getters, setters
+		public int textColor = 0xFFFFFF; // Was private using getters, setters
+		public int displayCycles = 70; // Was private using getters, setters
+		public int[] multihitsplats; // Was private using getters, setters
+		public int scrollToOffsetX = 0; // Was private using getters, setters
+		public int fadeStartCycle = -1; // Was private using getters, setters
+		public int scrollToOffsetY = 0; // Was private using getters, setters
+		public int textOffsetY = 0; // Was private using getters, setters
+	}
+
 }

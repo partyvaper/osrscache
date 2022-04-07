@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,131 +22,133 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.definitions.loaders;
-
-using OSRSCache.definitions.SequenceDefinition;
-using OSRSCache.io.InputStream;
-
-public class SequenceLoader
+namespace OSRSCache.definitions.loaders
 {
-	public SequenceDefinition load(int id, byte[] b)
-	{
-		SequenceDefinition def = new SequenceDefinition(id);
-		InputStream is = new InputStream(b);
+	using SequenceDefinition = OSRSCache.definitions.SequenceDefinition;
+	using InputStream = OSRSCache.io.InputStream;
 
-		while (true)
+	public class SequenceLoader
+	{
+		public virtual SequenceDefinition load(int id, byte[] b)
 		{
-			int opcode = is.readUnsignedByte();
-			if (opcode == 0)
+			SequenceDefinition def = new SequenceDefinition(id);
+			InputStream @is = new InputStream(b);
+
+			while (true)
 			{
-				break;
+				int opcode = @is.readUnsignedByte();
+				if (opcode == 0)
+				{
+					break;
+				}
+
+				this.decodeValues(opcode, def, @is);
 			}
 
-			this.decodeValues(opcode, def, is);
+			return def;
 		}
 
-		return def;
+		private void decodeValues(int opcode, SequenceDefinition def, InputStream stream)
+		{
+			int var3;
+			int var4;
+			if (opcode == 1)
+			{
+				var3 = stream.readUnsignedShort();
+				def.frameLenghts = new int[var3];
+
+				for (var4 = 0; var4 < var3; ++var4)
+				{
+					def.frameLenghts[var4] = stream.readUnsignedShort();
+				}
+
+				def.frameIDs = new int[var3];
+
+				for (var4 = 0; var4 < var3; ++var4)
+				{
+					def.frameIDs[var4] = stream.readUnsignedShort();
+				}
+
+				for (var4 = 0; var4 < var3; ++var4)
+				{
+					def.frameIDs[var4] += stream.readUnsignedShort() << 16;
+				}
+			}
+			else if (opcode == 2)
+			{
+				def.frameStep = stream.readUnsignedShort();
+			}
+			else if (opcode == 3)
+			{
+				var3 = stream.readUnsignedByte();
+				def.interleaveLeave = new int[1 + var3];
+
+				for (var4 = 0; var4 < var3; ++var4)
+				{
+					def.interleaveLeave[var4] = stream.readUnsignedByte();
+				}
+
+				def.interleaveLeave[var3] = 9999999;
+			}
+			else if (opcode == 4)
+			{
+				def.stretches = true;
+			}
+			else if (opcode == 5)
+			{
+				def.forcedPriority = stream.readUnsignedByte();
+			}
+			else if (opcode == 6)
+			{
+				def.leftHandItem = stream.readUnsignedShort();
+			}
+			else if (opcode == 7)
+			{
+				def.rightHandItem = stream.readUnsignedShort();
+			}
+			else if (opcode == 8)
+			{
+				def.maxLoops = stream.readUnsignedByte();
+			}
+			else if (opcode == 9)
+			{
+				def.precedenceAnimating = stream.readUnsignedByte();
+			}
+			else if (opcode == 10)
+			{
+				def.priority = stream.readUnsignedByte();
+			}
+			else if (opcode == 11)
+			{
+				def.replyMode = stream.readUnsignedByte();
+			}
+			else if (opcode == 12)
+			{
+				var3 = stream.readUnsignedByte();
+				def.chatFrameIds = new int[var3];
+
+				for (var4 = 0; var4 < var3; ++var4)
+				{
+					def.chatFrameIds[var4] = stream.readUnsignedShort();
+				}
+
+				for (var4 = 0; var4 < var3; ++var4)
+				{
+					def.chatFrameIds[var4] += stream.readUnsignedShort() << 16;
+				}
+			}
+			else if (opcode == 13)
+			{
+				var3 = stream.readUnsignedByte();
+				def.frameSounds = new int[var3];
+
+				for (var4 = 0; var4 < var3; ++var4)
+				{
+					def.frameSounds[var4] = stream.read24BitInt();
+				}
+			}
+
+		}
 	}
 
-	private void decodeValues(int opcode, SequenceDefinition def, InputStream stream)
-	{
-		int var3;
-		int var4;
-		if (opcode == 1)
-		{
-			var3 = stream.readUnsignedShort();
-			def.frameLenghts = new int[var3];
-
-			for (var4 = 0; var4 < var3; ++var4)
-			{
-				def.frameLenghts[var4] = stream.readUnsignedShort();
-			}
-
-			def.frameIDs = new int[var3];
-
-			for (var4 = 0; var4 < var3; ++var4)
-			{
-				def.frameIDs[var4] = stream.readUnsignedShort();
-			}
-
-			for (var4 = 0; var4 < var3; ++var4)
-			{
-				def.frameIDs[var4] += stream.readUnsignedShort() << 16;
-			}
-		}
-		else if (opcode == 2)
-		{
-			def.frameStep = stream.readUnsignedShort();
-		}
-		else if (opcode == 3)
-		{
-			var3 = stream.readUnsignedByte();
-			def.interleaveLeave = new int[1 + var3];
-
-			for (var4 = 0; var4 < var3; ++var4)
-			{
-				def.interleaveLeave[var4] = stream.readUnsignedByte();
-			}
-
-			def.interleaveLeave[var3] = 9999999;
-		}
-		else if (opcode == 4)
-		{
-			def.stretches = true;
-		}
-		else if (opcode == 5)
-		{
-			def.forcedPriority = stream.readUnsignedByte();
-		}
-		else if (opcode == 6)
-		{
-			def.leftHandItem = stream.readUnsignedShort();
-		}
-		else if (opcode == 7)
-		{
-			def.rightHandItem = stream.readUnsignedShort();
-		}
-		else if (opcode == 8)
-		{
-			def.maxLoops = stream.readUnsignedByte();
-		}
-		else if (opcode == 9)
-		{
-			def.precedenceAnimating = stream.readUnsignedByte();
-		}
-		else if (opcode == 10)
-		{
-			def.priority = stream.readUnsignedByte();
-		}
-		else if (opcode == 11)
-		{
-			def.replyMode = stream.readUnsignedByte();
-		}
-		else if (opcode == 12)
-		{
-			var3 = stream.readUnsignedByte();
-			def.chatFrameIds = new int[var3];
-
-			for (var4 = 0; var4 < var3; ++var4)
-			{
-				def.chatFrameIds[var4] = stream.readUnsignedShort();
-			}
-
-			for (var4 = 0; var4 < var3; ++var4)
-			{
-				def.chatFrameIds[var4] += stream.readUnsignedShort() << 16;
-			}
-		}
-		else if (opcode == 13)
-		{
-			var3 = stream.readUnsignedByte();
-			def.frameSounds = new int[var3];
-
-			for (var4 = 0; var4 < var3; ++var4)
-			{
-				def.frameSounds[var4] = stream.read24BitInt();
-			}
-		}
-
-	}
 }

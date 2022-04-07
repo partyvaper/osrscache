@@ -1,3 +1,5 @@
+﻿using System.Diagnostics;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,277 +24,291 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.index;
-
-using OSRSCache.io.InputStream;
-using OSRSCache.io.OutputStream;
-
-public class IndexData
+namespace OSRSCache.index
 {
-	private int protocol;
-	private int revision;
-	private boolean named;
-	private ArchiveData[] archives;
+	using InputStream = OSRSCache.io.InputStream;
+	using OutputStream = OSRSCache.io.OutputStream;
 
-	public void load(byte[] data)
+	public class IndexData
 	{
-		InputStream stream = new InputStream(data);
-		protocol = stream.readUnsignedByte();
-		if (protocol < 5 || protocol > 7)
+		private int protocol;
+		private int revision;
+		private bool named;
+		private ArchiveData[] archives;
+
+		public virtual void load(byte[] data)
 		{
-			throw new IllegalArgumentException("Unsupported protocol");
-		}
+			InputStream stream = new InputStream(data);
+			protocol = stream.readUnsignedByte();
+			if (protocol < 5 || protocol > 7)
+			{
+				throw new System.ArgumentException("Unsupported protocol");
+			}
 
-		if (protocol >= 6)
-		{
-			this.revision = stream.readInt();
-		}
+			if (protocol >= 6)
+			{
+				this.revision = stream.readInt();
+			}
 
-		int hash = stream.readUnsignedByte();
-		named = (1 & hash) != 0;
-		if ((hash & ~1) != 0)
-		{
-			throw new IllegalArgumentException("Unknown flags");
-		}
-		assert (hash & ~3) == 0;
-		int validArchivesCount = protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
-		int lastArchiveId = 0;
+			int hash = stream.readUnsignedByte();
+			named = (1 & hash) != 0;
+			if ((hash & ~1) != 0)
+			{
+				throw new System.ArgumentException("Unknown flags");
+			}
+			Debug.Assert((hash & ~3) == 0);
+			int validArchivesCount = protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
+			int lastArchiveId = 0;
 
-		archives = new ArchiveData[validArchivesCount];
+			archives = new ArchiveData[validArchivesCount];
 
-		for (int index = 0; index < validArchivesCount; ++index)
-		{
-			int archive = lastArchiveId += protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
-
-			ArchiveData ad = new ArchiveData();
-			ad.id = archive;
-			archives[index] = ad;
-		}
-
-		if (named)
-		{
 			for (int index = 0; index < validArchivesCount; ++index)
 			{
-				int nameHash = stream.readInt();
-				ArchiveData ad = archives[index];
-				ad.nameHash = nameHash;
+				int archive = lastArchiveId += protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
+
+				ArchiveData ad = new ArchiveData();
+				ad.id = archive;
+				archives[index] = ad;
 			}
-		}
 
-		for (int index = 0; index < validArchivesCount; ++index)
-		{
-			int crc = stream.readInt();
-
-			ArchiveData ad = archives[index];
-			ad.crc = crc;
-		}
-
-		for (int index = 0; index < validArchivesCount; ++index)
-		{
-			int revision = stream.readInt();
-
-			ArchiveData ad = archives[index];
-			ad.revision = revision;
-		}
-
-		int[] numberOfFiles = new int[validArchivesCount];
-		for (int index = 0; index < validArchivesCount; ++index)
-		{
-			int num = protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
-			numberOfFiles[index] = num;
-		}
-
-		for (int index = 0; index < validArchivesCount; ++index)
-		{
-			ArchiveData ad = archives[index];
-			int num = numberOfFiles[index];
-
-			ad.files = new FileData[num];
-
-			int last = 0;
-			for (int i = 0; i < num; ++i)
+			if (named)
 			{
-				int fileId = last += protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
-
-				FileData fd = ad.files[i] = new FileData();
-				fd.id = fileId;
+				for (int index = 0; index < validArchivesCount; ++index)
+				{
+					int nameHash = stream.readInt();
+					ArchiveData ad = archives[index];
+					ad.nameHash = nameHash;
+				}
 			}
-		}
 
-		if (named)
-		{
+			for (int index = 0; index < validArchivesCount; ++index)
+			{
+				int crc = stream.readInt();
+
+				ArchiveData ad = archives[index];
+				ad.crc = crc;
+			}
+
+			for (int index = 0; index < validArchivesCount; ++index)
+			{
+				int revision = stream.readInt();
+
+				ArchiveData ad = archives[index];
+				ad.revision = revision;
+			}
+
+			int[] numberOfFiles = new int[validArchivesCount];
+			for (int index = 0; index < validArchivesCount; ++index)
+			{
+				int num = protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
+				numberOfFiles[index] = num;
+			}
+
 			for (int index = 0; index < validArchivesCount; ++index)
 			{
 				ArchiveData ad = archives[index];
 				int num = numberOfFiles[index];
 
+				ad.files = new FileData[num];
+
+				int last = 0;
 				for (int i = 0; i < num; ++i)
 				{
-					FileData fd = ad.files[i];
-					int name = stream.readInt();
-					fd.nameHash = name;
+					int fileId = last += protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
+
+					FileData fd = ad.files[i] = new FileData();
+					fd.id = fileId;
+				}
+			}
+
+			if (named)
+			{
+				for (int index = 0; index < validArchivesCount; ++index)
+				{
+					ArchiveData ad = archives[index];
+					int num = numberOfFiles[index];
+
+					for (int i = 0; i < num; ++i)
+					{
+						FileData fd = ad.files[i];
+						int name = stream.readInt();
+						fd.nameHash = name;
+					}
 				}
 			}
 		}
-	}
 
-	public byte[] writeIndexData()
-	{
-		OutputStream stream = new OutputStream();
-		stream.writeByte(protocol);
-		if (protocol >= 6)
+		public virtual byte[] writeIndexData()
 		{
-			stream.writeInt(this.revision);
-		}
-
-		stream.writeByte(named ? 1 : 0);
-		if (protocol >= 7)
-		{
-			stream.writeBigSmart(this.archives.length);
-		}
-		else
-		{
-			stream.writeShort(this.archives.length);
-		}
-
-		for (int i = 0; i < this.archives.length; ++i)
-		{
-			ArchiveData a = this.archives[i];
-			int archive = a.getId();
-
-			if (i != 0)
+			OutputStream stream = new OutputStream();
+			stream.writeByte(protocol);
+			if (protocol >= 6)
 			{
-				ArchiveData prev = this.archives[i - 1];
-				archive -= prev.getId();
+				stream.writeInt(this.revision);
 			}
 
+			stream.writeByte(named ? 1 : 0);
 			if (protocol >= 7)
 			{
-				stream.writeBigSmart(archive);
+				stream.writeBigSmart(this.archives.Length);
 			}
 			else
 			{
-				stream.writeShort(archive);
+				stream.writeShort(this.archives.Length);
 			}
-		}
 
-		if (named)
-		{
-			for (int i = 0; i < this.archives.length; ++i)
+			for (int i = 0; i < this.archives.Length; ++i)
 			{
 				ArchiveData a = this.archives[i];
-				stream.writeInt(a.getNameHash());
-			}
-		}
+				int archive = a.Id;
 
-		for (int i = 0; i < this.archives.length; ++i)
-		{
-			ArchiveData a = this.archives[i];
-			stream.writeInt(a.getCrc());
-		}
-
-		for (int i = 0; i < this.archives.length; ++i)
-		{
-			ArchiveData a = this.archives[i];
-			stream.writeInt(a.getRevision());
-		}
-
-		for (int i = 0; i < this.archives.length; ++i)
-		{
-			ArchiveData a = this.archives[i];
-
-			int len = a.getFiles().length;
-
-			if (protocol >= 7)
-			{
-				stream.writeBigSmart(len);
-			}
-			else
-			{
-				stream.writeShort(len);
-			}
-		}
-
-		for (int i = 0; i < this.archives.length; ++i)
-		{
-			ArchiveData a = this.archives[i];
-
-			for (int j = 0; j < a.getFiles().length; ++j)
-			{
-				FileData file = a.getFiles()[j];
-				int offset = file.getId();
-
-				if (j != 0)
+				if (i != 0)
 				{
-					FileData prev = a.getFiles()[j - 1];
-					offset -= prev.getId();
+					ArchiveData prev = this.archives[i - 1];
+					archive -= prev.Id;
 				}
 
 				if (protocol >= 7)
 				{
-					stream.writeBigSmart(offset);
+					stream.writeBigSmart(archive);
 				}
 				else
 				{
-					stream.writeShort(offset);
+					stream.writeShort(archive);
 				}
 			}
-		}
 
-		if (named)
-		{
-			for (int i = 0; i < this.archives.length; ++i)
+			if (named)
+			{
+				for (int i = 0; i < this.archives.Length; ++i)
+				{
+					ArchiveData a = this.archives[i];
+					stream.writeInt(a.NameHash);
+				}
+			}
+
+			for (int i = 0; i < this.archives.Length; ++i)
+			{
+				ArchiveData a = this.archives[i];
+				stream.writeInt(a.Crc);
+			}
+
+			for (int i = 0; i < this.archives.Length; ++i)
+			{
+				ArchiveData a = this.archives[i];
+				stream.writeInt(a.Revision);
+			}
+
+			for (int i = 0; i < this.archives.Length; ++i)
 			{
 				ArchiveData a = this.archives[i];
 
-				for (int j = 0; j < a.getFiles().length; ++j)
+				int len = a.Files.Length;
+
+				if (protocol >= 7)
 				{
-					FileData file = a.getFiles()[j];
-					stream.writeInt(file.getNameHash());
+					stream.writeBigSmart(len);
 				}
+				else
+				{
+					stream.writeShort(len);
+				}
+			}
+
+			for (int i = 0; i < this.archives.Length; ++i)
+			{
+				ArchiveData a = this.archives[i];
+
+				for (int j = 0; j < a.Files.Length; ++j)
+				{
+					FileData file = a.Files[j];
+					int offset = file.Id;
+
+					if (j != 0)
+					{
+						FileData prev = a.Files[j - 1];
+						offset -= prev.Id;
+					}
+
+					if (protocol >= 7)
+					{
+						stream.writeBigSmart(offset);
+					}
+					else
+					{
+						stream.writeShort(offset);
+					}
+				}
+			}
+
+			if (named)
+			{
+				for (int i = 0; i < this.archives.Length; ++i)
+				{
+					ArchiveData a = this.archives[i];
+
+					for (int j = 0; j < a.Files.Length; ++j)
+					{
+						FileData file = a.Files[j];
+						stream.writeInt(file.NameHash);
+					}
+				}
+			}
+
+			return stream.flip();
+		}
+
+		public virtual int Protocol
+		{
+			get
+			{
+				return protocol;
+			}
+			set
+			{
+				this.protocol = value;
 			}
 		}
 
-		return stream.flip();
+
+		public virtual int Revision
+		{
+			get
+			{
+				return revision;
+			}
+			set
+			{
+				this.revision = value;
+			}
+		}
+
+
+		public virtual bool Named
+		{
+			get
+			{
+				return named;
+			}
+			set
+			{
+				this.named = value;
+			}
+		}
+
+
+		public virtual ArchiveData[] Archives
+		{
+			get
+			{
+				return archives;
+			}
+			set
+			{
+				this.archives = value;
+			}
+		}
+
 	}
 
-	public int getProtocol()
-	{
-		return protocol;
-	}
-
-	public void setProtocol(int protocol)
-	{
-		this.protocol = protocol;
-	}
-
-	public int getRevision()
-	{
-		return revision;
-	}
-
-	public void setRevision(int revision)
-	{
-		this.revision = revision;
-	}
-
-	public boolean isNamed()
-	{
-		return named;
-	}
-
-	public void setNamed(boolean named)
-	{
-		this.named = named;
-	}
-
-	public ArchiveData[] getArchives()
-	{
-		return archives;
-	}
-
-	public void setArchives(ArchiveData[] archives)
-	{
-		this.archives = archives;
-	}
 }

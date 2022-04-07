@@ -1,3 +1,8 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,258 +27,232 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.script.assembler;
-
-// import java.util.ArrayList;
-// import java.util.HashMap;
-// import java.util.List;
-// import java.util.Map;
-// import java.util.Objects;
-using OSRSCache.definitions.ScriptDefinition;
-using OSRSCache.script.Instruction;
-using OSRSCache.script.Instructions;
-using OSRSCache.script.Opcodes;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
-
-public class ScriptWriter extends rs2asmBaseListener
+namespace OSRSCache.script.assembler
 {
-	private const Logger logger = LoggerFactory.getLogger(ScriptWriter.class);
+	using ScriptDefinition = OSRSCache.definitions.ScriptDefinition;
+	using Instruction = OSRSCache.script.Instruction;
+	using Instructions = OSRSCache.script.Instructions;
+	using Opcodes = OSRSCache.script.Opcodes;
 
-	private final Instructions instructions;
-	private final LabelVisitor labelVisitor;
 
-	private int id;
-	private int pos;
-	private int intStackCount;
-	private int stringStackCount;
-	private int localIntCount;
-	private int localstringCount;
-	private List<Integer> opcodes = new ArrayList<>();
-	private List<Integer> iops = new ArrayList<>();
-	private List<string> sops = new ArrayList<>();
-	private List<LookupSwitch> switches = new ArrayList<>();
-
-	public ScriptWriter(Instructions instructions, LabelVisitor labelVisitor)
+	public class ScriptWriter : rs2asmBaseListener
 	{
-		this.instructions = instructions;
-		this.labelVisitor = labelVisitor;
-	}
+		private readonly Instructions instructions;
+		private readonly LabelVisitor labelVisitor;
 
-	@Override
-	public void enterId_value(rs2asmParser.Id_valueContext ctx)
-	{
-		int value = Integer.parseInt(ctx.getText());
-		id = value;
-	}
+		private int id;
+		private int pos;
+		private int intStackCount;
+		private int stringStackCount;
+		private int localIntCount;
+		private int localStringCount;
+		private IList<int> opcodes = new List<int>();
+		private IList<int> iops = new List<int>();
+		private IList<string> sops = new List<string>();
+		private IList<LookupSwitch> switches = new List<LookupSwitch>();
 
-	@Override
-	public void enterInt_stack_value(rs2asmParser.Int_stack_valueContext ctx)
-	{
-		int value = Integer.parseInt(ctx.getText());
-		intStackCount = value;
-	}
-
-	@Override
-	public void enterstring_stack_value(rs2asmParser.string_stack_valueContext ctx)
-	{
-		int value = Integer.parseInt(ctx.getText());
-		stringStackCount = value;
-	}
-
-	@Override
-	public void enterInt_var_value(rs2asmParser.Int_var_valueContext ctx)
-	{
-		int value = Integer.parseInt(ctx.getText());
-		localIntCount = value;
-	}
-
-	@Override
-	public void enterstring_var_value(rs2asmParser.string_var_valueContext ctx)
-	{
-		int value = Integer.parseInt(ctx.getText());
-		localstringCount = value;
-	}
-
-	@Override
-	public void exitInstruction(rs2asmParser.InstructionContext ctx)
-	{
-		++pos;
-	}
-
-	@Override
-	public void enterName_string(rs2asmParser.Name_stringContext ctx)
-	{
-		string text = ctx.getText();
-		Instruction i = instructions.find(text);
-		if (i == null)
+		public ScriptWriter(Instructions instructions, LabelVisitor labelVisitor)
 		{
-			logger.warn("Unknown instruction {}", text);
-			throw new RuntimeException("Unknown instruction " + text);
+			this.instructions = instructions;
+			this.labelVisitor = labelVisitor;
 		}
 
-		int opcode = i.getOpcode();
-		addOpcode(opcode);
-	}
-
-	@Override
-	public void enterName_opcode(rs2asmParser.Name_opcodeContext ctx)
-	{
-		string text = ctx.getText();
-		int opcode = Integer.parseInt(text);
-		addOpcode(opcode);
-	}
-
-	private void addOpcode(int opcode)
-	{
-		assert opcodes.size() == pos;
-		assert iops.size() == pos;
-		assert sops.size() == pos;
-		assert switches.size() == pos;
-
-		opcodes.add(opcode);
-		iops.add(null);
-		sops.add(null);
-		switches.add(null);
-	}
-
-	@Override
-	public void enterOperand_int(rs2asmParser.Operand_intContext ctx)
-	{
-		string text = ctx.getText();
-		int value = Integer.parseInt(text);
-		iops.set(pos, value);
-	}
-
-	@Override
-	public void enterOperand_qstring(rs2asmParser.Operand_qstringContext ctx)
-	{
-		string text = ctx.getText();
-		text = text.substring(1, text.length() - 1);
-		sops.set(pos, text);
-	}
-
-	@Override
-	public void enterOperand_label(rs2asmParser.Operand_labelContext ctx)
-	{
-		string text = ctx.getText();
-		Integer instruction = labelVisitor.getInstructionForLabel(text);
-		if (instruction == null)
+		public override void enterId_value(rs2asmParser.Id_valueContext ctx)
 		{
-			throw new RuntimeException("reference to unknown label " + text);
+			int value = int.Parse(ctx.getText());
+			id = value;
 		}
 
-		int target = instruction - pos - 1; // -1 to go to the instruction prior
-		iops.set(pos, target);
-	}
-
-	@Override
-	public void enterSwitch_lookup(rs2asmParser.Switch_lookupContext ctx)
-	{
-		if (switches.get(pos - 1) != null)
+		public override void enterInt_stack_value(rs2asmParser.Int_stack_valueContext ctx)
 		{
-			return;
+			int value = int.Parse(ctx.getText());
+			intStackCount = value;
 		}
 
-		LookupSwitch ls = new LookupSwitch();
-		switches.set(pos - 1, ls);
-	}
-
-	@Override
-	public void exitSwitch_key(rs2asmParser.Switch_keyContext ctx)
-	{
-		string text = ctx.getText();
-		int key = Integer.parseInt(text);
-
-		LookupSwitch ls = switches.get(pos - 1);
-		assert ls != null;
-
-		LookupCase scase = new LookupCase();
-		scase.setValue(key);
-
-		ls.getCases().add(scase);
-	}
-
-	@Override
-	public void exitSwitch_value(rs2asmParser.Switch_valueContext ctx)
-	{
-		string text = ctx.getText();
-		Integer instruction = labelVisitor.getInstructionForLabel(text);
-		if (instruction == null)
+		public override void enterString_stack_value(rs2asmParser.String_stack_valueContext ctx)
 		{
-			throw new RuntimeException("reference to unknown label " + text);
+			int value = int.Parse(ctx.getText());
+			stringStackCount = value;
 		}
 
-		int target = instruction // target instruction index
-			- (pos - 1) // pos is already at the instruction after the switch, so - 1
-			- 1; // to go to the instruction prior to target
-
-		LookupSwitch ls = switches.get(pos - 1);
-		assert ls != null;
-
-		LookupCase scase = ls.getCases().get(ls.getCases().size() - 1);
-		scase.setOffset(target);
-	}
-
-	public ScriptDefinition buildScript()
-	{
-		setSwitchOperands();
-
-		ScriptDefinition script = new ScriptDefinition();
-		script.setId(id);
-		script.setIntStackCount(intStackCount);
-		script.setstringStackCount(stringStackCount);
-		script.setLocalIntCount(localIntCount);
-		script.setLocalstringCount(localstringCount);
-		script.setInstructions(opcodes.stream().mapToInt(Integer::valueOf).toArray());
-		script.setIntOperands(iops.stream()
-			.map(i -> i == null ? 0 : i)
-			.mapToInt(Integer::valueOf)
-			.toArray());
-		script.setstringOperands(sops.toArray(new string[0]));
-		script.setSwitches(buildSwitches());
-		return script;
-	}
-
-	private void setSwitchOperands()
-	{
-		int count = 0;
-		for (int i = 0; i < opcodes.size(); ++i)
+		public override void enterInt_var_value(rs2asmParser.Int_var_valueContext ctx)
 		{
-			if (opcodes.get(i) != Opcodes.SWITCH)
+			int value = int.Parse(ctx.getText());
+			localIntCount = value;
+		}
+
+		public override void enterString_var_value(rs2asmParser.String_var_valueContext ctx)
+		{
+			int value = int.Parse(ctx.getText());
+			localStringCount = value;
+		}
+
+		public override void exitInstruction(rs2asmParser.InstructionContext ctx)
+		{
+			++pos;
+		}
+
+		public override void enterName_string(rs2asmParser.Name_stringContext ctx)
+		{
+			string text = ctx.getText();
+			Instruction i = instructions.find(text);
+			if (i == null)
 			{
-				continue;
+				Console.WriteLine("Unknown instruction {0}", text);
+				throw new Exception("Unknown instruction " + text);
 			}
 
-			iops.set(i, count++);
+			int opcode = i.Opcode;
+			addOpcode(opcode);
+		}
+
+		public override void enterName_opcode(rs2asmParser.Name_opcodeContext ctx)
+		{
+			string text = ctx.getText();
+			int opcode = int.Parse(text);
+			addOpcode(opcode);
+		}
+
+		private void addOpcode(int opcode)
+		{
+			Debug.Assert(opcodes.Count == pos);
+			Debug.Assert(iops.Count == pos);
+			Debug.Assert(sops.Count == pos);
+			Debug.Assert(switches.Count == pos);
+
+			opcodes.Add(opcode);
+			iops.Add(null);
+			sops.Add(null);
+			switches.Add(null);
+		}
+
+		public override void enterOperand_int(rs2asmParser.Operand_intContext ctx)
+		{
+			string text = ctx.getText();
+			int value = int.Parse(text);
+			iops[pos] = value;
+		}
+
+		public override void enterOperand_qstring(rs2asmParser.Operand_qstringContext ctx)
+		{
+			string text = ctx.getText();
+			text = text.Substring(1, (text.Length - 1) - 1);
+			sops[pos] = text;
+		}
+
+		public override void enterOperand_label(rs2asmParser.Operand_labelContext ctx)
+		{
+			string text = ctx.getText();
+			int? instruction = labelVisitor.getInstructionForLabel(text);
+			if (instruction == null)
+			{
+				throw new Exception("reference to unknown label " + text);
+			}
+
+			int target = instruction.Value - pos - 1; // -1 to go to the instruction prior
+			iops[pos] = target;
+		}
+
+		public override void enterSwitch_lookup(rs2asmParser.Switch_lookupContext ctx)
+		{
+			if (switches[pos - 1] != null)
+			{
+				return;
+			}
+
+			LookupSwitch ls = new LookupSwitch();
+			switches[pos - 1] = ls;
+		}
+
+		public override void exitSwitch_key(rs2asmParser.Switch_keyContext ctx)
+		{
+			string text = ctx.getText();
+			int key = int.Parse(text);
+
+			LookupSwitch ls = switches[pos - 1];
+			Debug.Assert(ls != null);
+
+			LookupCase scase = new LookupCase();
+			scase.Value = key;
+
+			ls.Cases.Add(scase);
+		}
+
+		public override void exitSwitch_value(rs2asmParser.Switch_valueContext ctx)
+		{
+			string text = ctx.getText();
+			int? instruction = labelVisitor.getInstructionForLabel(text);
+			if (instruction == null)
+			{
+				throw new Exception("reference to unknown label " + text);
+			}
+
+			int target = instruction.Value - (pos - 1) - 1; // to go to the instruction prior to target
+
+			LookupSwitch ls = switches[pos - 1];
+			Debug.Assert(ls != null);
+
+			LookupCase scase = ls.Cases[ls.Cases.Count - 1];
+			scase.Offset = target;
+		}
+
+		public virtual ScriptDefinition buildScript()
+		{
+			setSwitchOperands();
+
+			ScriptDefinition script = new ScriptDefinition(id);
+			script.intStackCount = intStackCount;
+			script.stringStackCount = stringStackCount;
+			script.localIntCount = localIntCount;
+			script.localStringCount = localStringCount;
+			script.instructions = ((List<int>)opcodes).ToArray(); // opcodes.Select(int.valueOf).ToArray();
+			script.intOperands = iops.Select(i => i == null ? 0 : i).ToArray(); // .Select(int.valueOf).ToArray();
+			script.stringOperands = ((List<string>)sops).ToArray();
+			script.switches = buildSwitches();
+			return script;
+		}
+
+		private void setSwitchOperands()
+		{
+			int count = 0;
+			for (int i = 0; i < opcodes.Count; ++i)
+			{
+				if (opcodes[i] != (int) Opcodes.SWITCH)
+				{
+					continue;
+				}
+
+				iops[i] = count++;
+			}
+		}
+
+		private IDictionary<int, int>[] buildSwitches()
+		{
+			int count = (int) switches.Where(Object.nonNull).Count();
+
+			if (count == 0)
+			{
+				return null;
+			}
+
+			int index = 0;
+			IDictionary<int, int>[] maps = new Dictionary<int, int>[count];
+			foreach (LookupSwitch lswitch in switches)
+			{
+				if (lswitch == null)
+				{
+					continue;
+				}
+
+				IDictionary<int, int> map = maps[index++] = new Dictionary<int, int>();
+
+				foreach (LookupCase scase in lswitch.Cases)
+				{
+					map[scase.Value] = scase.Offset;
+				}
+			}
+			return maps;
 		}
 	}
 
-	private Map<Integer, Integer>[] buildSwitches()
-	{
-		int count = (int) switches.stream().filter(Objects::nonNull).count();
-
-		if (count == 0)
-		{
-			return null;
-		}
-
-		int index = 0;
-		Map<Integer, Integer>[] maps = new Map[count];
-		for (LookupSwitch lswitch : switches)
-		{
-			if (lswitch == null)
-			{
-				continue;
-			}
-
-			Map<Integer, Integer> map = maps[index++] = new HashMap<>();
-
-			for (LookupCase scase : lswitch.getCases())
-			{
-				map.put(scase.getValue(), scase.getOffset());
-			}
-		}
-		return maps;
-	}
 }

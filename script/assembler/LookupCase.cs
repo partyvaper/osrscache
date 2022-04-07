@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -22,30 +22,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.script.assembler;
-
-public class LookupCase
+namespace OSRSCache.script.assembler
 {
-	private int value;
-	private int offset;
-
-	public int getValue()
+	public class LookupCase
 	{
-		return value;
+		private int value;
+		private int offset;
+
+		public virtual int Value
+		{
+			get
+			{
+				return value;
+			}
+			set
+			{
+				this.value = value;
+			}
+		}
+
+
+		public virtual int Offset
+		{
+			get
+			{
+				return offset;
+			}
+			set
+			{
+				this.offset = value;
+			}
+		}
+
 	}
 
-	public void setValue(int value)
-	{
-		this.value = value;
-	}
-
-	public int getOffset()
-	{
-		return offset;
-	}
-
-	public void setOffset(int offset)
-	{
-		this.offset = offset;
-	}
 }

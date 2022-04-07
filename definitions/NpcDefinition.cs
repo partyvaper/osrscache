@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -23,46 +25,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OSRSCache.definitions;
-
-// import java.util.Map;
-// import lombok.Data;
-
-@Data
-public class NpcDefinition
+namespace OSRSCache.definitions
 {
-	public readonly int id;
-	public string name = "null";
-	public int size = 1;
-	public int[] models;
-	public int[] chatheadModels;
-	public int standingAnimation = -1;
-	public int rotateLeftAnimation = -1;
-	public int rotateRightAnimation = -1;
-	public int walkingAnimation = -1;
-	public int rotate180Animation = -1;
-	public int rotate90RightAnimation = -1;
-	public int rotate90LeftAnimation = -1;
-	public short[] recolorToFind;
-	public short[] recolorToReplace;
-	public short[] retextureToFind;
-	public short[] retextureToReplace;
-	public string[] actions = new string[5];
-	public boolean isMinimapVisible = true;
-	public int combatLevel = -1;
-	public int widthScale = 128;
-	public int heightScale = 128;
-	public boolean hasRenderPriority;
-	public int ambient;
-	public int contrast;
-	public int headIcon = -1;
-	public int rotationSpeed = 32;
-	public int[] configs;
-	public int varbitId = -1;
-	public int varpIndex = -1;
-	public boolean isInteractable = true;
-	public boolean rotationFlag = true;
-	public boolean isPet;
-	public Map<Integer, Object> params;
-	public int category;
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @Data public class NpcDefinition
+	public class NpcDefinition
+	{
+		public readonly int id;
+		public string name = "null";
+		public int size = 1;
+		public int[] models;
+		public int[] chatheadModels;
+		public int standingAnimation = -1;
+		public int rotateLeftAnimation = -1;
+		public int rotateRightAnimation = -1;
+		public int walkingAnimation = -1;
+		public int rotate180Animation = -1;
+		public int rotate90RightAnimation = -1;
+		public int rotate90LeftAnimation = -1;
+		public short[] recolorToFind;
+		public short[] recolorToReplace;
+		public short[] retextureToFind;
+		public short[] retextureToReplace;
+		public string[] actions = new string[5];
+		public bool isMinimapVisible = true;
+		public int combatLevel = -1;
+		public int widthScale = 128;
+		public int heightScale = 128;
+		public bool hasRenderPriority;
+		public int ambient;
+		public int contrast;
+		public int headIcon = -1;
+		public int rotationSpeed = 32;
+		public int[] configs;
+		public int varbitId = -1;
+		public int varpIndex = -1;
+		public bool isInteractable = true;
+		public bool rotationFlag = true;
+		public bool isPet;
+		public IDictionary<int, object> @params;
+		public int category;
+
+		public NpcDefinition(int id)
+		{
+			this.id = id;
+		}
+	}
+
 }

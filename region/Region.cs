@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 /*
  * Copyright (c) 2016-2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -22,168 +24,195 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OSRSCache.region;
-
-// import java.util.ArrayList;
-// import java.util.List;
-using OSRSCache.definitions.LocationsDefinition;
-using OSRSCache.definitions.MapDefinition;
-using OSRSCache.definitions.MapDefinition.Tile;
-
-public class Region
+namespace OSRSCache.region
 {
+	using LocationsDefinition = OSRSCache.definitions.LocationsDefinition;
+	using MapDefinition = OSRSCache.definitions.MapDefinition;
+	using Tile = OSRSCache.definitions.MapDefinition.Tile;
 
-	public const int X = 64;
-	public const int Y = 64;
-	public const int Z = 4;
-
-	private final int regionID;
-	private final int baseX;
-	private final int baseY;
-
-	private final int[][][] tileHeights = new int[Z][X][Y];
-	private final byte[][][] tileSettings = new byte[Z][X][Y];
-	private final byte[][][] overlayIds = new byte[Z][X][Y];
-	private final byte[][][] overlayPaths = new byte[Z][X][Y];
-	private final byte[][][] overlayRotations = new byte[Z][X][Y];
-	private final byte[][][] underlayIds = new byte[Z][X][Y];
-
-	private final List<Location> locations = new ArrayList<>();
-
-	public Region(int id)
+	public class Region
 	{
-		this.regionID = id;
-		this.baseX = ((id >> 8) & 0xFF) << 6; // local coords are in bottom 6 bits (64*64)
-		this.baseY = (id & 0xFF) << 6;
-	}
 
-	public Region(int x, int y)
-	{
-		this.regionID = x << 8 | y;
-		this.baseX = x << 6;
-		this.baseY = y << 6;
-	}
+		public const int X = 64;
+		public const int Y = 64;
+		public const int Z = 4;
 
-	public void loadTerrain(MapDefinition map)
-	{
-		Tile[][][] tiles = map.getTiles();
-		for (int z = 0; z < Z; z++)
+		private readonly int regionID;
+		private readonly int baseX;
+		private readonly int baseY;
+
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: private readonly int[][][] tileHeights = new int[Z][X][Y];
+		private readonly int[][][] tileHeights = RectangularArrays.RectangularIntArray(Z, X, Y);
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: private readonly byte[][][] tileSettings = new byte[Z][X][Y];
+		private readonly byte[][][] tileSettings = RectangularArrays.RectangularbyteArray(Z, X, Y);
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: private readonly byte[][][] overlayIds = new byte[Z][X][Y];
+		private readonly byte[][][] overlayIds = RectangularArrays.RectangularbyteArray(Z, X, Y);
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: private readonly byte[][][] overlayPaths = new byte[Z][X][Y];
+		private readonly byte[][][] overlayPaths = RectangularArrays.RectangularbyteArray(Z, X, Y);
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: private readonly byte[][][] overlayRotations = new byte[Z][X][Y];
+		private readonly byte[][][] overlayRotations = RectangularArrays.RectangularbyteArray(Z, X, Y);
+//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//ORIGINAL LINE: private readonly byte[][][] underlayIds = new byte[Z][X][Y];
+		private readonly byte[][][] underlayIds = RectangularArrays.RectangularbyteArray(Z, X, Y);
+
+		private readonly IList<Location> locations = new List<Location>();
+
+		public Region(int id)
 		{
-			for (int x = 0; x < X; x++)
+			this.regionID = id;
+			this.baseX = ((id >> 8) & 0xFF) << 6; // local coords are in bottom 6 bits (64*64)
+			this.baseY = (id & 0xFF) << 6;
+		}
+
+		public Region(int x, int y)
+		{
+			this.regionID = x << 8 | y;
+			this.baseX = x << 6;
+			this.baseY = y << 6;
+		}
+
+		public virtual void loadTerrain(MapDefinition map)
+		{
+			MapDefinition.Tile[][][] tiles = map.tiles;
+			for (int z = 0; z < Z; z++)
 			{
-				for (int y = 0; y < Y; y++)
+				for (int x = 0; x < X; x++)
 				{
-					Tile tile = tiles[z][x][y];
-
-					if (tile.height == null)
+					for (int y = 0; y < Y; y++)
 					{
-						if (z == 0)
+						MapDefinition.Tile tile = tiles[z][x][y];
+
+						if (tile.height == null)
 						{
-							tileHeights[0][x][y] = -HeightCalc.calculate(baseX + x + 0xe3b7b, baseY + y + 0x87cce) * 8;
+							if (z == 0)
+							{
+								tileHeights[0][x][y] = -HeightCalc.calculate(baseX + x + 0xe3b7b, baseY + y + 0x87cce) * 8;
+							}
+							else
+							{
+								tileHeights[z][x][y] = tileHeights[z - 1][x][y] - 240;
+							}
 						}
 						else
 						{
-							tileHeights[z][x][y] = tileHeights[z - 1][x][y] - 240;
+							int height = (int) tile.height;
+							if (height == 1)
+							{
+								height = 0;
+							}
+
+							if (z == 0)
+							{
+								tileHeights[0][x][y] = -height * 8;
+							}
+							else
+							{
+								tileHeights[z][x][y] = tileHeights[z - 1][x][y] - height * 8;
+							}
 						}
+
+						overlayIds[z][x][y] = tile.overlayId;
+						overlayPaths[z][x][y] = tile.overlayPath;
+						overlayRotations[z][x][y] = tile.overlayRotation;
+
+						tileSettings[z][x][y] = tile.settings;
+						underlayIds[z][x][y] = tile.underlayId;
 					}
-					else
-					{
-						int height = tile.getHeight();
-						if (height == 1)
-						{
-							height = 0;
-						}
-
-						if (z == 0)
-						{
-							tileHeights[0][x][y] = -height * 8;
-						}
-						else
-						{
-							tileHeights[z][x][y] = tileHeights[z - 1][x][y] - height * 8;
-						}
-					}
-
-					overlayIds[z][x][y] = tile.getOverlayId();
-					overlayPaths[z][x][y] = tile.getOverlayPath();
-					overlayRotations[z][x][y] = tile.getOverlayRotation();
-
-					tileSettings[z][x][y] = tile.getSettings();
-					underlayIds[z][x][y] = tile.getUnderlayId();
 				}
+			}
+		}
+
+		public virtual void loadLocations(LocationsDefinition locs)
+		{
+			foreach (Location loc in locs.locations)
+			{
+				Location newLoc = new Location(loc.id, loc.type, loc.orientation, new Position(BaseX + loc.position.X, BaseY + loc.position.Y, loc.position.Z));
+				locations.Add(newLoc);
+			}
+		}
+
+		public virtual int RegionID
+		{
+			get
+			{
+				return regionID;
+			}
+		}
+
+		public virtual int BaseX
+		{
+			get
+			{
+				return baseX;
+			}
+		}
+
+		public virtual int BaseY
+		{
+			get
+			{
+				return baseY;
+			}
+		}
+
+		public virtual int getTileHeight(int z, int x, int y)
+		{
+			return tileHeights[z][x][y];
+		}
+
+		public virtual byte getTileSetting(int z, int x, int y)
+		{
+			return tileSettings[z][x][y];
+		}
+
+		public virtual int getOverlayId(int z, int x, int y)
+		{
+			return overlayIds[z][x][y] & 0xFF;
+		}
+
+		public virtual byte getOverlayPath(int z, int x, int y)
+		{
+			return overlayPaths[z][x][y];
+		}
+
+		public virtual byte getOverlayRotation(int z, int x, int y)
+		{
+			return overlayRotations[z][x][y];
+		}
+
+		public virtual int getUnderlayId(int z, int x, int y)
+		{
+			return underlayIds[z][x][y] & 0xFF;
+		}
+
+		public virtual IList<Location> Locations
+		{
+			get
+			{
+				return locations;
+			}
+		}
+
+		public virtual int RegionX
+		{
+			get
+			{
+				return baseX >> 6;
+			}
+		}
+
+		public virtual int RegionY
+		{
+			get
+			{
+				return baseY >> 6;
 			}
 		}
 	}
 
-	public void loadLocations(LocationsDefinition locs)
-	{
-		for (Location loc : locs.getLocations())
-		{
-			Location newLoc = new Location(loc.getId(), loc.getType(), loc.getOrientation(),
-				new Position(getBaseX() + loc.getPosition().getX(),
-					getBaseY() + loc.getPosition().getY(),
-					loc.getPosition().getZ()));
-			locations.add(newLoc);
-		}
-	}
-
-	public int getRegionID()
-	{
-		return regionID;
-	}
-
-	public int getBaseX()
-	{
-		return baseX;
-	}
-
-	public int getBaseY()
-	{
-		return baseY;
-	}
-
-	public int getTileHeight(int z, int x, int y)
-	{
-		return tileHeights[z][x][y];
-	}
-
-	public byte getTileSetting(int z, int x, int y)
-	{
-		return tileSettings[z][x][y];
-	}
-
-	public int getOverlayId(int z, int x, int y)
-	{
-		return overlayIds[z][x][y] & 0xFF;
-	}
-
-	public byte getOverlayPath(int z, int x, int y)
-	{
-		return overlayPaths[z][x][y];
-	}
-
-	public byte getOverlayRotation(int z, int x, int y)
-	{
-		return overlayRotations[z][x][y];
-	}
-
-	public int getUnderlayId(int z, int x, int y)
-	{
-		return underlayIds[z][x][y] & 0xFF;
-	}
-
-	public List<Location> getLocations()
-	{
-		return locations;
-	}
-
-	public int getRegionX()
-	{
-		return baseX >> 6;
-	}
-
-	public int getRegionY()
-	{
-		return baseY >> 6;
-	}
 }
